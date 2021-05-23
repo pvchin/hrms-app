@@ -1,10 +1,10 @@
 const { table } = require("./airtable-dailyallowsdetls");
 const formattedReturn = require("../formattedReturn");
 module.exports = async (event) => {
-  const { ...fields } = JSON.parse(event.body);
+  const { id, ...fields } = JSON.parse(event.body);
   try {
-    const createdDailyAllowsDetl = await table.create([{ fields }]);
-    return formattedReturn(200, createdDailyAllowDetl);
+    const updatedDailyAllowsDetl = await table.update([{ id, fields }]);
+    return formattedReturn(200, updatedDailyAllowsDetl);
   } catch (err) {
     console.error(err);
     return formattedReturn(500, {});

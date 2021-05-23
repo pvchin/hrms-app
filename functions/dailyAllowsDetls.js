@@ -1,5 +1,5 @@
 const formattedReturn = require("./formattedReturn");
-const getDailyAllowsDetls = require("./dailyallowancesTable/getDailyAllowsDetls");
+const getDailyAllowsDetls = require("./dailyAllowancesTable/getDailyAllowsDetls");
 const createDailyAllowsDetl = require("./dailyAllowancesTable/createDailyAllowsDetl");
 const deleteDailyAllowsDetl = require("./dailyAllowancesTable/deleteDailyAllowsDetl");
 const updateDailyAllowsDetl = require("./dailyAllowancesTable/updateDailyAllowsDetl");

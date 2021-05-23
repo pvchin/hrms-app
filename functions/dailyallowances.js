@@ -1,8 +1,8 @@
 const formattedReturn = require("./formattedReturn");
 const getDailyAllowances = require("./dailyallowancesTable/getDailyAllowances");
-const createDailyAllowance = require("./dailyAllowancesTable/createDailyAllowance");
-const deleteDailyAllowance = require("./dailyAllowancesTable/deleteDailyAllowance");
-const updateDailyAllowance = require("./dailyAllowancesTable/updateDailyAllowance");
+const createDailyAllowance = require("./dailyallowancesTable/createDailyAllowance");
+const deleteDailyAllowance = require("./dailyallowancesTable/deleteDailyAllowance");
+const updateDailyAllowance = require("./dailyallowancesTable/updateDailyAllowance");
 exports.handler = async (event) => {
   if (event.httpMethod === "GET") {
     return await getDailyAllowances(event);

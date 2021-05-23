@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from "react";
-
+import React, { useEffect } from "react";
 import MaterialTable, { MTableToolbar } from "material-table";
 import { makeStyles } from "@material-ui/core/styles";
-import { Button } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -14,7 +12,6 @@ import { useHistory, Link } from "react-router-dom";
 
 import { usePayslipsContext } from "../context/payslips_context";
 import { useEmployeesContext } from "../context/employees_context";
-import { useTablesContext } from "../context/tables_context";
 
 const columns = [
   {

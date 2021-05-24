@@ -31,6 +31,14 @@ const initial_values = {
   bank_acno: "",
   tap_acno: "",
   scp_acno: "",
+  date_of_join: null,
+  date_of_resign: null,
+  designation: "",
+  department: "",
+  passportno: "",
+  passport_expirydate: null,
+  workpermitno: "",
+  workpermit_expirydate: null,
 };
 
 const EmployeeForm = () => {
@@ -60,6 +68,10 @@ const EmployeeForm = () => {
     date_of_resign,
     designation,
     department,
+    passportno,
+    passport_expirydate,
+    workpermitno,
+    workpermit_expirydate,
   } = single_employee || initial_values;
   const { handleSubmit, control } = useForm();
 
@@ -234,6 +246,58 @@ const EmployeeForm = () => {
                   //rules={{ required: "IC No required" }}
                 />
               </div>
+              <div>
+                <Controller
+                  name="passportno"
+                  control={control}
+                  defaultValue={passportno}
+                  render={({
+                    field: { onChange, value },
+                    fieldState: { error },
+                  }) => {
+                    return (
+                      <TextField
+                        label="Passport No"
+                        id="margin-normal"
+                        name="passportno"
+                        defaultValue={passportno}
+                        className={classes.textField}
+                        onChange={onChange}
+                        error={!!error}
+                        helperText={error ? error.message : null}
+                      />
+                    );
+                  }}
+                  //rules={{ required: "Name required" }}
+                />
+                <Controller
+                  name="passport_expirydate"
+                  control={control}
+                  defaultValue={passport_expirydate}
+                  render={({
+                    field: { onChange, value },
+                    fieldState: { error },
+                  }) => {
+                    return (
+                      <TextField
+                        label="Passport Expiry Date"
+                        id="margin-normal"
+                        name="passport_expirydate"
+                        type="date"
+                        defaultValue={passport_expirydate}
+                        className={classes.textField}
+                        onChange={onChange}
+                        error={!!error}
+                        helperText={error ? error.message : null}
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                      />
+                    );
+                  }}
+                  //rules={{ required: "Name required" }}
+                />
+              </div>
             </div>
             <Divider className={classes.divider} />
             <div>
@@ -362,6 +426,58 @@ const EmployeeForm = () => {
                     );
                   }}
                   //rules={{ required: "Email is required" }}
+                />
+              </div>
+              <div>
+                <Controller
+                  name="workpermitno"
+                  control={control}
+                  defaultValue={workpermitno}
+                  render={({
+                    field: { onChange, value },
+                    fieldState: { error },
+                  }) => {
+                    return (
+                      <TextField
+                        label="Work Permit No"
+                        id="margin-normal"
+                        name="workpermitno"
+                        defaultValue={workpermitno}
+                        className={classes.textField}
+                        onChange={onChange}
+                        error={!!error}
+                        helperText={error ? error.message : null}
+                      />
+                    );
+                  }}
+                  //rules={{ required: "Name required" }}
+                />
+                <Controller
+                  name="workpermit_expirydate"
+                  control={control}
+                  defaultValue={workpermit_expirydate}
+                  render={({
+                    field: { onChange, value },
+                    fieldState: { error },
+                  }) => {
+                    return (
+                      <TextField
+                        label="Work Permit Expiry Date"
+                        id="margin-normal"
+                        name="workpermit_expirydate"
+                        type="date"
+                        defaultValue={workpermit_expirydate}
+                        className={classes.textField}
+                        onChange={onChange}
+                        error={!!error}
+                        helperText={error ? error.message : null}
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                      />
+                    );
+                  }}
+                  //rules={{ required: "Name required" }}
                 />
               </div>
               <Divider className={classes.divider} />

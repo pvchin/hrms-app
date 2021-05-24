@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -17,30 +17,12 @@ import SingleDailyAllowance from "./SingleDailyAllowance";
 import BatchDailyAllowances from "./BatchDailyAllowances";
 import SinglePayslip from "./SinglePayslip";
 
-import {
-  Home,
-  Dashboard,
-  AllEmployees,
-  Leave,
-  Expenses,
-  Payslip,
-  BatchPayslips,
-  Payroll,
-  Departments,
-  Designation,
-  Tables,
-  Clients,
-  Allowances,
-  DailyAllowances,
-  PrivateRoute,
-  Error,
-} from "../pages";
-
 const drawerWidth = 240;
 
 export default function DashboardAdmin() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -52,94 +34,19 @@ export default function DashboardAdmin() {
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <Router>
-        <Appbanner
-          handleDrawerOpen={handleDrawerOpen}
-          handleDrawerClose={handleDrawerClose}
-          open={open}
-          title="Human Resource Management System"
-        />
 
-        <SideDrawer
-          handleDrawerOpen={handleDrawerOpen}
-          handleDrawerClose={handleDrawerClose}
-          open={open}
-        />
+      <Appbanner
+        handleDrawerOpen={handleDrawerOpen}
+        handleDrawerClose={handleDrawerClose}
+        open={open}
+        title="Human Resource Management System - AppSmith"
+      />
 
-        <main className={classes.content}>
-          <Switch>
-            <Route exact path="/">
-              <Home />
-            </Route>
-            <Route exact path="/allemployees">
-              <AllEmployees />
-            </Route>
-            <Route exact path="/payroll">
-              <Payroll />
-            </Route>
-            <Route exact path="/payslip">
-              <Payslip />
-            </Route>
-
-            <Route exact path="/singlepayslip">
-              <SinglePayslip />
-            </Route>
-            <Route exact path="/batchpayslips">
-              <BatchPayslips />
-            </Route>
-            <Route exact path="/leave">
-              <Leave />
-            </Route>
-            <Route exact path="/dailyallowances">
-              <DailyAllowances />
-            </Route>
-            <Route exact path="/expenses">
-              <Expenses />
-            </Route>
-            <Route exact path="/departments">
-              <Departments />
-            </Route>
-            <Route exact path="/designation">
-              <Designation />
-            </Route>
-            <Route exact path="/tables">
-              <Tables />
-            </Route>
-            <Route exact path="/allowances">
-              <Allowances />
-            </Route>
-            <Route exact path="/clients">
-              <Clients />
-            </Route>
-            <Route exact path="/singleemployee">
-              <SingleEmployee />
-            </Route>
-            <Route exact path="/singleleave">
-              <SingleLeave />
-            </Route>
-            <Route exact path="/singleexpense">
-              <SingleExpense />
-            </Route>
-            <Route exact path="/singledailyallowance">
-              <SingleDailyAllowance />
-            </Route>
-            <Route exact path="/batchdailyallowances">
-              <BatchDailyAllowances />
-            </Route>
-            <Route exact path="/error">
-              <Error />
-            </Route>
-            {/* <Route
-              exact
-              path="/employees/:empId"
-              children={<SingleEmployee />}
-            /> */}
-            <Route path="*">
-              <Error />
-            </Route>
-          </Switch>
-        </main>
-      </Router>
+      <SideDrawer
+        handleDrawerOpen={handleDrawerOpen}
+        handleDrawerClose={handleDrawerClose}
+        open={open}
+      />
     </div>
   );
 }

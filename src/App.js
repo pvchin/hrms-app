@@ -1,10 +1,13 @@
-import React from "react";
-import DashboardAdmin from "./components/DashboardAdmin";
+import React, { useState } from "react";
+import DashboardMain from "./components/DashboardMain";
+import Login from "../src/components/Login";
+import ModalDialog from "../src/components/ModalDialog";
+import SigninForm from "../src/components/SigninForm";
 
 const App = () => {
   return (
     <div>
-      <DashboardAdmin />
+      <DashboardMain />
     </div>
   );
 };

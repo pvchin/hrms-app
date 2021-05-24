@@ -16,6 +16,10 @@ const HomePage = () => {
   return (
     <div>
       <div className={classes.appBarSpacer} />
+      <div style={{ paddingLeft: 50 }}>
+        <h2>Welcome Admin!</h2>
+        <h3>Dashboard</h3>
+      </div>
       <Container maxWidth="lg" className={classes.container}>
         <Grid container spacing={3}>
           {/* Chart */}
@@ -27,13 +31,13 @@ const HomePage = () => {
           {/* Recent Deposits */}
           <Grid item xs={12} md={4} lg={3}>
             <Paper className={fixedHeightPaper}>
-              <div>Deposits</div>
+              <div>Leaves Pending for Apprival</div>
             </Paper>
           </Grid>
           {/* Recent Orders */}
           <Grid item xs={12}>
             <Paper className={classes.paper}>
-              <div>Orders</div>
+              <div>Expenses Pending for Approval</div>
             </Paper>
           </Grid>
         </Grid>

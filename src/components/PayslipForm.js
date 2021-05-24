@@ -179,7 +179,7 @@ const PayslipForm = () => {
               </Button>
             </div>
           </Grid>
-
+          <Divider className={classes.divider} />
           <Grid item xs={12}>
             <div>
               <Controller
@@ -475,7 +475,7 @@ const PayslipForm = () => {
               Calc <Icon className={classes.rightIcon}>send</Icon>
             </Button>
           </Grid>
-          <Divider />
+          <Divider className={classes.divider} />
           <div>
             <Grid container alignItems="center" className={classes.grid}>
               {/* <Grid item xs={4} style={{ textAlign: "center" }}> */}
@@ -489,7 +489,7 @@ const PayslipForm = () => {
               </Grid>
             </Grid>
           </div>
-          <Divider />
+          <Divider className={classes.divider} />
         </Paper>
       </form>
     </div>
@@ -516,10 +516,13 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexWrap: "wrap",
   },
+  divider: {
+    padding: 4,
+  },
   textField: {
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
-    width: 400,
+    width: 350,
   },
   grid: {
     padding: theme.spacing(3, 2),

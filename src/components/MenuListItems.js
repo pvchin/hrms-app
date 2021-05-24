@@ -44,7 +44,7 @@ const MenuListItems = () => {
   return (
     <div>
       <ListSubheader inset className={classes.mainHeader}>
-        Main
+        Admin
       </ListSubheader>
 
       <Link to="/">

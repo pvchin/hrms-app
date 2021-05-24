@@ -1,9 +1,10 @@
 import React from "react";
+import DashboardAdmin from "../components/DashboardAdmin";
 
 const DashboardPage = () => {
   return (
     <div>
-      <h2>Dashboard</h2>
+      <DashboardAdmin />
     </div>
   );
 };

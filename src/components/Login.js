@@ -1,110 +1,144 @@
-import React, { useState, useEffect } from "react";
-import PropTypes from "prop-types";
+import React, { useState } from "react";
 import {
-  Button,
-  Icon,
-  TextField,
-  Paper,
-  Typography,
-  Select,
-  Grid,
+  Card,
+  CardContent,
+  CardHeader,
+  CardMedia,
+  Avatar,
   Divider,
+  Typography,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { useHistory, Link } from "react-router-dom";
 
-import { useEmployeesContext } from "../context/employees_context";
+import img from "../assets/appsmithslogo.png";
+import SigninForm from "./SigninForm";
+import DashboardAdmin from "./DashboardAdmin";
 
-const Login = ({ setToken }) => {
+const Login = ({ setLogin }) => {
+  let history = useHistory();
   const classes = useStyles();
-  const [alert, setAlert] = useState(false);
-  const [load, setLoad] = useState(false);
-  const [loginEmail, setLoginEmail] = useState();
-  const [loginPassword, setLoginPassword] = useState();
-  const { getSingleEmployeeEmail, single_employee, single_employee_loading } =
-    useEmployeesContext();
-  const { name, email, password } = single_employee;
 
-  useEffect(() => {
-    if (alert) {
-      setTimeout(() => {
-        setAlert(false);
-      }, 1000);
-    }
-  }, [alert]);
+  const [openDialog, setOpenDialog] = useState(true);
 
-  useEffect(() => {
-    getSingleEmployeeEmail(loginEmail);
-    if (!single_employee_loading) {
-      setLoad(false);
-    } else {
-      setAlert(true);
-    }
-  }, [load]);
-
-  const handleSubmit = async (e) => {
-    setLoad(true);
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
   };
 
-  const get_SingleEmployee = () => {
-    getSingleEmployeeEmail(loginEmail);
-    console.log(single_employee);
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    return <DashboardAdmin />;
   };
 
   return (
-    <div className={classes.wrapper}>
-      <h1>Log In</h1>
-      <form className={classes.wrapper} onSubmit={handleSubmit}>
-        <TextField
-          label="Email"
-          id="margin-normal"
-          name="loginEmail"
-          value={loginEmail}
-          className={classes.textField}
-          onChange={(e) => setLoginEmail(e.target.value)}
+    <div className={classes.app} style={{ backgroundColor: "lightcyan" }}>
+      {/* <Button variant="contained" color="primary" onClick={handleOpen}>
+        Signin
+      </Button> */}
+      <Card className={classes.card}>
+        <CardHeader
+          //  avatar={
+          //    <Avatar aria-label="recipe" className={classes.avatar}>
+          //      L
+          //    </Avatar>
+          //  }
+          className={classes.cardHeader}
+          title="AppSmiths"
+          titleTypographyProps={{ variant: "h3" }}
+          subheader="Sutera Energy Solutions"
+          subheaderTypographyProps={{ variant: "h4" }}
+          style={{
+            textAlign: "center",
+            fontSize: 60,
+            backgroundColor: "paleturquoise",
+          }}
         />
-        <TextField
-          label="Password"
-          id="margin-normal"
-          name="loginPassword"
-          value={loginPassword}
-          className={classes.textField}
-          onChange={(e) => setLoginPassword(e.target.value)}
-        />
-        <div>
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            className={classes.button}
+        {/* <CardMedia
+          className={classes.media}
+          image={img}
+          title="Contemplative Reptile"
+        /> */}
+        <Divider className={classes.divider} />
+        <CardContent style={{ backgroundColor: "snow" }}>
+          <Typography
+            gutterBottom
+            variant="h4"
+            component="h3"
+            className={classes.typography}
+            style={{ textAlign: "center" }}
           >
-            Submit <Icon className={classes.rightIcon}>send</Icon>
-          </Button>
-          <divider />
-          {alert && <h2>Loading...!</h2>}
-          <divider />
-        </div>
-      </form>
+            Login
+          </Typography>
+          <Typography
+            variant="h6"
+            color="textSecondary"
+            component="h3"
+            style={{ textAlign: "center" }}
+          >
+            Access to Admin dashboard
+          </Typography>
+          <SigninForm setLogin={setLogin} />
+        </CardContent>
+      </Card>
     </div>
   );
 };
 
-Login.propTypes = {
-  setToken: PropTypes.func.isRequired,
-};
-
 const useStyles = makeStyles((theme) => ({
-  wrapper: {
+  app: {
+    height: "100vh",
     display: "flex",
     alignItems: "center",
+    justifyContent: "center",
+  },
+  root: {
+    display: "flex",
     flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: theme.spacing(2),
+
+    "& .MuiTextField-root": {
+      margin: theme.spacing(1),
+      width: "300px",
+    },
+    "& .MuiButtonBase-root": {
+      margin: theme.spacing(2),
+    },
   },
-  textField: {
-    marginLeft: theme.spacing(1),
-    marginRight: theme.spacing(1),
-    width: 400,
+  card: {
+    position: "relative",
+    width: "400px",
+    color: "red",
+    //borderStyle: "solid",
+    //borderColor: "blue",
+    boxShadow:
+      "rgba(255, 0, 0, 0.117647) 0px 1px 6px, rgba(255, 0, 0, 0.117647) 0px 1px 4px",
   },
-  rightIcon: {
-    marginLeft: theme.spacing(1),
+  cardHeader: {
+    display: "flex",
+    paddingBottom: "10px",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  typography: {
+    flexGrow: 1,
+    align: "center",
+  },
+  media: {
+    margin: "-70px auto 0",
+    width: "80%",
+    height: 300,
+    borderRadius: "4px",
+    boxShadow: "0 10px 20px rgba(0, 0, 0, 0.19), 0 6px 6px rgba(0, 0, 0, 0.23)",
+    position: "relative",
+    zIndex: 1000,
+    paddingTop: "56.25%",
+  },
+  divider: {
+    // Theme Color, or use css color in quote
+    background: theme.palette.divider,
+    padding: 4,
   },
 }));
 

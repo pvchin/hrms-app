@@ -27,13 +27,14 @@ const columns = [
   { title: "Status", field: "status" },
 ];
 
-export default function AllEmployeesTable() {
+export default function DailyAllowancesTable() {
   let history = useHistory();
   const classes = useStyles();
   const {
     dailyallowances,
+    singlebatch_dailyallowance,
     addDailyAllowance,
-    dailyallowances_loading,
+    singlebatch_dailyallowance_loading,
     updateDailyAllowance,
     deleteDailyAllowance,
     loadDailyAllowances,
@@ -43,11 +44,12 @@ export default function AllEmployeesTable() {
     setIsDailyAllowanceEditingOff,
     resetSingleDailyAllowance,
     dailyallowance_period,
+    getSingleBatchDailyAllowance,
   } = useDailyAllowancesContext();
   const { loadEmployees, employees } = useEmployeesContext();
 
   useEffect(() => {
-    loadDailyAllowances();
+    getSingleBatchDailyAllowance(dailyallowance_period);
   }, []);
 
   const update_DailyAllowance = async (data) => {
@@ -55,7 +57,7 @@ export default function AllEmployeesTable() {
     setEditDailyAllowanceID(id);
     setIsDailyAllowanceEditingOn();
     getSingleDailyAllowance(id);
-    history.push("/singledailyallowance");
+    history.push("/singledailyallowsdetlstable");
   };
 
   const add_DailyAllowance = async (data) => {
@@ -73,7 +75,7 @@ export default function AllEmployeesTable() {
     loadDailyAllowances();
   };
 
-  if (dailyallowances_loading) {
+  if (singlebatch_dailyallowance_loading) {
     return <div>Loading...</div>;
   }
   return (
@@ -81,7 +83,7 @@ export default function AllEmployeesTable() {
       <div style={{ maxWidth: "100%", paddingTop: "5px" }}>
         <MaterialTable
           columns={columns}
-          data={dailyallowances}
+          data={singlebatch_dailyallowance}
           title="Daily Allowances Application"
           icons={{
             Add: (props) => <AddIcon />,
@@ -119,7 +121,7 @@ export default function AllEmployeesTable() {
           options={{
             filtering: true,
             headerStyle: {
-              backgroundColor: "#01579b",
+              backgroundColor: "orange",
               color: "#FFF",
             },
             showTitle: true,

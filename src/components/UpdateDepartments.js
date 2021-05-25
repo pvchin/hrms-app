@@ -84,8 +84,8 @@ export default function UpdateDepartments() {
           options={{
             filtering: true,
             headerStyle: {
-              backgroundColor: "#01579b",
-              color: "#FFF",
+              backgroundColor: "orange",
+              color: "primary",
             },
             showTitle: true,
           }}

@@ -12,7 +12,7 @@ const SigninForm = ({ setLogin }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (email === "admin@demo.com" && password === "123456") {
+    if (email === "admin@demo.com" && password === "123456*") {
       setPassword("");
       setLogin(true);
     } else {

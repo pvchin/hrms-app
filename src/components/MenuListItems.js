@@ -11,16 +11,16 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import DashboardIcon from "@material-ui/icons/Dashboard";
-import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
+import FlightIcon from "@material-ui/icons/Flight";
 import PeopleIcon from "@material-ui/icons/People";
 import BarChartIcon from "@material-ui/icons/BarChart";
 import LayersIcon from "@material-ui/icons/Layers";
 import AssignmentIcon from "@material-ui/icons/Assignment";
-import DnsRoundedIcon from "@material-ui/icons/DnsRounded";
-import PermMediaOutlinedIcon from "@material-ui/icons/PhotoSizeSelectActual";
+import MonetizationOnIcon from "@material-ui/icons/MonetizationOn";
+import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import PublicIcon from "@material-ui/icons/Public";
 import SettingsEthernetIcon from "@material-ui/icons/SettingsEthernet";
-import SettingsInputComponentIcon from "@material-ui/icons/SettingsInputComponent";
+import MoneyIcon from "@material-ui/icons/Money";
 import TimerIcon from "@material-ui/icons/Timer";
 import SettingsIcon from "@material-ui/icons/Settings";
 import PhonelinkSetupIcon from "@material-ui/icons/PhonelinkSetup";
@@ -52,33 +52,45 @@ const MenuListItems = () => {
           <ListItemIcon className={classes.itemIcon}>
             <DashboardIcon />
           </ListItemIcon>
-          <ListItemText primary="Dashboard" className={classes.item} />
+          <ListItemText
+            primary="Dashboard"
+            className={classes.categoryHeaderPrimary}
+          />
         </ListItem>
       </Link>
 
       <Link to="/allemployees">
         <ListItem button>
           <ListItemIcon className={classes.itemIcon}>
-            <ShoppingCartIcon />
+            <PeopleIcon />
           </ListItemIcon>
-          <ListItemText primary="All Employees" className={classes.item} />
+          <ListItemText
+            primary="All Employees"
+            className={classes.categoryHeaderPrimary}
+          />
         </ListItem>
       </Link>
 
       <Link to="/leave">
         <ListItem button>
           <ListItemIcon className={classes.itemIcon}>
-            <PeopleIcon />
+            <FlightIcon />
           </ListItemIcon>
-          <ListItemText primary="Leave" className={classes.item} />
+          <ListItemText
+            primary="Leave"
+            className={classes.categoryHeaderPrimary}
+          />
         </ListItem>
       </Link>
       <Link to="/payslip">
         <ListItem button>
           <ListItemIcon className={classes.itemIcon}>
-            <PeopleIcon />
+            <MonetizationOnIcon />
           </ListItemIcon>
-          <ListItemText primary="Payslip" className={classes.item} />
+          <ListItemText
+            primary="Payslip"
+            className={classes.categoryHeaderPrimary}
+          />
         </ListItem>
       </Link>
 
@@ -111,18 +123,24 @@ const MenuListItems = () => {
       <Link to="/expenses">
         <ListItem button>
           <ListItemIcon className={classes.itemIcon}>
-            <LayersIcon />
+            <ShoppingCartIcon />
           </ListItemIcon>
-          <ListItemText primary="Expenses" className={classes.item} />
+          <ListItemText
+            primary="Expenses"
+            className={classes.categoryHeaderPrimary}
+          />
         </ListItem>
       </Link>
 
       <Link to="/dailyallowances">
         <ListItem button>
           <ListItemIcon className={classes.itemIcon}>
-            <LayersIcon />
+            <MoneyIcon />
           </ListItemIcon>
-          <ListItemText primary="Daily Allowances" className={classes.item} />
+          <ListItemText
+            primary="Daily Allowances"
+            className={classes.categoryHeaderPrimary}
+          />
         </ListItem>
       </Link>
       <Link to="/tables">
@@ -130,7 +148,10 @@ const MenuListItems = () => {
           <ListItemIcon className={classes.itemIcon}>
             <LayersIcon />
           </ListItemIcon>
-          <ListItemText primary="Tables" className={classes.item} />
+          <ListItemText
+            primary="Tables"
+            className={classes.categoryHeaderPrimary}
+          />
         </ListItem>
       </Link>
 
@@ -179,19 +200,19 @@ const MenuListItems = () => {
 const useStyles = makeStyles((theme) => ({
   mainHeader: {
     fontSize: 24,
-    color: "blue",
+    color: "primary",
   },
   categoryHeader: {
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(2),
   },
   categoryHeaderPrimary: {
-    color: theme.palette.common.blue,
+    color: "orange",
   },
   item: {
     paddingTop: 1,
     paddingBottom: 1,
-    color: "blue",
+    color: "primary",
     "&:hover,&:focus": {
       backgroundColor: "rgba(255, 255, 255, 0.08)",
     },
@@ -204,10 +225,10 @@ const useStyles = makeStyles((theme) => ({
   },
   firebase: {
     fontSize: 24,
-    color: theme.palette.common.white,
+    color: theme.palette.common.orange,
   },
   itemActiveItem: {
-    color: "#4fc3f7",
+    color: "primary",
   },
   itemPrimary: {
     fontSize: "inherit",
@@ -215,7 +236,7 @@ const useStyles = makeStyles((theme) => ({
   itemIcon: {
     minWidth: "auto",
     marginRight: theme.spacing(2),
-    color: "blue",
+    color: "primary",
   },
   divider: {
     marginTop: theme.spacing(2),

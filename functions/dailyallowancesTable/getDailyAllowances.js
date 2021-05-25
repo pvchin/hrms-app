@@ -23,7 +23,7 @@ module.exports = async (event) => {
   }
   if (fv) {
     const dailyallowances = await table
-      .select({ filterByFormula: `empid = '${fv}'` })
+      .select({ filterByFormula: `period = '${fv}'` })
       .firstPage();
     const formattedDailyAllowances = dailyallowances.map((dailyallowance) => ({
       id: dailyallowance.id,

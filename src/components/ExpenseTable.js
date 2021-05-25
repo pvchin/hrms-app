@@ -114,7 +114,7 @@ export default function ExpenseTable() {
           options={{
             filtering: true,
             headerStyle: {
-              backgroundColor: "#01579b",
+              backgroundColor: "orange",
               color: "#FFF",
             },
             showTitle: true,

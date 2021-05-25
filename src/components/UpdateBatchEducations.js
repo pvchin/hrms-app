@@ -115,7 +115,7 @@ export default function UpdateBatchEducations({ empid }) {
           options={{
             filtering: true,
             headerStyle: {
-              backgroundColor: "#01579b",
+              backgroundColor: "orange",
               color: "#FFF",
             },
             showTitle: true,

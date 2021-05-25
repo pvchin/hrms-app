@@ -31,7 +31,7 @@ const Login = ({ setLogin }) => {
   };
 
   return (
-    <div className={classes.app} style={{ backgroundColor: "lightcyan" }}>
+    <div className={classes.app}>
       {/* <Button variant="contained" color="primary" onClick={handleOpen}>
         Signin
       </Button> */}
@@ -50,7 +50,7 @@ const Login = ({ setLogin }) => {
           style={{
             textAlign: "center",
             fontSize: 60,
-            backgroundColor: "paleturquoise",
+            // backgroundColor: "background",
           }}
         />
         {/* <CardMedia
@@ -59,7 +59,7 @@ const Login = ({ setLogin }) => {
           title="Contemplative Reptile"
         /> */}
         <Divider className={classes.divider} />
-        <CardContent style={{ backgroundColor: "snow" }}>
+        <CardContent>
           <Typography
             gutterBottom
             variant="h4"
@@ -109,7 +109,7 @@ const useStyles = makeStyles((theme) => ({
   card: {
     position: "relative",
     width: "400px",
-    color: "red",
+    color: "primary",
     //borderStyle: "solid",
     //borderColor: "blue",
     boxShadow:

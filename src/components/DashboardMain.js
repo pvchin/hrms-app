@@ -14,6 +14,7 @@ import SingleEmployee from "./SingleEmployee";
 import SingleLeave from "./SingleLeave";
 import SingleExpense from "./SingleExpense";
 import SingleDailyAllowance from "./SingleDailyAllowance";
+import SingleDailyAllowsDetls from "./SingleDailyAllowsDetls";
 import BatchDailyAllowances from "./BatchDailyAllowances";
 import SinglePayslip from "./SinglePayslip";
 import Login from "./Login";
@@ -68,6 +69,7 @@ export default function DashboardMain() {
           handleDrawerOpen={handleDrawerOpen}
           handleDrawerClose={handleDrawerClose}
           open={open}
+          setLogin={setLogin}
           title="Human Resource Management System - AppSmiths"
         />
 
@@ -94,7 +96,6 @@ export default function DashboardMain() {
             <Route exact path="/payslip">
               <Payslip />
             </Route>
-
             <Route exact path="/singlepayslip">
               <SinglePayslip />
             </Route>
@@ -106,6 +107,9 @@ export default function DashboardMain() {
             </Route>
             <Route exact path="/dailyallowances">
               <DailyAllowances />
+            </Route>
+            <Route exact path="/singledailyallowsdetlstable">
+              <SingleDailyAllowsDetls />
             </Route>
             <Route exact path="/expenses">
               <Expenses />

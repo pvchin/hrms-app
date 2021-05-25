@@ -2,18 +2,25 @@ import React from "react";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
 import Toolbar from "@material-ui/core/Toolbar";
-import List from "@material-ui/core/List";
+import Tooltip from "@material-ui/core/Tooltip";
 import AppBar from "@material-ui/core/AppBar";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
+import ExitToApplication from "@material-ui/icons/ExitToApp";
 import Badge from "@material-ui/core/Badge";
 import MenuIcon from "@material-ui/icons/Menu";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 
 const drawerWidth = 255;
 
-const Appbanner = ({ handleDrawerOpen, handleDrawerClose, open, title }) => {
+const Appbanner = ({
+  handleDrawerOpen,
+  handleDrawerClose,
+  open,
+  title,
+  setLogin,
+}) => {
   const classes = useStyles();
   return (
     <AppBar
@@ -44,6 +51,11 @@ const Appbanner = ({ handleDrawerOpen, handleDrawerClose, open, title }) => {
             <NotificationsIcon />
           </Badge>
         </IconButton>
+        <Tooltip title="Logout">
+          <IconButton color="inherit" onClick={() => setLogin(false)}>
+            <ExitToApplication />
+          </IconButton>
+        </Tooltip>
       </Toolbar>
     </AppBar>
   );

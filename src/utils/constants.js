@@ -2,6 +2,7 @@ export const employees_url = "/api/employees";
 export const leaves_url = "/api/leaves";
 export const expenses_url = "/api/expenses";
 export const dailyallowances_url = "/api/dailyallowances";
+export const dailyallowsdetls_url = "/api/dailyallowsdetls";
 export const periods_url = "/api/periods";
 export const payslips_url = "/api/payslips";
 export const allowances_url = "/api/allowances";

@@ -9,6 +9,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 // import Orders from "./Orders";
 
 import Appbanner from "./Appbanner";
+import Example from "./Example";
 import SideDrawer from "./SideDrawer";
 import SingleEmployee from "./SingleEmployee";
 import SingleLeave from "./SingleLeave";
@@ -43,7 +44,7 @@ const drawerWidth = 240;
 export default function DashboardMain() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
-  const [login, setLogin] = React.useState(false);
+  const [login, setLogin] = React.useState(true);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -128,6 +129,9 @@ export default function DashboardMain() {
             </Route>
             <Route exact path="/clients">
               <Clients />
+            </Route>
+            <Route exact path="/example">
+              <Example />
             </Route>
             <Route exact path="/singleemployee">
               <SingleEmployee />

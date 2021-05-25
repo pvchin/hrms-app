@@ -75,6 +75,7 @@ export default function DailyAllowancesTable() {
     loadDailyAllowances();
   };
 
+  
   if (singlebatch_dailyallowance_loading) {
     return <div>Loading...</div>;
   }

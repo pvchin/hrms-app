@@ -93,6 +93,12 @@ export default function DailyAllowsDetlsTable() {
     );
   };
 
+  return (
+    <div>
+      <h2>In Progress.... Pls come back again!</h2>
+    </div>
+  );
+
   if (singlebatch_dailyallowsdetl_loading) {
     return <div>Loading...</div>;
   }

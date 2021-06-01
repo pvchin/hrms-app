@@ -41,7 +41,7 @@ const initial_values = {
   workpermit_expirydate: null,
 };
 
-const EmployeeForm = () => {
+const Emp_Personal = () => {
   let history = useHistory();
   const classes = useStyles();
   const {
@@ -165,30 +165,58 @@ const EmployeeForm = () => {
                   }}
                   rules={{ required: "Email is required" }}
                 />
-
-                <Controller
-                  name="ic_no"
-                  control={control}
-                  defaultValue={ic_no}
-                  render={({
-                    field: { onChange, value },
-                    fieldState: { error },
-                  }) => {
-                    return (
-                      <TextField
-                        label="IC No"
-                        id="margin-normal"
-                        name="ic_no"
-                        defaultValue={ic_no}
-                        className={classes.textField}
-                        onChange={onChange}
-                        error={!!error}
-                        helperText={error ? error.message : null}
-                      />
-                    );
-                  }}
-                  //rules={{ required: "IC No required" }}
-                />
+                <div>
+                  <Controller
+                    name="ic_no"
+                    control={control}
+                    defaultValue={ic_no}
+                    render={({
+                      field: { onChange, value },
+                      fieldState: { error },
+                    }) => {
+                      return (
+                        <TextField
+                          label="IC No"
+                          id="margin-normal"
+                          name="ic_no"
+                          defaultValue={ic_no}
+                          className={classes.textField}
+                          onChange={onChange}
+                          error={!!error}
+                          helperText={error ? error.message : null}
+                        />
+                      );
+                    }}
+                    //rules={{ required: "IC No required" }}
+                  />
+                  <Controller
+                    name="ic_expirydate"
+                    control={control}
+                    defaultValue={ic_expirydate}
+                    render={({
+                      field: { onChange, value },
+                      fieldState: { error },
+                    }) => {
+                      return (
+                        <TextField
+                          label="IC Expiry Date"
+                          id="margin-normal"
+                          name="ic_expirydate"
+                          type="date"
+                          defaultValue={ic_expirydate}
+                          className={classes.textField}
+                          onChange={onChange}
+                          error={!!error}
+                          helperText={error ? error.message : null}
+                          InputLabelProps={{
+                            shrink: true,
+                          }}
+                        />
+                      );
+                    }}
+                    //rules={{ required: "IC No required" }}
+                  />
+                </div>
               </div>
               <div>
                 <Controller
@@ -592,16 +620,6 @@ const EmployeeForm = () => {
           <Divider />
         </Paper>
       </form>
-
-      <Grid xs={12}>
-        <Emp_Family />
-      </Grid>
-      <Grid xs={12}>
-        <Emp_Educations />
-      </Grid>
-      <Grid xs={12}>
-        <Emp_Experiences />
-      </Grid>
     </div>
   );
 };
@@ -637,4 +655,4 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default EmployeeForm;
+export default Emp_Personal;

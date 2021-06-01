@@ -24,6 +24,7 @@ import Emp_ViewEducations from "./Emp_ViewEducations";
 import Emp_ViewExperiences from "./Emp_ViewExperiences";
 import Emp_ViewLeaves from "./Emp_ViewLeaves";
 import Emp_ViewTrainings from "./Emp_ViewTrainings";
+import Emp_Personal from "./Emp_Personal";
 import Emp_Family from "./Emp_Family";
 import Emp_Educations from "./Emp_Educations";
 import Emp_Experiences from "./Emp_Experiences";
@@ -49,6 +50,7 @@ const EmployeeView = () => {
   const [educationdata, setEducationdata] = useState([]);
   const [experiencedata, setExperiencedata] = useState([]);
   const [trainingdata, setTrainingdata] = useState([]);
+  const [isPersonalDialogOpen, setIsPersonalDialogOpen] = useState(false);
   const [isFamilyDialogOpen, setIsFamilyDialogOpen] = useState(false);
   const [isEducationDialogOpen, setIsEducationDialogOpen] = useState(false);
   const [isExperienceDialogOpen, setIsExperienceDialogOpen] = useState(false);
@@ -77,6 +79,8 @@ const EmployeeView = () => {
   } = useTrainingsContext();
 
   const {
+    loadDepartments,
+    loadDesignations,
     loadSingleBatchFamily,
     loadSingleBatchEducation,
     singlebatchfamily,
@@ -92,11 +96,11 @@ const EmployeeView = () => {
 
   useEffect(() => {
     getSingleEmployee(editEmployeeID);
+    loadDepartments();
+    loadDesignations();
   }, []);
 
-  useEffect(() => {
-    
-  },[singlebatch_training])
+  useEffect(() => {}, [singlebatch_training]);
 
   if (single_employee_loading) {
     return (
@@ -105,6 +109,16 @@ const EmployeeView = () => {
       </div>
     );
   }
+
+  const handlePersonalDialogOpen = () => {
+    //setFamilydata([...singlebatchfamily]);
+    setIsPersonalDialogOpen(true);
+  };
+
+  const handlePersonalDialogClose = () => {
+    setIsPersonalDialogOpen(false);
+    //loadEmployees();
+  };
 
   const handleFamilyDialogOpen = () => {
     setFamilydata([...singlebatchfamily]);
@@ -202,7 +216,10 @@ const EmployeeView = () => {
           </Grid>
           <Grid xs={6} md={8} lg={6}>
             <div>
-              <CardLayout title="Personal Information">
+              <CardLayout
+                title="Personal Information"
+                handleClick={handlePersonalDialogOpen}
+              >
                 <div>
                   <form className={classes.form}>
                     <TextField
@@ -347,6 +364,20 @@ const EmployeeView = () => {
           </Grid>
         </Grid>
       </div>
+      <CustomDialog
+        isOpen={isPersonalDialogOpen}
+        handleClose={handlePersonalDialogClose}
+        title=""
+        showButton={true}
+        isFullscreen={false}
+        isFullwidth={false}
+      >
+        <Emp_Personal
+          //setPersonaldata={setFamilydata}
+          //familydata={familydata}
+          handleDialogClose={handlePersonalDialogClose}
+        />
+      </CustomDialog>
       <CustomDialog
         isOpen={isFamilyDialogOpen}
         handleClose={handleFamilyDialogClose}

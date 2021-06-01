@@ -17,6 +17,12 @@ const columns = [
   {
     title: "Relationship",
     field: "relationship",
+    lookup: {
+      Father: "Father",
+      Mother: "Mother",
+      Daughter: "Daughter",
+      Son: "Son",
+    },
   },
   {
     title: "BIrth Date",
@@ -75,8 +81,8 @@ export default function Emp_Family({
         });
       });
     }
-    loadSingleBatchFamily(editEmployeeID);
     handleDialogClose();
+    loadSingleBatchFamily(editEmployeeID);
   };
 
   const update_Family = (data) => {

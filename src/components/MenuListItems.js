@@ -42,7 +42,7 @@ const MenuListItems = () => {
   };
 
   return (
-    <div>
+    <div className={classes.content}>
       <ListSubheader inset className={classes.mainHeader}>
         Admin
       </ListSubheader>
@@ -208,6 +208,11 @@ const useStyles = makeStyles((theme) => ({
   },
   categoryHeaderPrimary: {
     color: "orange",
+  },
+  content: {
+    flexGrow: 1,
+    height: "100vh",
+    overflow: "auto",
   },
   item: {
     paddingTop: 1,

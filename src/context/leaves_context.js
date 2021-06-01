@@ -14,6 +14,9 @@ import {
   GET_SINGLE_LEAVE_BEGIN,
   GET_SINGLE_LEAVE_SUCCESS,
   GET_SINGLE_LEAVE_ERROR,
+  GET_SINGLEBATCH_LEAVE_BEGIN,
+  GET_SINGLEBATCH_LEAVE_SUCCESS,
+  GET_SINGLEBATCH_LEAVE_ERROR,
   ADD_LEAVE_BEGIN,
   ADD_LEAVE_SUCCESS,
   ADD_LEAVE_ERROR,
@@ -24,6 +27,7 @@ import {
   UPDATE_LEAVE_SUCCESS,
   UPDATE_LEAVE_ERROR,
   RESET_SINGLE_LEAVE,
+  RESET_TABLES,
 } from "../actions";
 
 const initialState = {
@@ -36,6 +40,9 @@ const initialState = {
   single_leave_loading: false,
   single_leave_error: false,
   single_leave: {},
+  singlebatch_leave_loading: false,
+  singlebatch_leave_error: false,
+  singlebatch_leave: {},
   delete_leave_loading: false,
   delete_leave_error: false,
   update_leave_loading: false,
@@ -98,6 +105,22 @@ export const LeavesProvider = ({ children }) => {
     }
   };
 
+  const getSingleBatchLeave = async (empid) => {
+    dispatch({ type: GET_SINGLEBATCH_LEAVE_BEGIN });
+    try {
+      const res = await fetch(`${leaves_url}?fv=${empid}`);
+      //console.log(`${family_url}?fv=${linkid}`);
+      const singlebatchleave = await res.json();
+      
+      dispatch({
+        type: GET_SINGLEBATCH_LEAVE_SUCCESS,
+        payload: singlebatchleave,
+      });
+    } catch (error) {
+      dispatch({ type: GET_SINGLEBATCH_LEAVE_ERROR });
+    }
+  };
+
   const addLeave = async (data) => {
     const { id, name, from_date, to_date, reason, no_of_days, status } = data;
     //
@@ -150,6 +173,7 @@ export const LeavesProvider = ({ children }) => {
         updateLeave,
         deleteLeave,
         getSingleLeave,
+        getSingleBatchLeave,
         setEditLeaveID,
         setIsLeaveEditingOn,
         setIsLeaveEditingOff,

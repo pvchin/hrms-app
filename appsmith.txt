@@ -1,0 +1,43 @@
+1. Leave Balance
+    Before the balance
+    leave applicatin - leave management
+2. Payslip -> Payroll
+
+3. Employee Profile
+    - dropdown - relationships
+   - department
+   - designation
+   - Family - Emergency Tick columns multi-select
+  -  Resignation Date - 
+  - status - active / inactive
+	
+     Local / foreigners / based on IC 
+
+   Employee number - manually - APPSUT-001
+   
+   Add in  daily allows and per diem
+
+   Trainings 
+   Institutes, course, from data , to date, expiry - 3 less months
+
+   Work permit expiry - 3 months
+
+- Department
+   - Admin
+   - Operation -
+          
+
+- Tables 
+   Trainings - Institute and Course 
+
+ - Allowances / Expenses - Admin can not changed
+ - Allowances - approved by batch
+
+ Expenses -
+ - attached claimed form 
+ - From date to date
+ - amount
+
+
+
+

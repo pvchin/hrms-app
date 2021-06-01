@@ -8,8 +8,11 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import CheckIcon from "@material-ui/icons/Check";
 import SearchIcon from "@material-ui/icons/Search";
 import { useHistory, Link } from "react-router-dom";
-
+import LeaveForm from "./LeaveForm";
+import { CustomDialog } from "../helpers/CustomDialog";
+import { AlertDialog } from "../helpers/AlertDialog";
 import { useLeavesContext } from "../context/leaves_context";
+import { useEmployeesContext } from "../context/employees_context";
 
 const columns = [
   {
@@ -25,9 +28,13 @@ const columns = [
 export default function LeaveTable() {
   let history = useHistory();
   const classes = useStyles();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const { loadEmployees, employees } = useEmployeesContext();
   const {
     leaves,
     addLeave,
+    editLeaveID,
     leaves_loading,
     updateLeave,
     deleteLeave,
@@ -43,12 +50,17 @@ export default function LeaveTable() {
     loadLeaves();
   }, []);
 
+  useEffect(() => {
+    loadEmployees();
+  }, []);
+
   const update_Leave = async (data) => {
     const { id } = data;
     setEditLeaveID(id);
     setIsLeaveEditingOn();
     getSingleLeave(id);
-    history.push("/singleleave");
+    handleDialogOpen();
+    //history.push("/singleleave");
   };
 
   const add_Leave = async (data) => {
@@ -56,12 +68,37 @@ export default function LeaveTable() {
     resetSingleLeave();
     setEditLeaveID("");
     setIsLeaveEditingOff();
-    history.push("/singleleave");
+    handleDialogOpen();
+    //history.push("/singleleave");
   };
 
   const delete_Leave = (data) => {
     const { id } = data;
     setEditLeaveID(id);
+    handleAlertOpen();
+    //deleteLeave(id);
+    //loadLeaves();
+  };
+
+  const handleDialogOpen = () => {
+    setIsDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setIsDialogOpen(false);
+    loadLeaves();
+  };
+
+  const handleAlertOpen = () => {
+    setIsAlertOpen(true);
+  };
+
+  const handleAlertClose = () => {
+    setIsAlertOpen(false);
+  };
+
+  const handleOnDeleteConfirm = () => {
+    const id = editLeaveID;
     deleteLeave(id);
     loadLeaves();
   };
@@ -119,19 +156,25 @@ export default function LeaveTable() {
             },
             showTitle: true,
           }}
-          //   components={{
-          //     Toolbar: (props) => (
-          //       <div>
-          //         <MTableToolbar {...props} />
-          //         <Link to="/expenses">
-          //           <div>
-          //             <ArrowBackIcon fontSize="large" color="primary" />
-          //           </div>
-          //         </Link>
-          //       </div>
-          //     ),
-          //   }}
         />
+        <CustomDialog
+          isOpen={isDialogOpen}
+          handleClose={handleDialogClose}
+          title=""
+          showButton={true}
+          isFullscree={false}
+        >
+          <LeaveForm handleDialogClose={handleDialogClose} />
+        </CustomDialog>
+
+        <AlertDialog
+          handleClose={handleAlertClose}
+          onConfirm={handleOnDeleteConfirm}
+          isOpen={isAlertOpen}
+          title="Delete Expenses"
+        >
+          <h2>Are you sure you want to delete ?</h2>
+        </AlertDialog>
       </div>
     </div>
   );

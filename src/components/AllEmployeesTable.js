@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-
 import MaterialTable, { MTableToolbar } from "material-table";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button } from "@material-ui/core";
@@ -10,8 +9,12 @@ import CheckIcon from "@material-ui/icons/Check";
 import SearchIcon from "@material-ui/icons/Search";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { useHistory, Link } from "react-router-dom";
-
+import { CustomDialog } from "../helpers/CustomDialog";
+import { AlertDialog } from "../helpers/AlertDialog";
+import EmployeeForm from "./EmployeeForm";
+import EmployeeView from "./EmployeeView";
 import { useEmployeesContext } from "../context/employees_context";
+import { useTablesContext } from "../context/tables_context";
 
 const columns = [
   {
@@ -27,9 +30,13 @@ const columns = [
 export default function AllEmployeesTable() {
   let history = useHistory();
   const classes = useStyles();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+
   const {
     employees,
     addEmployee,
+    editEmployeeID,
     employees_loading,
     updateEmployee,
     deleteEmployee,
@@ -39,18 +46,35 @@ export default function AllEmployeesTable() {
     setIsEditingOn,
     setIsEditingOff,
     resetSingleEmployee,
+    resetEmployees,
   } = useEmployeesContext();
+  const {
+    loadSingleBatchFamily,
+    loadFamily,
+    singlebatchfamily,
+    addFamily,
+    deleteFamily,
+    updateFamily,
+    singlebatch_family_loading,
+    singlebatch_family_error,
+    resetTables,
+  } = useTablesContext();
 
   useEffect(() => {
+    resetEmployees();
     loadEmployees();
   }, []);
 
   const update_Employee = async (data) => {
     const { id } = data;
+    resetTables();
+    resetSingleEmployee();
+    //resetEmployees();
     setEditEmployeeID(id);
     setIsEditingOn();
-    getSingleEmployee(id);
-    history.push("/singleemployee");
+    //getSingleEmployee(id);
+    handleDialogOpen();
+    //history.push("/singleemployee");
   };
 
   const add_Employee = async (data) => {
@@ -58,15 +82,41 @@ export default function AllEmployeesTable() {
     resetSingleEmployee();
     setEditEmployeeID("");
     setIsEditingOff();
-    history.push("/singleemployee");
+    handleDialogOpen();
+    //history.push("/singleemployee");
   };
 
   const delete_Employee = (data) => {
     const { id } = data;
     setEditEmployeeID(id);
+    handleAlertOpen();
+    //deleteEmployee(id);
+    //loadEmployees();
+  };
+
+  const handleDialogOpen = () => {
+    setIsDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setIsDialogOpen(false);
+    loadEmployees();
+  };
+
+  const handleAlertOpen = () => {
+    setIsAlertOpen(true);
+  };
+
+  const handleAlertClose = () => {
+    setIsAlertOpen(false);
+  };
+
+  const handleOnDeleteConfirm = () => {
+    const id = editEmployeeID;
     deleteEmployee(id);
     loadEmployees();
   };
+
   if (employees_loading) {
     return <div>Loading...</div>;
   }
@@ -118,19 +168,26 @@ export default function AllEmployeesTable() {
             },
             showTitle: true,
           }}
-          //   components={{
-          //     Toolbar: (props) => (
-          //       <div>
-          //         <MTableToolbar {...props} />
-          //         <Link to="/expenses">
-          //           <div>
-          //             <ArrowBackIcon fontSize="large" color="primary" />
-          //           </div>
-          //         </Link>
-          //       </div>
-          //     ),
-          //   }}
         />
+        <CustomDialog
+          isOpen={isDialogOpen}
+          handleClose={handleDialogClose}
+          title=""
+          showButton={true}
+          isFullscreen={true}
+          isFullwidth={true}
+        >
+          <EmployeeView handleDialogClose={handleDialogClose} />
+        </CustomDialog>
+
+        <AlertDialog
+          handleClose={handleAlertClose}
+          onConfirm={handleOnDeleteConfirm}
+          isOpen={isAlertOpen}
+          title="Delete Employee"
+        >
+          <h2>Are you sure you want to delete ?</h2>
+        </AlertDialog>
       </div>
     </div>
   );
@@ -138,6 +195,6 @@ export default function AllEmployeesTable() {
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    padding: 0,
+    padding: theme.spacing(3, 2),
   },
 }));

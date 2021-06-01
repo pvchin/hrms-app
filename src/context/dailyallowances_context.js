@@ -268,7 +268,6 @@ export const DailyAllowancesProvider = ({ children }) => {
   };
 
   const getSingleBatchDailyAllowsDetl = async (empid, period) => {
-    console.log("getSinglebatch", empid, period);
     dispatch({ type: GET_SINGLEBATCH_DAILYALLOWSDETL_BEGIN });
     try {
       const { data } = await axios.get(

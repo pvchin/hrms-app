@@ -25,7 +25,7 @@ const initial_values = {
   amount: 0,
 };
 
-const ExpenseForm = () => {
+const ExpenseForm = ({ handleDialogClose }) => {
   let history = useHistory();
   const classes = useStyles();
   const {
@@ -40,8 +40,8 @@ const ExpenseForm = () => {
   const { loadEmployees, employees } = useEmployeesContext();
   const {
     name,
-    date,
-    purchased_date,
+    from_date,
+    to_date,
     purchased_from,
     description,
     remark,
@@ -50,18 +50,16 @@ const ExpenseForm = () => {
   } = single_expense || initial_values;
   const { handleSubmit, control } = useForm();
 
-  useEffect(() => {
-    loadEmployees();
-  }, []);
-
   const onSubmit = (data) => {
     if (isExpenseEditing) {
       updateExpense({ id: editExpenseID, ...data });
     } else {
       addExpense({ ...data });
     }
-    loadExpenses();
-    history.push("/expenses");
+    //loadExpenses();
+
+    //history.push("/expenses");
+    handleDialogClose();
   };
 
   if (single_expense_loading) {
@@ -112,20 +110,21 @@ const ExpenseForm = () => {
           </div>
           <div>
             <Controller
-              name="date"
+              name="from_date"
               control={control}
-              defaultValue={date}
+              defaultValue={from_date}
               render={({
                 field: { onChange, value },
                 fieldState: { error },
               }) => {
                 return (
                   <TextField
-                    label="Date"
+                    label="From Date"
+                    type="from_date"
                     type="date"
                     id="margin-normal"
-                    name="date"
-                    defaultValue={date}
+                    name="from_date"
+                    defaultValue={from_date}
                     className={classes.textField}
                     onChange={onChange}
                     error={!!error}
@@ -141,20 +140,20 @@ const ExpenseForm = () => {
           </div>
           <div>
             <Controller
-              name="purchased_date"
+              name="to_date"
               control={control}
-              defaultValue={purchased_date}
+              defaultValue={to_date}
               render={({
                 field: { onChange, value },
                 fieldState: { error },
               }) => {
                 return (
                   <TextField
-                    label="Purchased Date"
+                    label="To Date"
                     id="margin-normal"
                     type="date"
-                    name="purchased_date"
-                    defaultValue={purchased_date}
+                    name="to_date"
+                    defaultValue={to_date}
                     className={classes.textField}
                     onChange={onChange}
                     error={!!error}
@@ -311,7 +310,7 @@ const ExpenseForm = () => {
               color="primary"
               className={classes.button}
             >
-              Submit <Icon className={classes.rightIcon}>send</Icon>
+              Save <Icon className={classes.rightIcon}>send</Icon>
             </Button>
           </div>
         </form>

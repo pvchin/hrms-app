@@ -4,7 +4,7 @@ import { useHistory } from "react-router-dom";
 import { Paper, Grid, Button, Toolbar, Typography } from "@material-ui/core";
 import { useDailyAllowancesContext } from "../context/dailyallowances_context";
 import { periods } from "../utils/constants";
-import DailyAllowancesTable from "./DailyAllowancesTable2";
+import DailyAllowancesTable from "./DailyAllowancesTable";
 import { headDailyAllowanceTableCells } from "../utils/constants";
 
 const DailyAllowancesPeriods = () => {

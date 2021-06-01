@@ -24,7 +24,7 @@ const initial_values = {
   no_of_days: 0,
 };
 
-const LeaveForm = () => {
+const LeaveForm = ({ handleDialogClose }) => {
   let history = useHistory();
   const classes = useStyles();
   const {
@@ -41,18 +41,15 @@ const LeaveForm = () => {
     single_leave || initial_values;
   const { handleSubmit, control } = useForm();
 
-  useEffect(() => {
-    loadEmployees();
-  }, []);
-
   const onSubmit = (data) => {
     if (isLeaveEditing) {
       updateLeave({ id: editLeaveID, ...data });
     } else {
       addLeave({ ...data });
     }
-    loadLeaves();
-    history.push("/leave");
+    // loadLeaves();
+    //history.push("/leave");
+    handleDialogClose();
   };
 
   if (single_leave_loading) {
@@ -251,6 +248,7 @@ const LeaveForm = () => {
               variant="contained"
               color="primary"
               className={classes.button}
+              onClick={handleSubmit(onSubmit)}
             >
               Submit <Icon className={classes.rightIcon}>send</Icon>
             </Button>

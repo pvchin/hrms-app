@@ -10,9 +10,10 @@ import CheckIcon from "@material-ui/icons/Check";
 import SearchIcon from "@material-ui/icons/Search";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { useHistory, Link } from "react-router-dom";
-
+import { CustomDialog } from "../helpers/CustomDialog";
 import { useDailyAllowancesContext } from "../context/dailyallowances_context";
 import { useEmployeesContext } from "../context/employees_context";
+import DailyAllowsDetlsTable from "./DailyAllowsDetlsTable";
 
 const columns = [
   {
@@ -30,6 +31,7 @@ const columns = [
 export default function DailyAllowancesTable() {
   let history = useHistory();
   const classes = useStyles();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
   const {
     dailyallowances,
     singlebatch_dailyallowance,
@@ -53,11 +55,13 @@ export default function DailyAllowancesTable() {
   }, []);
 
   const update_DailyAllowance = async (data) => {
+    console.log("dailyallows", data)
     const { id } = data;
     setEditDailyAllowanceID(id);
     setIsDailyAllowanceEditingOn();
-    getSingleDailyAllowance(id);
-    history.push("/singledailyallowsdetlstable");
+    //getSingleBatchDailyAllowance(dailyallowance_period);
+    handleDialogOpen();
+    //history.push("/singledailyallowsdetlstable");
   };
 
   const add_DailyAllowance = async (data) => {
@@ -65,17 +69,26 @@ export default function DailyAllowancesTable() {
     resetSingleDailyAllowance();
     setEditDailyAllowanceID("");
     setIsDailyAllowanceEditingOff();
-    history.push("/singledailyallowance");
+    handleDialogOpen();
+    //history.push("/singledailyallowance");
   };
 
   const delete_DailyAllowance = (data) => {
     const { id } = data;
     setEditDailyAllowanceID(id);
     deleteDailyAllowance(id);
-    loadDailyAllowances();
+    getSingleBatchDailyAllowance(dailyallowance_period);
   };
 
-  
+  const handleDialogOpen = () => {
+    setIsDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setIsDialogOpen(false);
+    getSingleBatchDailyAllowance(dailyallowance_period);
+  };
+
   if (singlebatch_dailyallowance_loading) {
     return <div>Loading...</div>;
   }
@@ -140,6 +153,15 @@ export default function DailyAllowancesTable() {
             ),
           }}
         />
+        <CustomDialog
+          isOpen={isDialogOpen}
+          handleClose={handleDialogClose}
+          title="Daily Allowances Details"
+          showButton={true}
+          isFullscree={false}
+        >
+          <DailyAllowsDetlsTable handleDialogClose={handleDialogClose} />
+        </CustomDialog>
       </div>
     </div>
   );

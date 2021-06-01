@@ -94,6 +94,7 @@ import {
   LOAD_SINGLEBATCH_EXPERIENCE_BEGIN,
   LOAD_SINGLEBATCH_EXPERIENCE_SUCCESS,
   LOAD_SINGLEBATCH_EXPERIENCE_ERROR,
+  RESET_TABLES,
 } from "../actions";
 
 const tables_reducer = (state, action) => {
@@ -413,24 +414,27 @@ const tables_reducer = (state, action) => {
   }
 
   // load single batch family
-  if (action.type === LOAD_SINGLEBATCH_FAMILY_BEGIN) {
-    return { ...state, singlebatch_family_loading: true };
+  try {
+    if (action.type === LOAD_SINGLEBATCH_FAMILY_BEGIN) {
+      return { ...state, singlebatch_family_loading: true };
+    }
+    if (action.type === LOAD_SINGLEBATCH_FAMILY_SUCCESS) {
+      return {
+        ...state,
+        singlebatch_family_loading: false,
+        singlebatchfamily: action.payload,
+      };
+    }
+    if (action.type === LOAD_SINGLEBATCH_FAMILY_ERROR) {
+      return {
+        ...state,
+        singlebatch_family_loading: false,
+        singlebatch_family_error: true,
+      };
+    }
+  } catch (error) {
+    console.log(error);
   }
-  if (action.type === LOAD_SINGLEBATCH_FAMILY_SUCCESS) {
-    return {
-      ...state,
-      singlebatch_family_loading: false,
-      singlebatchfamily: action.payload,
-    };
-  }
-  if (action.type === LOAD_SINGLEBATCH_FAMILY_ERROR) {
-    return {
-      ...state,
-      singlebatch_family_loading: false,
-      singlebatch_family_error: true,
-    };
-  }
-
   // add family
   if (action.type === ADD_FAMILY_BEGIN) {
     return { ...state, add_family_loading: true };
@@ -681,6 +685,23 @@ const tables_reducer = (state, action) => {
       ...state,
       delete_experience_loading: false,
       delete_experience_error: true,
+    };
+  }
+
+  // reset tables
+  if (action.type === RESET_TABLES) {
+    return {
+      deductions: [],
+      allowances: [],
+      departments: [],
+      designatons: [],
+      family: [],
+      singlebatchfamily: {},
+      single_family: {},
+      education: [],
+      singlebatcheducation: {},
+      experience: [],
+      singlebatchexperience: {},
     };
   }
 

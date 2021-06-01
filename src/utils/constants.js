@@ -14,6 +14,7 @@ export const payslipdeductions_url = "/api/payslipdeductions";
 export const family_url = "/api/family";
 export const educations_url = "/api/educations";
 export const experiences_url = "/api/experiences";
+export const trainings_url = "/api/trainings";
 export const payroll_endmonth_day = "25";
 
 export const headEmployeesTableCells = [

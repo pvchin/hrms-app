@@ -9,6 +9,9 @@ import {
   GET_SINGLE_LEAVE_BEGIN,
   GET_SINGLE_LEAVE_SUCCESS,
   GET_SINGLE_LEAVE_ERROR,
+  GET_SINGLEBATCH_LEAVE_BEGIN,
+  GET_SINGLEBATCH_LEAVE_SUCCESS,
+  GET_SINGLEBATCH_LEAVE_ERROR,
   ADD_LEAVE_BEGIN,
   ADD_LEAVE_SUCCESS,
   ADD_LEAVE_ERROR,
@@ -36,7 +39,7 @@ const leaves_reducer = (state, action) => {
   if (action.type === RESET_SINGLE_LEAVE) {
     return { ...state, single_leave: {} };
   }
-  // get employees
+  // get leaves
   if (action.type === GET_LEAVES_BEGIN) {
     return { ...state, leaves_loading: true };
   }
@@ -47,7 +50,7 @@ const leaves_reducer = (state, action) => {
     return { ...state, leaves_loading: false, leaves_error: true };
   }
 
-  // add employee
+  // add leave
   if (action.type === ADD_LEAVE_BEGIN) {
     return { ...state, add_leave_loading: true };
   }
@@ -61,7 +64,7 @@ const leaves_reducer = (state, action) => {
   if (action.type === ADD_LEAVE_ERROR) {
     return { ...state, leaves_loading: false, add_leave_error: true };
   }
-  // update employee
+  // update leave
   if (action.type === UPDATE_LEAVE_BEGIN) {
     return { ...state, update_leave_loading: true };
   }
@@ -80,7 +83,7 @@ const leaves_reducer = (state, action) => {
     };
   }
 
-  // delete employee
+  // delete leave
   if (action.type === DELETE_LEAVE_BEGIN) {
     return {
       ...state,
@@ -104,7 +107,7 @@ const leaves_reducer = (state, action) => {
     };
   }
 
-  //single employee
+  //single leave
   if (action.type === GET_SINGLE_LEAVE_BEGIN) {
     return {
       ...state,
@@ -124,6 +127,29 @@ const leaves_reducer = (state, action) => {
       ...state,
       single_leave_loading: false,
       single_leave_error: true,
+    };
+  }
+
+  //single batch leave
+  if (action.type === GET_SINGLEBATCH_LEAVE_BEGIN) {
+    return {
+      ...state,
+      singlebatch_leave_loading: true,
+      singlebatch_leave_error: false,
+    };
+  }
+  if (action.type === GET_SINGLEBATCH_LEAVE_SUCCESS) {
+    return {
+      ...state,
+      singlebatch_leave_loading: false,
+      singlebatch_leave: action.payload,
+    };
+  }
+  if (action.type === GET_SINGLEBATCH_LEAVE_ERROR) {
+    return {
+      ...state,
+      singlebatch_leave_loading: false,
+      singlebatch_leave_error: true,
     };
   }
 

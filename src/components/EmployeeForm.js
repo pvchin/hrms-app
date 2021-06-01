@@ -16,9 +16,9 @@ import { useEmployeesContext } from "../context/employees_context";
 import { Controller, useForm } from "react-hook-form";
 import { useHistory } from "react-router-dom";
 
-import UpdateBatchFamily from "./UpdateBatchFamily";
-import UpdateBatchEducations from "./UpdateBatchEducations";
-import UpdateBatchExperiences from "./UpdateBatchExperiences";
+import Emp_Family from "./Emp_Family";
+import Emp_Educations from "./Emp_Educations";
+import Emp_Experiences from "./Emp_Experiences";
 
 const initial_values = {
   name: "",
@@ -86,7 +86,7 @@ const EmployeeForm = () => {
     //   <AlertTitle>Success</AlertTitle>
     //   This is a success alert — <strong>check it out!</strong>
     // </Alert>;
-    history.push("/allemployees");
+    //history.push("/allemployees");
   };
 
   if (single_employee_loading) {
@@ -593,13 +593,13 @@ const EmployeeForm = () => {
       </form>
 
       <Grid xs={12}>
-        <UpdateBatchFamily empid={editEmployeeID} />
+        <Emp_Family />
       </Grid>
       <Grid xs={12}>
-        <UpdateBatchEducations empid={editEmployeeID} />
+        <Emp_Educations />
       </Grid>
       <Grid xs={12}>
-        <UpdateBatchExperiences empid={editEmployeeID} />
+        <Emp_Experiences />
       </Grid>
     </div>
   );

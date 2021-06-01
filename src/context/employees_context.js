@@ -24,6 +24,7 @@ import {
   UPDATE_EMPLOYEE_SUCCESS,
   UPDATE_EMPLOYEE_ERROR,
   RESET_SINGLE_EMPLOYEE,
+  RESET_EMPLOYEES,
 } from "../actions";
 
 const initialState = {
@@ -77,6 +78,10 @@ export const EmployeesProvider = ({ children }) => {
 
   const resetSingleEmployee = () => {
     dispatch({ type: RESET_SINGLE_EMPLOYEE });
+  };
+
+  const resetEmployees = () => {
+    dispatch({ type: RESET_EMPLOYEES });
   };
 
   const setEditEmployeeID = async (id) => {
@@ -166,6 +171,7 @@ export const EmployeesProvider = ({ children }) => {
         setIsEditingOn,
         setIsEditingOff,
         resetSingleEmployee,
+        resetEmployees,
       }}
     >
       {children}

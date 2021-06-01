@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { createMuiTheme, ThemeProvider } from "@material-ui/core/styles";
+import CssBaseline from "@material-ui/core/CssBaseline";
 import Switch from "@material-ui/core/Switch";
 import {
   orange,
@@ -32,10 +33,11 @@ const App = () => {
 
   return (
     <ThemeProvider theme={darkTheme}>
+      <CssBaseline />
       <div>
-        <Switch checked={darkState} onChange={handleThemeChange} />
         <DashboardMain />
       </div>
+      <Switch checked={darkState} onChange={handleThemeChange} />
     </ThemeProvider>
   );
 };

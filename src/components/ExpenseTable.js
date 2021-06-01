@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-
 import MaterialTable, { MTableToolbar } from "material-table";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button } from "@material-ui/core";
@@ -8,18 +7,62 @@ import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import CheckIcon from "@material-ui/icons/Check";
 import SearchIcon from "@material-ui/icons/Search";
-import ArrowBackIcon from "@material-ui/icons/ArrowBack";
+import { MuiPickersUtilsProvider } from "@material-ui/pickers";
+import DateFnsUtils from "@date-io/date-fns";
+import DatePicker from "react-datepicker";
 import { useHistory, Link } from "react-router-dom";
-
+import ExpenseForm from "./ExpenseForm";
 import { useExpensesContext } from "../context/expenses_context";
+import { useEmployeesContext } from "../context/employees_context";
+import { CustomDialog } from "../helpers/CustomDialog";
+import { AlertDialog } from "../helpers/AlertDialog";
 
 const columns = [
+  { title: "Name", field: "name" },
   {
-    title: "Name",
-    field: "name",
+    title: "From Date",
+    field: "from_date",
+    editComponent: (props) => (
+      <MuiPickersUtilsProvider
+        utils={DateFnsUtils}
+        locale={props.dateTimePickerLocalization}
+      >
+        <DatePicker
+          format="dd/MM/yyyy"
+          value={props.value || null}
+          onChange={props.onChange}
+          clearable
+          InputProps={{
+            style: {
+              fontSize: 13,
+            },
+          }}
+        />
+      </MuiPickersUtilsProvider>
+    ),
   },
-  { title: "Date", field: "date" },
-  { title: "Purchase Date", field: "purchased_date" },
+  {
+    title: "To Date",
+    field: "to_date",
+    editComponent: (props) => (
+      <MuiPickersUtilsProvider
+        utils={DateFnsUtils}
+        locale={props.dateTimePickerLocalization}
+      >
+        <DatePicker
+          format="dd/MM/yyyy"
+          value={props.value || null}
+          onChange={props.onChange}
+          clearable
+          InputProps={{
+            style: {
+              fontSize: 13,
+            },
+          }}
+        />
+      </MuiPickersUtilsProvider>
+    ),
+  },
   { title: "Description", field: "description", type: "date" },
   { title: "Amount", field: "amount", type: "numeric" },
   { title: "Status", field: "status" },
@@ -28,9 +71,13 @@ const columns = [
 export default function ExpenseTable() {
   let history = useHistory();
   const classes = useStyles();
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const { loadEmployees, employees } = useEmployeesContext();
   const {
     expenses,
     addExpense,
+    editExpenseID,
     expenses_loading,
     updateExpense,
     deleteExpense,
@@ -46,12 +93,17 @@ export default function ExpenseTable() {
     loadExpenses();
   }, []);
 
+  useEffect(() => {
+    loadEmployees();
+  }, []);
+
   const add_Expense = async (data) => {
     const { id } = data;
     resetSingleExpense();
     setEditExpenseID("");
     setIsExpenseEditingOff();
-    history.push("/singleexpense");
+    handleDialogOpen();
+    // history.push("/singleexpense");
   };
 
   const update_Expense = async (data) => {
@@ -59,15 +111,45 @@ export default function ExpenseTable() {
     setEditExpenseID(id);
     setIsExpenseEditingOn();
     getSingleExpense(id);
-    history.push("/singleexpense");
+    handleDialogOpen();
+    // history.push("/singleexpense");
   };
 
   const delete_Expense = (data) => {
     const { id } = data;
     setEditExpenseID(id);
+    handleAlertOpen();
+
+    // deleteExpense(id);
+    // loadExpenses();
+  };
+
+  const handleDialogOpen = () => {
+    setIsDialogOpen(true);
+  };
+
+  const handleDialogClose = () => {
+    setIsDialogOpen(false);
+    loadExpenses();
+  };
+
+  const handleAlertOpen = () => {
+    setIsAlertOpen(true);
+  };
+
+  const handleAlertClose = () => {
+    setIsAlertOpen(false);
+  };
+
+  const handleOnDeleteConfirm = () => {
+    const id = editExpenseID;
     deleteExpense(id);
     loadExpenses();
   };
+
+  if (expenses_loading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className={classes.root}>
@@ -119,19 +201,26 @@ export default function ExpenseTable() {
             },
             showTitle: true,
           }}
-          //   components={{
-          //     Toolbar: (props) => (
-          //       <div>
-          //         <MTableToolbar {...props} />
-          //         <Link to="/expenses">
-          //           <div>
-          //             <ArrowBackIcon fontSize="large" color="primary" />
-          //           </div>
-          //         </Link>
-          //       </div>
-          //     ),
-          //   }}
         />
+        <CustomDialog
+          isOpen={isDialogOpen}
+          handleClose={handleDialogClose}
+          title=""
+          showButton={true}
+          isFullscree={false}
+          isFullwidth={false}
+        >
+          <ExpenseForm handleDialogClose={handleDialogClose} />
+        </CustomDialog>
+
+        <AlertDialog
+          handleClose={handleAlertClose}
+          onConfirm={handleOnDeleteConfirm}
+          isOpen={isAlertOpen}
+          title="Delete Expenses"
+        >
+          <h2>Are you sure you want to delete ?</h2>
+        </AlertDialog>
       </div>
     </div>
   );

@@ -37,7 +37,7 @@ export default function DailyAllowsDetlsTable() {
     deleteDailyAllowsDetl,
     loadDailyAllowsDetls,
     getSingleDailyAllowsDetl,
-    getSingleBatchDailyAllowsDetls,
+    getSingleBatchDailyAllowsDetl,
     resetSingleDailyAllowsDetl,
     dailyallowsdetl_period,
     singlebatch_dailyallowsdetl,
@@ -47,17 +47,18 @@ export default function DailyAllowsDetlsTable() {
   } = useDailyAllowancesContext();
   //const { loadEmployees, employees } = useEmployeesContext();
 
-  //   useEffect(() => {
-  //     console.log(
-  //       "allowsdetls",
-  //       single_dailyallowance.empid,
-  //       dailyallowance_period
-  //     );
-  //     getSingleBatchDailyAllowsDetls(
-  //       single_dailyallowance.empid,
-  //       dailyallowance_period
-  //     );
-  //   }, []);
+  useEffect(() => {
+    console.log(
+      "allowsdetls",
+      single_dailyallowance.empid,
+      dailyallowance_period
+      
+    );
+    getSingleBatchDailyAllowsDetl(
+      single_dailyallowance.empid,
+      dailyallowance_period
+    );
+  }, []);
 
   const update_DailyAllowsDetl = async (data) => {
     const { id, rec_id, empid, ...fields } = data;
@@ -65,10 +66,10 @@ export default function DailyAllowsDetlsTable() {
     updateDailyAllowsDetl({ id: data.id, empid: empid, ...fields });
 
     //update_Daily Allowances Details;
-    getSingleBatchDailyAllowsDetls(
-      single_dailyallowance.empid,
-      dailyallowance_period
-    );
+    // getSingleBatchDailyAllowsDetls(
+    //   single_dailyallowance.empid,
+    //   dailyallowance_period
+    // );
   };
 
   const add_DailyAllowsDetl = async (data) => {
@@ -87,17 +88,11 @@ export default function DailyAllowsDetlsTable() {
     const { id } = data;
     deleteDailyAllowsDetl(id);
     //update_Daily Allowances Details;
-    getSingleBatchDailyAllowsDetls(
+    getSingleBatchDailyAllowsDetl(
       single_dailyallowance.empid,
       dailyallowance_period
     );
   };
-
-  return (
-    <div>
-      <h2>In Progress.... Pls come back again!</h2>
-    </div>
-  );
 
   if (singlebatch_dailyallowsdetl_loading) {
     return <div>Loading...</div>;
@@ -108,9 +103,8 @@ export default function DailyAllowsDetlsTable() {
 
       <div style={{ maxWidth: "100%", paddingTop: "5px" }}>
         <MaterialTable
-          //columns={columns}
-          columns={
-            ({ title: "Date", field: "date", type: "date" },
+          columns={[
+            { title: "Date", field: "date", type: "date" },
             { title: "District", field: "district" },
             { title: "Operation Type", field: "typeoperation" },
             { title: "Client", field: "client" },
@@ -119,9 +113,9 @@ export default function DailyAllowsDetlsTable() {
             { title: "Crew Operation", field: "crewoperation" },
             { title: "Currency", field: "currency" },
             { title: "Job Bonus", field: "jobbonus", type: "numeric" },
-            { title: "Per Diem", field: "perdiem", type: "numeric" })
-          }
-          data={singlebatch_dailyallowsdetl}
+            { title: "Per Diem", field: "perdiem", type: "numeric" },
+          ]}
+          //data={singlebatch_dailyallowsdetl}
           title="Daily Allowances Details"
           editable={{
             onRowAdd: (newData) =>

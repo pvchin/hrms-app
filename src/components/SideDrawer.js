@@ -18,9 +18,6 @@ const SideDrawer = ({ HandleDrawerOpen, handleDrawerClose, open }) => {
   const classes = useStyles();
   return (
     <div>
-      <Box className={{}}>
-
-      </Box>
       <Drawer
         variant="permanent"
         classes={{
@@ -28,15 +25,16 @@ const SideDrawer = ({ HandleDrawerOpen, handleDrawerClose, open }) => {
         }}
         open={open}
       >
+        {/* "flex-end" */}
+
         <div className={classes.toolbarIcon}>
           <IconButton onClick={handleDrawerClose}>
             <ChevronLeftIcon />
           </IconButton>
         </div>
-        <Divider />
-        
-        <List>
 
+        <Divider />
+        <List>
           <MenuListItems />
         </List>
       </Drawer>

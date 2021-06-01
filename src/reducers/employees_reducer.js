@@ -18,6 +18,7 @@ import {
   SET_ISEDITING_ON,
   SET_ISEDITING_OFF,
   RESET_SINGLE_EMPLOYEE,
+  RESET_EMPLOYEES,
 } from "../actions";
 
 const employees_reducer = (state, action) => {
@@ -34,6 +35,9 @@ const employees_reducer = (state, action) => {
   }
   if (action.type === RESET_SINGLE_EMPLOYEE) {
     return { ...state, single_employee: {} };
+  }
+  if (action.type === RESET_EMPLOYEES) {
+    return { ...state, employees: {} };
   }
   // get employees
   if (action.type === GET_EMPLOYEES_BEGIN) {

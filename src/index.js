@@ -12,6 +12,7 @@ import { ExpensesProvider } from "./context/expenses_context";
 import { PayslipsProvider } from "./context/payslips_context";
 import { DailyAllowancesProvider } from "./context/dailyallowances_context";
 import { TablesProvider } from "./context/tables_context";
+import { TrainingsProvider } from "./context/trainings_context";
 
 const client = new ApolloClient({
   link: new HttpLink({
@@ -29,9 +30,11 @@ ReactDOM.render(
           <LeavesProvider>
             <ExpensesProvider>
               <DailyAllowancesProvider>
-                <TablesProvider>
-                  <App />
-                </TablesProvider>
+                <TrainingsProvider>
+                  <TablesProvider>
+                    <App />
+                  </TablesProvider>
+                </TrainingsProvider>
               </DailyAllowancesProvider>
             </ExpensesProvider>
           </LeavesProvider>

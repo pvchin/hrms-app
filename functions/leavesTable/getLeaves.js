@@ -18,6 +18,7 @@ module.exports = async (event) => {
 
     return formattedReturn(200, formattedLeaves);
   }
+
   if (fv) {
     const leaves = await table
       .select({ filterByFormula: `empid = '${fv}'` })

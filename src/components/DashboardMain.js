@@ -44,7 +44,7 @@ const drawerWidth = 240;
 export default function DashboardMain() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
-  const [login, setLogin] = React.useState(false);
+  const [login, setLogin] = React.useState(true);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -162,6 +162,7 @@ export default function DashboardMain() {
           </Switch>
         </main>
       </Router>
+        
     </div>
   );
 }

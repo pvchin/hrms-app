@@ -17,18 +17,23 @@ module.exports = async (event) => {
 
     return formattedReturn(200, formattedFamily);
   }
-  if (fv) {
-    // const { id, linkid, ...fields } = JSON.parse(event.body);
-    // console.log(linkid);
-    const family = await table
-      .select({ filterByFormula: `empid = '${fv}'` })
-      .firstPage();
-    const formattedFamily = family.map((e) => ({
-      id: e.id,
-      ...e.fields,
-    }));
+  try {
+    if (fv) {
+      // const { id, linkid, ...fields } = JSON.parse(event.body);
+      // console.log(linkid);
+      const family = await table
+        .select({ filterByFormula: `empid = '${fv}'` })
+        .firstPage();
+      const formattedFamily = family.map((e) => ({
+        id: e.id,
+        ...e.fields,
+      }));
 
-    return formattedReturn(200, formattedFamily);
+      return formattedReturn(200, formattedFamily);
+    }
+  } catch (error) {
+    console.error(err);
+    return formattedReturn(500, {});
   }
 
   try {

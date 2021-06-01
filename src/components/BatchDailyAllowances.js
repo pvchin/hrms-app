@@ -24,10 +24,7 @@ const BatchDailyAllowances = () => {
             <Grid item xs={12}>
               <Paper className={fixedHeightPaper}>
                 <div>
-                  <DailyAllowancesTable
-                    title="Daily Allowance Claims"
-                    headCells={headDailyAllowanceTableCells}
-                  />
+                  <DailyAllowancesTable title="Daily Allowance Claims" />
                 </div>
               </Paper>
             </Grid>

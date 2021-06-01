@@ -105,6 +105,8 @@ import {
   LOAD_SINGLEBATCH_EXPERIENCE_BEGIN,
   LOAD_SINGLEBATCH_EXPERIENCE_SUCCESS,
   LOAD_SINGLEBATCH_EXPERIENCE_ERROR,
+  // reset
+  RESET_TABLES,
 } from "../actions";
 
 const initialState = {
@@ -126,6 +128,7 @@ const initialState = {
   singlebatch_family_loading: false,
   singlebatch_family_error: false,
   singlebatchfamily: {},
+  single_family: {},
   education: [],
   education_loading: false,
   education_error: false,
@@ -527,7 +530,6 @@ export const TablesProvider = ({ children }) => {
         body: JSON.stringify({ id: id }),
       });
       dispatch({ type: DELETE_EDUCATION_SUCCESS });
-      //loadEmployees();
     } catch (err) {
       dispatch({ type: DELETE_EDUCATION_ERROR });
     }
@@ -605,6 +607,10 @@ export const TablesProvider = ({ children }) => {
     }
   };
 
+  const resetTables = () => {
+    dispatch({ type: RESET_TABLES });
+  };
+
   return (
     <TablesContext.Provider
       value={{
@@ -640,6 +646,7 @@ export const TablesProvider = ({ children }) => {
         addExperience,
         deleteExperience,
         updateExperience,
+        resetTables,
       }}
     >
       {children}

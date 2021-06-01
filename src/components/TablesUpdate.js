@@ -15,10 +15,10 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useHistory, Link } from "react-router-dom";
 
 import { useTablesContext } from "../context/tables_context";
-import UpdateAllowances from "./UpdateAllowances";
-import UpdateDeductions from "./UpdateDeductions";
-import UpdateDepartments from "./UpdateDepartments";
-import UpdateDesignations from "./UpdateDesignations";
+import UpdateAllowances from "./AllowancesTable";
+import UpdateDeductions from "./DeductionsTable";
+import UpdateDepartments from "./DepartmentsTable";
+import UpdateDesignations from "./DesignationsTable";
 
 const TablesUpdate = () => {
   let history = useHistory();

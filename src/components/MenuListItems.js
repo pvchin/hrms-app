@@ -88,7 +88,7 @@ const MenuListItems = () => {
             <MonetizationOnIcon />
           </ListItemIcon>
           <ListItemText
-            primary="Payslip"
+            primary="Payroll"
             className={classes.categoryHeaderPrimary}
           />
         </ListItem>

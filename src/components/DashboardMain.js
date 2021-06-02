@@ -71,7 +71,7 @@ export default function DashboardMain() {
           handleDrawerClose={handleDrawerClose}
           open={open}
           setLogin={setLogin}
-          title="Human Resource Management System - AppSmiths"
+          title="Human Resource Management System - AppSmiths Sutera Sdn Bhd"
         />
 
         <SideDrawer

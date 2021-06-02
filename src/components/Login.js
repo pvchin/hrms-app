@@ -45,7 +45,7 @@ const Login = ({ setLogin }) => {
           className={classes.cardHeader}
           title="AppSmiths"
           titleTypographyProps={{ variant: "h3" }}
-          subheader="Sutera Energy Solutions"
+          subheader="Sutera Sdn Bhd"
           subheaderTypographyProps={{ variant: "h4" }}
           style={{
             textAlign: "center",

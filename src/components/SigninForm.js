@@ -25,6 +25,7 @@ const SigninForm = ({ setLogin }) => {
         variant="filled"
         type="email"
         required
+        style={{ width: 350 }}
         value={email}
         onChange={(e) => setEmail(e.target.value)}
       />
@@ -32,6 +33,7 @@ const SigninForm = ({ setLogin }) => {
         label="Password"
         variant="filled"
         type="password"
+        style={{ width: 350 }}
         required
         value={password}
         onChange={(e) => setPassword(e.target.value)}
@@ -51,12 +53,12 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     justifyContent: "center",
-    //alignItems: "center",
+    alignItems: "center",
     padding: theme.spacing(2),
 
     "& .MuiTextField-root": {
       margin: theme.spacing(1),
-      width: "550px",
+      width: "600px",
     },
     "& .MuiButtonBase-root": {
       margin: theme.spacing(2),

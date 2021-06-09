@@ -52,7 +52,7 @@ const SingleDailyAllowsDetls = ({ title }) => {
                 </Link>
                 <div>
                   {/* <ToolbarHeader title={title} /> */}
-
+                  
                   <DailyAllowsDetlsTable />
                 </div>
               </Paper>

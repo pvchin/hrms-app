@@ -24,6 +24,10 @@ const columns = [
     field: "date",
     type: "date",
     dateSetting: { locale: "en-GB" },
+    cellStyle: {
+      width: 120,
+      maxWidth: 120,
+    },
     editComponent: (props) => (
       <TextField
         defaultValue={props.value || null}
@@ -66,11 +70,7 @@ const columns = [
   },
 ];
 
-export default function DailyAllowsDetlsTable({
-  setAllowsdata,
-  allowsdata,
-  handleDialogClose,
-}) {
+export default function DailyAllowsDetlsTable() {
   let history = useHistory();
   const classes = useStyles();
   // const [allowsDetlsTable, setAllowsDetlsTable] =
@@ -119,130 +119,83 @@ export default function DailyAllowsDetlsTable({
   //   );
   // };
 
-  const Save_Allowsdata = () => {
-    // delete unwanted data
-    singlebatch_dailyallowsdetl.forEach((row) => {
-      const { id, rec_id, name } = row;
-      const res = allowsdata.find((r) => r.rec_id === rec_id);
-      if (!res) {
-        deleteDailyAllowsDetl(id);
-      }
-    });
-
-    //add or update new data
-    {
-      allowsdata.forEach((data) => {
-        const {
-          id,
-          date,
-          district,
-          typeoperation,
-          client,
-          location,
-          jobno,
-          crewoperation,
-          jobbonus,
-          perdiem,
-        } = data;
-        if (id) {
-          const { id, rec_id, tableData, ...fields } = data;
-          updateDailyAllowsDetl({ id, ...fields });
-        } else {
-          addDailyAllowsDetl({
-            date,
-            district,
-            typeoperation,
-            client,
-            location,
-            jobno,
-            crewoperation,
-            jobbonus,
-            perdiem,
-            empid: editDailyAllowanceID,
-            period: dailyallowance_period,
-          });
-        }
-      });
-    }
-
-    handleDialogClose();
-  };
-
-  if (dailyallowsdetls_loading) {
-    return <div>
-      <h2>Loading.... daily site allowances</h2>
-    </div>
-  }
+  if (singlebatch_dailyallowsdetl_loading) {
     return (
-      <div className={classes.root}>
-        {/* <h1>Expenses Claims Application</h1> */}
-
-        <div style={{ maxWidth: "100%", paddingTop: "5px" }}>
-          <MaterialTable
-            columns={columns}
-            data={singlebatch_dailyallowsdetl}
-            title="Daily Allowances Details"
-            editable={{
-              onRowAdd: (newData) =>
-                new Promise((resolve, reject) => {
-                  setTimeout(() => {
-                    setAllowsdata([...allowsdata, newData]);
-                    resolve();
-                  }, 1000);
-                }),
-              onRowUpdate: (newData, oldData) =>
-                new Promise((resolve, reject) => {
-                  setTimeout(() => {
-                    const dataUpdate = [...singlebatch_dailyallowsdetl];
-                    const index = oldData.tableData.id;
-                    dataUpdate[index] = newData;
-                    //setAllowsDetlsTable([...dataUpdate]);
-                    //editable = dataUpdate;
-                    resolve();
-                  }, 1000);
-                }),
-              onRowDelete: (oldData) =>
-                new Promise((resolve, reject) => {
-                  setTimeout(() => {
-                    //const dataDelete = [...allowsDetlsTable];
-                    const index = oldData.tableData.id;
-                    //dataDelete.splice(index, 1);
-                    //setAllowsDetlsTable([...dataDelete]);
-
-                    resolve();
-                  }, 1000);
-                }),
-            }}
-            options={{
-              filtering: true,
-              headerStyle: {
-                backgroundColor: "orange",
-                color: "primary",
-              },
-              showTitle: true,
-            }}
-            components={{
-              Toolbar: (props) => (
-                <div>
-                  <MTableToolbar {...props} />
-                  <div style={{ padding: "5px 10px" }}>
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      color="secondary"
-                      className={classes.button}
-                      onClick={Save_Allowsdata}
-                    >
-                      Update <Icon className={classes.rightIcon}>send</Icon>
-                    </Button>
-                  </div>
-                </div>
-              ),
-            }}
-          />
-        </div>
+      <div>
+        <h2>Loading.... daily site allowances</h2>
       </div>
     );
+  }
+  return (
+    <div className={classes.root}>
+      {/* <h1>Expenses Claims Application</h1> */}
+
+      <div style={{ maxWidth: "75%", paddingTop: "5px" }}>
+        <MaterialTable
+          columns={columns}
+          data={singlebatch_dailyallowsdetl}
+          title="Daily Allowances Details"
+          editable={{
+            onRowAdd: (newData) =>
+              new Promise((resolve, reject) => {
+                // setTimeout(() => {
+                //   setAllowsdata([...allowsdata, newData]);
+                //   resolve();
+                // }, 1000);
+              }),
+            onRowUpdate: (newData, oldData) =>
+              new Promise((resolve, reject) => {
+                setTimeout(() => {
+                  const dataUpdate = [...singlebatch_dailyallowsdetl];
+                  const index = oldData.tableData.id;
+                  dataUpdate[index] = newData;
+                  //setAllowsDetlsTable([...dataUpdate]);
+                  //editable = dataUpdate;
+                  resolve();
+                }, 1000);
+              }),
+            onRowDelete: (oldData) =>
+              new Promise((resolve, reject) => {
+                setTimeout(() => {
+                  //const dataDelete = [...allowsDetlsTable];
+                  const index = oldData.tableData.id;
+                  //dataDelete.splice(index, 1);
+                  //setAllowsDetlsTable([...dataDelete]);
+
+                  resolve();
+                }, 1000);
+              }),
+          }}
+          options={{
+            filtering: true,
+            headerStyle: {
+              backgroundColor: "orange",
+              color: "primary",
+            },
+            showTitle: true,
+          }}
+          components={{
+            Toolbar: (props) => (
+              <div>
+                <MTableToolbar {...props} />
+                <div style={{ padding: "5px 10px" }}>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="secondary"
+                    className={classes.button}
+                    // onClick={Save_Allowsdata}
+                  >
+                    Update <Icon className={classes.rightIcon}>send</Icon>
+                  </Button>
+                </div>
+              </div>
+            ),
+          }}
+        />
+      </div>
+    </div>
+  );
 }
 
 const useStyles = makeStyles((theme) => ({

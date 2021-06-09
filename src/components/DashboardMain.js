@@ -1,15 +1,14 @@
-import React, { useState } from "react";
-import clsx from "clsx";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 // import Chart from "./Chart";
 // import Deposits from "./Deposits";
 // import Orders from "./Orders";
 
 import Appbanner from "./Appbanner";
-import Example from "./Example";
+import Example from "./Example5";
 import SideDrawer from "./SideDrawer";
 import SingleEmployee from "./SingleEmployee";
 import SingleLeave from "./SingleLeave";
@@ -22,7 +21,6 @@ import Login from "./Login";
 
 import {
   Home,
-  Dashboard,
   AllEmployees,
   Leave,
   Expenses,
@@ -35,7 +33,7 @@ import {
   Clients,
   Allowances,
   DailyAllowances,
-  PrivateRoute,
+  // PrivateRoute,
   Error,
 } from "../pages";
 
@@ -53,11 +51,7 @@ export default function DashboardMain() {
     setOpen(false);
   };
 
-  const handleLogin = () => {
-    setLogin(true);
-  };
-
-  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+  //  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
   if (!login) {
     return <Login setLogin={setLogin} />;
@@ -243,4 +237,5 @@ const useStyles = makeStyles((theme) => ({
   fixedHeight: {
     height: 240,
   },
+ 
 }));

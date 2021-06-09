@@ -2,7 +2,7 @@ const { table } = require("./airtable-leaves");
 const formattedReturn = require("../formattedReturn");
 
 module.exports = async (event) => {
-  const { id, fv } = event.queryStringParameters;
+  const { id, fv, fi } = event.queryStringParameters;
   // const { id, filterValue, filterField } = event.queryStringParameters;
   // console.log(filterValue, filterField);
 
@@ -22,6 +22,18 @@ module.exports = async (event) => {
   if (fv) {
     const leaves = await table
       .select({ filterByFormula: `empid = '${fv}'` })
+      .firstPage();
+    const formattedLeaves = leaves.map((leave) => ({
+      id: leave.id,
+      ...leave.fields,
+    }));
+
+    return formattedReturn(200, formattedLeaves);
+  }
+
+  if (fi) {
+    const leaves = await table
+      .select({ filterByFormula: `status = '${fi}'` })
       .firstPage();
     const formattedLeaves = leaves.map((leave) => ({
       id: leave.id,

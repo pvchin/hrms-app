@@ -2,7 +2,7 @@ const { table } = require("./airtable-payslips");
 const formattedReturn = require("../formattedReturn");
 
 module.exports = async (event) => {
-  const { id, fv } = event.queryStringParameters;
+  const { id, fv, fi } = event.queryStringParameters;
   // const { id, filterValue, filterField } = event.queryStringParameters;
   // console.log(filterValue, filterField);
 
@@ -21,6 +21,18 @@ module.exports = async (event) => {
   if (fv) {
     const payslips = await table
       .select({ filterByFormula: `period = '${fv}'` })
+      .firstPage();
+    const formattedPayslips = payslips.map((payslip) => ({
+      id: payslip.id,
+      ...payslip.fields,
+    }));
+
+    return formattedReturn(200, formattedPayslips);
+  }
+
+  if (fi) {
+    const payslips = await table
+      .select({ filterByFormula: `status = '${fi}'` })
       .firstPage();
     const formattedPayslips = payslips.map((payslip) => ({
       id: payslip.id,

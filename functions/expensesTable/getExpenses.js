@@ -2,7 +2,7 @@ const { table } = require("./airtable-expenses");
 const formattedReturn = require("../formattedReturn");
 
 module.exports = async (event) => {
-  const { id, fv } = event.queryStringParameters;
+  const { id, fv, fi } = event.queryStringParameters;
   // const { id, filterValue, filterField } = event.queryStringParameters;
   // console.log(filterValue, filterField);
 
@@ -21,6 +21,18 @@ module.exports = async (event) => {
   if (fv) {
     const expenses = await table
       .select({ filterByFormula: `empid = '${fv}'` })
+      .firstPage();
+    const formattedExpenses = expenses.map((expense) => ({
+      id: expense.id,
+      ...expense.fields,
+    }));
+
+    return formattedReturn(200, formattedExpenses);
+  }
+
+  if (fi) {
+    const expenses = await table
+      .select({ filterByFormula: `status = '${fi}'` })
       .firstPage();
     const formattedExpenses = expenses.map((expense) => ({
       id: expense.id,

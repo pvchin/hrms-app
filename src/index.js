@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import { RecoilRoot } from "recoil";
 import { ApolloProvider } from "react-apollo";
 import { ApolloClient } from "apollo-client";
 import { HttpLink } from "apollo-link-http";
@@ -24,23 +25,25 @@ const client = new ApolloClient({
 
 ReactDOM.render(
   <React.StrictMode>
-    <ApolloProvider client={client}>
-      <EmployeesProvider>
-        <PayslipsProvider>
-          <LeavesProvider>
-            <ExpensesProvider>
-              <DailyAllowancesProvider>
-                <TrainingsProvider>
-                  <TablesProvider>
-                    <App />
-                  </TablesProvider>
-                </TrainingsProvider>
-              </DailyAllowancesProvider>
-            </ExpensesProvider>
-          </LeavesProvider>
-        </PayslipsProvider>
-      </EmployeesProvider>
-    </ApolloProvider>
+    <RecoilRoot>
+      <ApolloProvider client={client}>
+        <EmployeesProvider>
+          <PayslipsProvider>
+            <LeavesProvider>
+              <ExpensesProvider>
+                <DailyAllowancesProvider>
+                  <TrainingsProvider>
+                    <TablesProvider>
+                      <App />
+                    </TablesProvider>
+                  </TrainingsProvider>
+                </DailyAllowancesProvider>
+              </ExpensesProvider>
+            </LeavesProvider>
+          </PayslipsProvider>
+        </EmployeesProvider>
+      </ApolloProvider>
+    </RecoilRoot>
   </React.StrictMode>,
   document.getElementById("root")
 );

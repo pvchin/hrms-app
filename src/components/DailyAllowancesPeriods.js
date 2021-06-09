@@ -1,19 +1,21 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { useHistory } from "react-router-dom";
+import { useSetRecoilState } from "recoil";
+import { allowsPeriodState } from "./data/atomdata";
 import { Paper, Grid, Button, Toolbar, Typography } from "@material-ui/core";
 import { useDailyAllowancesContext } from "../context/dailyallowances_context";
 import { periods } from "../utils/constants";
-import DailyAllowancesTable from "./DailyAllowancesTable";
-import { headDailyAllowanceTableCells } from "../utils/constants";
 
 const DailyAllowancesPeriods = () => {
   let history = useHistory();
   const classes = useStyles();
   const { setDailyAllowancePeriod } = useDailyAllowancesContext();
+  const setAllowsPeriod = useSetRecoilState(allowsPeriodState);
 
   const handlePeriod = (name) => {
     setDailyAllowancePeriod(name);
+    setAllowsPeriod(name);
     history.push("/batchdailyallowances");
   };
 
@@ -32,7 +34,7 @@ const DailyAllowancesPeriods = () => {
       <Grid container spacing={3}>
         {periods.map((e) => {
           return (
-            <Grid item xs={3} inline>
+            <Grid item xs={3} inline="true" key={e.name}>
               <Paper className={classes.paper}>
                 <Button
                   variant="contained"

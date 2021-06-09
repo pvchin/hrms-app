@@ -1,17 +1,13 @@
 import React, { useState, useEffect } from "react";
-import MaterialTable, { MTableToolbar } from "material-table";
+import MaterialTable from "material-table";
 import { makeStyles } from "@material-ui/core/styles";
-import { Button } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import CheckIcon from "@material-ui/icons/Check";
 import SearchIcon from "@material-ui/icons/Search";
-import ArrowBackIcon from "@material-ui/icons/ArrowBack";
-import { useHistory, Link } from "react-router-dom";
 import { CustomDialog } from "../helpers/CustomDialog";
 import { AlertDialog } from "../helpers/AlertDialog";
-import EmployeeForm from "./EmployeeForm";
 import EmployeeView from "./EmployeeView";
 import { useEmployeesContext } from "../context/employees_context";
 import { useTablesContext } from "../context/tables_context";
@@ -28,35 +24,24 @@ const columns = [
 ];
 
 export default function AllEmployeesTable() {
-  let history = useHistory();
   const classes = useStyles();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
 
   const {
     employees,
-    addEmployee,
     editEmployeeID,
     employees_loading,
-    updateEmployee,
     deleteEmployee,
     loadEmployees,
-    getSingleEmployee,
     setEditEmployeeID,
     setIsEditingOn,
     setIsEditingOff,
     resetSingleEmployee,
     resetEmployees,
   } = useEmployeesContext();
+
   const {
-    loadSingleBatchFamily,
-    loadFamily,
-    singlebatchfamily,
-    addFamily,
-    deleteFamily,
-    updateFamily,
-    singlebatch_family_loading,
-    singlebatch_family_error,
     resetTables,
   } = useTablesContext();
 
@@ -78,8 +63,7 @@ export default function AllEmployeesTable() {
   };
 
   const add_Employee = async (data) => {
-    const { id } = data;
-    resetSingleEmployee();
+       resetSingleEmployee();
     setEditEmployeeID("");
     setIsEditingOff();
     handleDialogOpen();
@@ -119,6 +103,8 @@ export default function AllEmployeesTable() {
 
   if (employees_loading) {
     return <div>Loading...</div>;
+  } else {
+    console.log(employees)
   }
   return (
     <div className={classes.root}>

@@ -5,7 +5,8 @@ import Paper from "@material-ui/core/Paper";
 import TextField from "@material-ui/core/TextField";
 import { Grid } from "@material-ui/core";
 import CardLayout from "../helpers/CardLayout";
-const drawerWidth = 240;
+
+// const drawerWidth = 240;
 
 // const CardLayout = ({ title, children }) => {
 //   const classes = useStyles();

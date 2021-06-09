@@ -1,12 +1,11 @@
-import React, { useState, useReducer, useEffect } from "react";
+import React, { useEffect } from "react";
 import {
   Button,
   Icon,
   TextField,
   Paper,
   Typography,
-  Select,
-} from "@material-ui/core";
+  } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import MenuItem from "@material-ui/core/MenuItem";
 import { useEmployeesContext } from "../context/employees_context";

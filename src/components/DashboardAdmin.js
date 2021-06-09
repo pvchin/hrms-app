@@ -1,8 +1,7 @@
-import React, { useState } from "react";
-import clsx from "clsx";
+import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+//import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 // import Chart from "./Chart";
 // import Deposits from "./Deposits";
@@ -10,12 +9,6 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 
 import Appbanner from "./Appbanner";
 import SideDrawer from "./SideDrawer";
-import SingleEmployee from "./SingleEmployee";
-import SingleLeave from "./SingleLeave";
-import SingleExpense from "./SingleExpense";
-import SingleDailyAllowance from "./SingleDailyAllowance";
-import BatchDailyAllowances from "./BatchDailyAllowances";
-import SinglePayslip from "./SinglePayslip";
 
 const drawerWidth = 240;
 
@@ -29,7 +22,8 @@ export default function DashboardAdmin() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+
+  // const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
   return (
     <div className={classes.root}>

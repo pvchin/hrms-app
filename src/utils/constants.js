@@ -1,5 +1,6 @@
 export const employees_url = "/api/employees";
 export const leaves_url = "/api/leaves";
+export const onleaves_url = "/api/onleavesview";
 export const expenses_url = "/api/expenses";
 export const dailyallowances_url = "/api/dailyallowances";
 export const dailyallowsdetls_url = "/api/dailyallowsdetls";

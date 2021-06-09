@@ -307,6 +307,7 @@ const dailyallowances_reducer = (state, action) => {
     };
   }
   if (action.type === GET_SINGLEBATCH_DAILYALLOWSDETL_SUCCESS) {
+    // console.log("reducer", action.payload);
     return {
       ...state,
       singlebatch_dailyallowsdetl_loading: false,

@@ -6,7 +6,6 @@ import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 
-import { headDailyAllowanceTableCells } from "../utils/constants";
 import DailyAllowancesTable from "../components/DailyAllowancesTable";
 
 const drawerWidth = 240;
@@ -14,12 +13,14 @@ const drawerWidth = 240;
 const BatchDailyAllowances = () => {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+  
+  
   return (
     <div>
       <CssBaseline />
       <div className={classes.appBarSpacer}>
         <Container maxWidth="lg" className={classes.container}>
-          <Grid container spacing={3}>
+          <Grid container>
             {/* <Grid item xs={12} md={8} lg={9}> */}
             <Grid item xs={12}>
               <Paper className={fixedHeightPaper}>

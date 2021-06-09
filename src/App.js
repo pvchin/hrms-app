@@ -35,7 +35,9 @@ const App = () => {
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <div>
-        <DashboardMain />
+        <React.Suspense fallback={<h1>Loading profile...</h1>}>
+          <DashboardMain />
+        </React.Suspense>
       </div>
       <Switch checked={darkState} onChange={handleThemeChange} />
     </ThemeProvider>

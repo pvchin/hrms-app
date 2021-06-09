@@ -1,0 +1,44 @@
+daily allowances - change to Site allowances
+ - remoave currency
+ - allow to print out
+ 
+
+personal
+
+personal
+leave
+trainings
+family
+education
+family
+
+* allow daily allowances / diem
+daily allowances / diem
+
+dashboard
+- leave for pending
+ - expenses for approval
+- daily allowances
+- chart - monthly figures
+- expiry for 
+- show who will be on leave in 30 days
+  - name, from date and to date
+
+
+leave - 
+add reasons / remaining days
+No of days taken - change
+
+Redo , approved, rejected, cancel
+Pending  by employee
+once approved, the employee can cancel the leave
+
+payslip by email
+
+
+permission:
+- manager - 
+- admin 
+  - see leaves
+  - hide the salary fields 
+- users

@@ -7,30 +7,22 @@ import { Grid } from "@material-ui/core";
 import CardLayout from "../helpers/CardLayout";
 import CardLayout2 from "../helpers/CardLayout2";
 import { CustomDialog } from "../helpers/CustomDialog";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-} from "@material-ui/core";
 
 import { useEmployeesContext } from "../context/employees_context";
 import { useTablesContext } from "../context/tables_context";
 import { useTrainingsContext } from "../context/trainings_context";
-import Emp_ViewFamily from "./Emp_ViewFamily";
-import Emp_ViewEducations from "./Emp_ViewEducations";
-import Emp_ViewExperiences from "./Emp_ViewExperiences";
-import Emp_ViewLeaves from "./Emp_ViewLeaves";
-import Emp_ViewTrainings from "./Emp_ViewTrainings";
-import Emp_Personal from "./Emp_Personal";
-import Emp_Family from "./Emp_Family";
-import Emp_Educations from "./Emp_Educations";
-import Emp_Experiences from "./Emp_Experiences";
-import Emp_Trainings from "./Emp_Trainings";
+import EmpViewFamily from "./EmpViewFamily";
+import EmpViewEducations from "./EmpViewEducations";
+import EmpViewExperiences from "./EmpViewExperiences";
+import EmpViewLeaves from "./EmpViewLeaves";
+import EmpViewTrainings from "./EmpViewTrainings";
+import EmpPersonal from "./EmpPersonal";
+import EmpFamily from "./EmpFamily";
+import EmpEducations from "./EmpEducations";
+import EmpExperiences from "./EmpExperiences";
+import EmpTrainings from "./EmpTrainings";
 
-const drawerWidth = 240;
+// const drawerWidth = 240;
 
 // const CardLayout = ({ title, children }) => {
 //   const classes = useStyles();
@@ -57,26 +49,12 @@ const EmployeeView = () => {
   const [isTrainingDialogOpen, setIsTrainingDialogOpen] = useState(false);
 
   const {
-    employees,
-    addEmployee,
     editEmployeeID,
-    employees_loading,
-    updateEmployee,
-    deleteEmployee,
-    loadEmployees,
     getSingleEmployee,
-    setEditEmployeeID,
-    setIsEditingOn,
-    setIsEditingOff,
-    resetSingleEmployee,
     single_employee,
     single_employee_loading,
   } = useEmployeesContext();
-  const {
-    singlebatch_training_loading,
-    singlebatch_training_error,
-    singlebatch_training,
-  } = useTrainingsContext();
+  const { singlebatch_training } = useTrainingsContext();
 
   const {
     loadDepartments,
@@ -86,12 +64,6 @@ const EmployeeView = () => {
     singlebatchfamily,
     singlebatcheducation,
     singlebatchexperience,
-    addFamily,
-    deleteFamily,
-    updateFamily,
-    singlebatch_family_loading,
-    singlebatch_family_error,
-    singlebatch_education_loading,
   } = useTablesContext();
 
   useEffect(() => {
@@ -100,7 +72,7 @@ const EmployeeView = () => {
     loadDesignations();
   }, []);
 
-  useEffect(() => {}, [singlebatch_training]);
+  //useEffect(() => {}, [singlebatchfamily]);
 
   if (single_employee_loading) {
     return (
@@ -121,23 +93,25 @@ const EmployeeView = () => {
   };
 
   const handleFamilyDialogOpen = () => {
+    setFamilydata([]);
     setFamilydata([...singlebatchfamily]);
     setIsFamilyDialogOpen(true);
   };
 
   const handleFamilyDialogClose = () => {
     setIsFamilyDialogOpen(false);
-    //loadEmployees();
+    loadSingleBatchFamily(editEmployeeID);
   };
 
   const handleEducationDialogOpen = () => {
+    setEducationdata([]);
     setEducationdata([...singlebatcheducation]);
     setIsEducationDialogOpen(true);
   };
 
   const handleEducationDialogClose = () => {
     setIsEducationDialogOpen(false);
-    //loadEmployees();
+    loadSingleBatchEducation(editEmployeeID);
   };
 
   const handleExperienceDialogOpen = () => {
@@ -165,8 +139,8 @@ const EmployeeView = () => {
     <Paper className={fixedHeightPaper} style={{ backgroundColor: "black" }}>
       <div className={classes.root}>
         <Grid container spacing={3}>
-          <Grid xs={12} md={8} lg={12}>
-            <CardLayout title="Employee Profile">
+          <Grid item xs={12} md={8} lg={12}>
+            <CardLayout2 title="Employee Profile">
               <div>
                 <form className={classes.form}>
                   <TextField
@@ -212,9 +186,9 @@ const EmployeeView = () => {
                   />
                 </form>
               </div>
-            </CardLayout>
+            </CardLayout2>
           </Grid>
-          <Grid xs={6} md={8} lg={6}>
+          <Grid item xs={6} md={8} lg={6}>
             <div>
               <CardLayout
                 title="Personal Information"
@@ -311,55 +285,55 @@ const EmployeeView = () => {
               </CardLayout>
             </div>
           </Grid>
-          <Grid xs={6} md={8} lg={6}>
+          <Grid item xs={6} md={8} lg={6}>
             <div>
-              <CardLayout title="Family" handleClick={handleFamilyDialogOpen}>
-                <Emp_ViewFamily />
-              </CardLayout>
+              <CardLayout2 title="Leaves">
+                <div>
+                  <EmpViewLeaves />
+                </div>
+              </CardLayout2>
             </div>
           </Grid>
-          <Grid xs={6} md={8} lg={6}>
+          <Grid item xs={6} md={8} lg={6}>
             <div>
               <CardLayout
-                title="Education"
-                handleClick={handleEducationDialogOpen}
+                title="Training"
+                handleClick={handleTrainingDialogOpen}
               >
-                <div>
-                  <Emp_ViewEducations />
-                </div>
+                <EmpViewTrainings />
               </CardLayout>
             </div>
           </Grid>
-          <Grid xs={6} md={8} lg={6}>
+          <Grid item xs={6} md={8} lg={6}>
             <div>
               <CardLayout
                 title="Experiences"
                 handleClick={handleExperienceDialogOpen}
               >
                 <div>
-                  <Emp_ViewExperiences />
+                  <EmpViewExperiences />
                 </div>
               </CardLayout>
             </div>
           </Grid>
 
-          <Grid xs={6} md={8} lg={6}>
+          <Grid item xs={6} md={8} lg={6}>
             <div>
               <CardLayout
-                title="Training"
-                handleClick={handleTrainingDialogOpen}
+                title="Education"
+                handleClick={handleEducationDialogOpen}
               >
-                <Emp_ViewTrainings />
+                <div>
+                  <EmpViewEducations />
+                </div>
               </CardLayout>
             </div>
           </Grid>
-          <Grid xs={6} md={8} lg={6}>
+          <Grid item xs={6} md={8} lg={6}>
             <div>
-              <CardLayout2 title="Leaves">
-                <div>
-                  <Emp_ViewLeaves />
-                </div>
-              </CardLayout2>
+              <CardLayout title="Family" handleClick={handleFamilyDialogOpen}>
+                <EmpViewFamily />
+              </CardLayout>
             </div>
           </Grid>
         </Grid>
@@ -372,7 +346,7 @@ const EmployeeView = () => {
         isFullscreen={false}
         isFullwidth={false}
       >
-        <Emp_Personal
+        <EmpPersonal
           //setPersonaldata={setFamilydata}
           //familydata={familydata}
           handleDialogClose={handlePersonalDialogClose}
@@ -386,7 +360,7 @@ const EmployeeView = () => {
         isFullscreen={false}
         isFullwidth={false}
       >
-        <Emp_Family
+        <EmpFamily
           setFamilydata={setFamilydata}
           familydata={familydata}
           handleDialogClose={handleFamilyDialogClose}
@@ -400,7 +374,7 @@ const EmployeeView = () => {
         isFullscreen={false}
         isFullwidth={false}
       >
-        <Emp_Educations
+        <EmpEducations
           setEducationdata={setEducationdata}
           educationdata={educationdata}
           handleDialogClose={handleEducationDialogClose}
@@ -414,7 +388,7 @@ const EmployeeView = () => {
         isFullscreen={false}
         isFullwidth={false}
       >
-        <Emp_Experiences
+        <EmpExperiences
           setExperiencedata={setExperiencedata}
           experiencedata={experiencedata}
           handleDialogClose={handleExperienceDialogClose}
@@ -428,7 +402,7 @@ const EmployeeView = () => {
         isFullscreen={false}
         isFullwidth={false}
       >
-        <Emp_Trainings
+        <EmpTrainings
           setTrainingdata={setTrainingdata}
           trainingdata={trainingdata}
           handleDialogClose={handleTrainingDialogClose}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
@@ -6,7 +6,8 @@ import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 
-import { headExpenseTableCells } from "../utils/constants";
+//import { headExpenseTableCells } from "../utils/constants";
+import { useExpensesContext } from "../context/expenses_context";
 import ExpenseTable from "../components/ExpenseTable";
 
 const drawerWidth = 240;
@@ -14,6 +15,22 @@ const drawerWidth = 240;
 const ExpensesPage = () => {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+  const { loadExpenses, expenses_loading } = useExpensesContext();
+
+  useEffect(() => {
+    loadExpenses();
+  }, []);
+
+  if (expenses_loading) {
+    return (
+      <div>
+        <Paper className={fixedHeightPaper}>
+          
+        <h2>Loading...Expenses</h2>
+         </Paper>
+      </div>
+    );
+  }
   return (
     <div>
       <CssBaseline />
@@ -24,10 +41,7 @@ const ExpensesPage = () => {
             <Grid item xs={12}>
               <Paper className={fixedHeightPaper}>
                 <div>
-                  <ExpenseTable
-                    title="Expenses Claims"
-                    headCells={headExpenseTableCells}
-                  />
+                  <ExpenseTable title="Expenses Claims" />
                 </div>
               </Paper>
             </Grid>

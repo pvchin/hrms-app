@@ -1,16 +1,13 @@
 import React, { useState, useEffect } from "react";
-import MaterialTable, { MTableToolbar } from "material-table";
+import MaterialTable from "material-table";
+import { TextField, MenuItem } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { Button } from "@material-ui/core";
 import AddIcon from "@material-ui/icons/Add";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import CheckIcon from "@material-ui/icons/Check";
 import SearchIcon from "@material-ui/icons/Search";
-import { MuiPickersUtilsProvider } from "@material-ui/pickers";
-import DateFnsUtils from "@date-io/date-fns";
-import DatePicker from "react-datepicker";
-import { useHistory, Link } from "react-router-dom";
+import CheckCircleOutlineOutlinedIcon from "@material-ui/icons/CheckCircleOutlineOutlined";
 import ExpenseForm from "./ExpenseForm";
 import { useExpensesContext } from "../context/expenses_context";
 import { useEmployeesContext } from "../context/employees_context";
@@ -18,68 +15,59 @@ import { CustomDialog } from "../helpers/CustomDialog";
 import { AlertDialog } from "../helpers/AlertDialog";
 
 const columns = [
-  { title: "Name", field: "name" },
+  { title: "Name", field: "name", editable: "never" },
   {
     title: "From Date",
     field: "from_date",
-    editComponent: (props) => (
-      <MuiPickersUtilsProvider
-        utils={DateFnsUtils}
-        locale={props.dateTimePickerLocalization}
-      >
-        <DatePicker
-          format="dd/MM/yyyy"
-          value={props.value || null}
-          onChange={props.onChange}
-          clearable
-          InputProps={{
-            style: {
-              fontSize: 13,
-            },
-          }}
-        />
-      </MuiPickersUtilsProvider>
-    ),
+    type: "date",
+    dateSetting: { locale: "en-GB" },
+    editable: "never",
   },
   {
     title: "To Date",
     field: "to_date",
+    type: "date",
+    dateSetting: { locale: "en-GB" },
+    editable: "never",
+  },
+  {
+    title: "Description",
+    field: "description",
+    editable: "never",
+  },
+  { title: "Amount", field: "amount", type: "currency", editable: "never" },
+  {
+    title: "Status",
+    field: "status",
     editComponent: (props) => (
-      <MuiPickersUtilsProvider
-        utils={DateFnsUtils}
-        locale={props.dateTimePickerLocalization}
+      <TextField
+        //defaultValue={props.value || null}
+        onChange={(e) => props.onChange(e.target.value)}
+        style={{ width: 100 }}
+        value={props.value}
+        select
       >
-        <DatePicker
-          format="dd/MM/yyyy"
-          value={props.value || null}
-          onChange={props.onChange}
-          clearable
-          InputProps={{
-            style: {
-              fontSize: 13,
-            },
-          }}
-        />
-      </MuiPickersUtilsProvider>
+        <MenuItem value="Pending">Pending</MenuItem>
+        <MenuItem value="Approve">Approve</MenuItem>
+        <MenuItem value="Reject">Reject</MenuItem>
+        <MenuItem value="Cancel">Cancel</MenuItem>
+      </TextField>
     ),
   },
-  { title: "Description", field: "description", type: "date" },
-  { title: "Amount", field: "amount", type: "numeric" },
-  { title: "Status", field: "status" },
 ];
 
 export default function ExpenseTable() {
-  let history = useHistory();
   const classes = useStyles();
+  const [isLoad, setIsLoad] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
-  const { loadEmployees, employees } = useEmployeesContext();
+  const [expensesdata, setExpensesdata] = useState([]);
+  const { loadEmployees } = useEmployeesContext();
   const {
     expenses,
-    addExpense,
     editExpenseID,
-    expenses_loading,
     updateExpense,
+    expenses_loading,
     deleteExpense,
     loadExpenses,
     getSingleExpense,
@@ -90,20 +78,37 @@ export default function ExpenseTable() {
   } = useExpensesContext();
 
   useEffect(() => {
-    loadExpenses();
+    setExpensesdata(expenses);
+    console.log(expensesdata)
   }, []);
 
-  useEffect(() => {
-    loadEmployees();
-  }, []);
+  // useEffect(() => {
+  //   loadEmployees();
+  // }, []);
+
+  // useEffect(() => {
+  //   if (expenses) {
+  //     setExpensesdata(expenses);
+  //     console.log("expenses", expenses, expensesdata)
+  //   } else {
+  //     setIsLoad(!isLoad);
+  //   }
+  // }, [isLoad]);
 
   const add_Expense = async (data) => {
-    const { id } = data;
+    // const { id } = data;
     resetSingleExpense();
     setEditExpenseID("");
     setIsExpenseEditingOff();
     handleDialogOpen();
     // history.push("/singleexpense");
+  };
+
+  const approve_Expense = async (data) => {
+    console.log("approve", data);
+    const { id, rec_id, ...fields } = data;
+    updateExpense({ id, ...fields });
+    // loadExpenses();
   };
 
   const update_Expense = async (data) => {
@@ -147,10 +152,20 @@ export default function ExpenseTable() {
     loadExpenses();
   };
 
-  if (expenses_loading) {
-    return <div>Loading...</div>;
-  }
-
+  // if (expenses_loading) {
+  //   return (
+  //     <div>
+  //       <h2>Loading...Expenses</h2>
+  //     </div>
+  //   );
+  // }
+if (!expensesdata) {
+  return (
+    <div>
+      <h2>Loading...Expenses</h2>
+    </div>
+  );
+}
   return (
     <div className={classes.root}>
       {/* <h1>Expenses Claims Application</h1> */}
@@ -158,16 +173,30 @@ export default function ExpenseTable() {
       <div style={{ maxWidth: "100%", paddingTop: "5px" }}>
         <MaterialTable
           columns={columns}
-          data={expenses}
+          data={expensesdata}
           title="Expenses Claims Application"
           icons={{
             Add: (props) => <AddIcon />,
-            Edit: (props) => <EditIcon />,
+            Edit: (props) => <CheckCircleOutlineOutlinedIcon />,
             Delete: (props) => <DeleteIcon />,
             Clear: (props) => <DeleteIcon />,
             Check: (props) => <CheckIcon />,
             Search: (props) => <SearchIcon />,
             ResetSearch: (props) => <DeleteIcon />,
+          }}
+          editable={{
+            onRowUpdate: (newData, oldData) =>
+              new Promise((resolve, reject) => {
+                setTimeout(() => {
+                  const dataUpdate = [...expensesdata];
+                  const index = oldData.tableData.id;
+                  dataUpdate[index] = newData;
+                  setExpensesdata([...dataUpdate]);
+                  //approve_Expense(newData);
+
+                  resolve();
+                }, 1000);
+              }),
           }}
           actions={[
             {

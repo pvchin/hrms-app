@@ -1,23 +1,29 @@
 import React, { useState, useEffect } from "react";
 
-import MaterialTable from "material-table";
+import MaterialTable, { MTableToolbar } from "material-table";
 import { makeStyles } from "@material-ui/core/styles";
-import AddIcon from "@material-ui/icons/Add";
-import EditIcon from "@material-ui/icons/Edit";
-import DeleteIcon from "@material-ui/icons/Delete";
-import CheckIcon from "@material-ui/icons/Check";
-import SearchIcon from "@material-ui/icons/Search";
-import { useHistory, Link } from "react-router-dom";
-
+import { Button, Icon, TextField, MenuItem } from "@material-ui/core";
+import { useSetRecoilState, useRecoilValue } from "recoil";
+import {
+  payPeriodState,
+  payPeriodEndMonthState,
+  payPeriodEmpIdState,
+  payEarningDataState,
+} from "./data/atomdata";
 import { usePayslipsContext } from "../context/payslips_context";
 import { useTablesContext } from "../context/tables_context";
 
-export default function Payslip_Deductions() {
-  let history = useHistory();
+export default function Payslip_Deductions({
+  setCalc,
+  deductionsdata,
+  oldDeductionsdata,
+  setDeductionsdata,
+  handleDialogClose,
+}) {
   const classes = useStyles();
-  const [obj, setObj] = useState({});
-  const [load, setLoad] = useState(true);
-
+  const payPeriodEmpId = useRecoilValue(payPeriodEmpIdState);
+  const payPeriod = useRecoilValue(payPeriodState);
+  const payEarningData = useRecoilValue(payEarningDataState);
   const {
     payslipdeductions,
     payslip_deduction_amount,
@@ -41,15 +47,30 @@ export default function Payslip_Deductions() {
     setPayslipDeductionAmount(sum);
   };
 
+  const columns = [
+    {
+      title: "Description",
+      field: "description",
+      editComponent: (props) => (
+        <TextField
+          //defaultValue={props.value || null}
+          onChange={(e) => props.onChange(e.target.value)}
+          style={{ width: 200 }}
+          value={props.value}
+          select
+        >
+          {deductions.map((r) => {
+            return <MenuItem value={r.name}>{r.name}</MenuItem>;
+          })}
+        </TextField>
+      ),
+    },
+    { title: "Amount", field: "amount", type: "currency" },
+  ];
+
   useEffect(() => {
     getSingleBatchPayslipDeductions(single_payslip.empid, payslip_period);
   }, []);
-
-  useEffect(() => {
-    handleLookup();
-    setLoad(false);
-    console.log("effect", obj);
-  }, [load]);
 
   const update_Payslip = () => {
     const { rec_id, id, total_deductions, ...paydata } = single_payslip;
@@ -85,13 +106,35 @@ export default function Payslip_Deductions() {
     getSingleBatchPayslipDeductions(single_payslip.empid, payslip_period);
   };
 
-  const handleLookup = () => {
-    setObj(
-      deductions.reduce(function (acc, cur, i) {
-        acc[cur.rec_id] = cur.name;
-        return acc;
-      }, {})
-    );
+  const Save_DeductionsData = () => {
+    // delete unwanted data
+    console.log("update", deductionsdata, oldDeductionsdata);
+    oldDeductionsdata.forEach((row) => {
+      const { id, rec_id } = row;
+      const res = deductionsdata.find((r) => r.rec_id === rec_id);
+      console.log("find", id, res);
+      if (!res) {
+        deletePayslipDeduction(id);
+      }
+    });
+    //add or update new data
+
+    deductionsdata.forEach((data) => {
+      const { id, description, amount } = data;
+      if (id) {
+        const { id, rec_id, tableData, ...fields } = data;
+        updatePayslipDeduction({ id, ...fields });
+      } else {
+        addPayslipDeduction({
+          description: description,
+          amount: amount,
+          name: single_payslip.name,
+          empid: payPeriodEmpId,
+          period: payPeriod,
+        });
+      }
+    });
+    handleDialogClose();
   };
 
   if (payslipdeductions_loading) {
@@ -108,51 +151,63 @@ export default function Payslip_Deductions() {
 
       <div style={{ maxWidth: "100%", paddingTop: "5px" }}>
         <MaterialTable
-          columns={[
-            {
-              title: "Name",
-              field: "description",
-              lookup: obj,
-            },
-            { title: "Amount", field: "amount", type: "numeric" },
-          ]}
-          data={payslipdeductions}
-          title="Expense"
+          columns={columns}
+          data={deductionsdata}
+          title="Deductions"
           editable={{
             onRowAdd: (newData) =>
               new Promise((resolve, reject) => {
                 setTimeout(() => {
-                  // setData([...data, newData]);
-                  add_PayslipDeduction(newData);
-                  calc_Deduction([...payslipdeductions, newData]);
-
+                  setDeductionsdata([...deductionsdata, newData]);
                   resolve();
                 }, 1000);
               }),
             onRowUpdate: (newData, oldData) =>
               new Promise((resolve, reject) => {
                 setTimeout(() => {
-                  const dataUpdate = [...payslipdeductions];
+                  const dataUpdate = [...deductionsdata];
                   const index = oldData.tableData.id;
                   dataUpdate[index] = newData;
-                  //setData([...dataUpdate]);
-                  update_PayslipDeduction(newData);
-                  calc_Deduction(dataUpdate);
+                  setDeductionsdata([...dataUpdate]);
                   resolve();
                 }, 1000);
               }),
             onRowDelete: (oldData) =>
               new Promise((resolve, reject) => {
                 setTimeout(() => {
-                  const dataDelete = [...payslipdeductions];
+                  const dataDelete = [...deductionsdata];
                   const index = oldData.tableData.id;
                   dataDelete.splice(index, 1);
-                  // setData([...dataDelete]);
-                  delete_PayslipDeduction(oldData);
-                  calc_Deduction(dataDelete);
+                  setDeductionsdata([...dataDelete]);
                   resolve();
                 }, 1000);
               }),
+          }}
+          options={{
+            filtering: true,
+            headerStyle: {
+              backgroundColor: "orange",
+              color: "primary",
+            },
+            showTitle: true,
+          }}
+          components={{
+            Toolbar: (props) => (
+              <div>
+                <MTableToolbar {...props} />
+                <div style={{ padding: "5px 10px" }}>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="secondary"
+                    className={classes.button}
+                    onClick={Save_DeductionsData}
+                  >
+                    Update <Icon className={classes.rightIcon}>send</Icon>
+                  </Button>
+                </div>
+              </div>
+            ),
           }}
         />
       </div>

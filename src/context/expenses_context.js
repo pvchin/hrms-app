@@ -67,6 +67,21 @@ export const ExpensesProvider = ({ children }) => {
     }
   };
 
+const loadPendingExpenses = async (fi) => {
+  dispatch({ type: GET_EXPENSES_BEGIN });
+  try {
+    //const res = await fetch(leaves_url);
+    //const { data } = await axios.get(employees_url);
+    //const employees = data;
+    const { data } = await axios.get(`${expenses_url}?fi=${fi}`);
+    const expenses = data;
+
+    dispatch({ type: GET_EXPENSES_SUCCESS, payload: expenses });
+  } catch (error) {
+    dispatch({ type: GET_EXPENSES_ERROR });
+  }
+};
+
   const setIsExpenseEditingOn = () => {
     dispatch({ type: SET_ISEXPENSEEDITING_ON });
   };
@@ -146,6 +161,7 @@ export const ExpensesProvider = ({ children }) => {
       value={{
         ...state,
         loadExpenses,
+        loadPendingExpenses,
         addExpense,
         updateExpense,
         deleteExpense,

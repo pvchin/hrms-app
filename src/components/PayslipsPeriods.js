@@ -6,20 +6,27 @@ import Button from "@material-ui/core/Button";
 import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import { useHistory } from "react-router-dom";
-
+import { useSetRecoilState } from "recoil";
+import { payPeriodState, payPeriodEndMonthState } from "./data/atomdata";
 import { usePayslipsContext } from "../context/payslips_context";
 import { useTablesContext } from "../context/tables_context";
+import { useEmployeesContext } from "../context/employees_context";
 import { periods } from "../utils/constants";
 import BatchPayslips from "./BatchPayslips";
 
 const PayslipsPeriods = () => {
   let history = useHistory();
   const classes = useStyles();
+  const setPayPeriod = useSetRecoilState(payPeriodState);
+  const setPayPeriodEndMonth = useSetRecoilState(payPeriodEndMonthState);
   const { setPayslipPeriod, setPayslipEndMonthDate } = usePayslipsContext();
+  const { loadEmployees, employees } = useEmployeesContext();
   const { loadAllowances, allowances, loadDeductions, deductions } =
     useTablesContext();
 
   const handlePeriod = (name, monthenddate) => {
+    setPayPeriod(name);
+     setPayPeriodEndMonth(monthenddate);
     setPayslipPeriod(name);
     setPayslipEndMonthDate(monthenddate);
     history.push("/batchpayslips");
@@ -28,6 +35,7 @@ const PayslipsPeriods = () => {
   useEffect(() => {
     loadAllowances();
     loadDeductions();
+    loadEmployees()
   }, []);
 
   return (

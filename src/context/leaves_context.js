@@ -74,6 +74,21 @@ export const LeavesProvider = ({ children }) => {
     }
   };
 
+  const loadPendingLeaves = async (fi) => {
+    dispatch({ type: GET_LEAVES_BEGIN });
+    try {
+      //const res = await fetch(leaves_url);
+      //const { data } = await axios.get(employees_url);
+      //const employees = data;
+      const { data } = await axios.get(`${leaves_url}?fi=${fi}`);
+      const leaves = data;
+
+      dispatch({ type: GET_LEAVES_SUCCESS, payload: leaves });
+    } catch (error) {
+      dispatch({ type: GET_LEAVES_ERROR });
+    }
+  };
+
   const setIsLeaveEditingOn = () => {
     dispatch({ type: SET_ISLEAVEEDITING_ON });
   };
@@ -111,7 +126,7 @@ export const LeavesProvider = ({ children }) => {
       const res = await fetch(`${leaves_url}?fv=${empid}`);
       //console.log(`${family_url}?fv=${linkid}`);
       const singlebatchleave = await res.json();
-      
+
       dispatch({
         type: GET_SINGLEBATCH_LEAVE_SUCCESS,
         payload: singlebatchleave,
@@ -169,6 +184,7 @@ export const LeavesProvider = ({ children }) => {
       value={{
         ...state,
         loadLeaves,
+        loadPendingLeaves,
         addLeave,
         updateLeave,
         deleteLeave,

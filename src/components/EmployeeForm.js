@@ -1,24 +1,22 @@
-import React, { useState, useReducer, useEffect } from "react";
+import React from "react";
 import {
   Button,
   Icon,
   TextField,
   Paper,
   Typography,
-  Select,
   Grid,
   Divider,
 } from "@material-ui/core";
-import { Alert, AlertTitle } from "@material-ui/lab";
+//import { Alert, AlertTitle } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core/styles";
 import MenuItem from "@material-ui/core/MenuItem";
 import { useEmployeesContext } from "../context/employees_context";
 import { Controller, useForm } from "react-hook-form";
-import { useHistory } from "react-router-dom";
 
-import Emp_Family from "./Emp_Family";
-import Emp_Educations from "./Emp_Educations";
-import Emp_Experiences from "./Emp_Experiences";
+import EmpFamily from "./EmpFamily";
+import EmpEducations from "./EmpEducations";
+import EmpExperiences from "./EmpExperiences";
 
 const initial_values = {
   name: "",
@@ -39,10 +37,11 @@ const initial_values = {
   passport_expirydate: null,
   workpermitno: "",
   workpermit_expirydate: null,
+  siteallows_fee: 0,
+  perdiem_fee: 0,
 };
 
 const EmployeeForm = () => {
-  let history = useHistory();
   const classes = useStyles();
   const {
     isEditing,
@@ -50,13 +49,11 @@ const EmployeeForm = () => {
     updateEmployee,
     addEmployee,
     editEmployeeID,
-    loadEmployees,
     single_employee_loading,
   } = useEmployeesContext();
   const {
     name,
     ic_no,
-    ic_expirydate,
     gender,
     age,
     email,
@@ -73,6 +70,8 @@ const EmployeeForm = () => {
     passport_expirydate,
     workpermitno,
     workpermit_expirydate,
+    siteallows_fee,
+    perdiem_fee,
   } = single_employee || initial_values;
   const { handleSubmit, control } = useForm();
 
@@ -318,6 +317,62 @@ const EmployeeForm = () => {
                         id="standard-number"
                         name="basic_pay"
                         defaultValue={basic_salary}
+                        className={classes.textField}
+                        //onChange={onChange}
+                        onChange={(e) => {
+                          onChange(parseInt(e.target.value, 10));
+                        }}
+                        error={!!error}
+                        helperText={error ? error.message : null}
+                      />
+                    );
+                  }}
+                  //rules={{ required: "IC No required" }}
+                />
+              </div>
+              <div>
+                <Controller
+                  name="siteallows_fee"
+                  control={control}
+                  defaultValue={siteallows_fee}
+                  render={({
+                    field: { onChange, value },
+                    fieldState: { error },
+                  }) => {
+                    return (
+                      <TextField
+                        label="Site Allowances Fee"
+                        type="number"
+                        id="standard-number"
+                        name="siteallows_fee"
+                        defaultValue={siteallows_fee}
+                        className={classes.textField}
+                        //onChange={onChange}
+                        onChange={(e) => {
+                          onChange(parseInt(e.target.value, 10));
+                        }}
+                        error={!!error}
+                        helperText={error ? error.message : null}
+                      />
+                    );
+                  }}
+                  //rules={{ required: "IC No required" }}
+                />
+                <Controller
+                  name="perdiem_fee"
+                  control={control}
+                  defaultValue={perdiem_fee}
+                  render={({
+                    field: { onChange, value },
+                    fieldState: { error },
+                  }) => {
+                    return (
+                      <TextField
+                        label="Perdiem Fee"
+                        type="number"
+                        id="standard-number"
+                        name="perdiem_fee"
+                        defaultValue={perdiem_fee}
                         className={classes.textField}
                         //onChange={onChange}
                         onChange={(e) => {
@@ -594,13 +649,13 @@ const EmployeeForm = () => {
       </form>
 
       <Grid xs={12}>
-        <Emp_Family />
+        <EmpFamily />
       </Grid>
       <Grid xs={12}>
-        <Emp_Educations />
+        <EmpEducations />
       </Grid>
       <Grid xs={12}>
-        <Emp_Experiences />
+        <EmpExperiences />
       </Grid>
     </div>
   );

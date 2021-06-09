@@ -147,6 +147,22 @@ export const PayslipsProvider = ({ children }) => {
     }
   };
 
+  const loadPendingPayslips = async (fi) => {
+    dispatch({ type: GET_PAYSLIPS_BEGIN });
+    try {
+      // const res = await fetch(
+      //   `${employees_url}?filterValue="${state.filterValue}"&filterField="${state.filterField}"`
+      // );
+      const res = await fetch(`${payslips_url}?fi=${fi}`);
+      //const { data } = await axios.get(employees_url);
+      //const employees = data;
+      const payslips = await res.json();
+      dispatch({ type: GET_PAYSLIPS_SUCCESS, payload: payslips });
+    } catch (error) {
+      dispatch({ type: GET_PAYSLIPS_ERROR });
+    }
+  };
+
   const getSingleBatchPayslip = async (period) => {
     dispatch({ type: GET_SINGLEBATCH_PAYSLIP_BEGIN });
     try {
@@ -423,6 +439,7 @@ export const PayslipsProvider = ({ children }) => {
       value={{
         ...state,
         loadPayslips,
+        loadPendingPayslips,
         addPayslip,
         updatePayslip,
         deletePayslip,

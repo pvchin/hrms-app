@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import MaterialTable from "material-table";
 import { makeStyles } from "@material-ui/core/styles";
-import { useHistory, Link } from "react-router-dom";
 
 import { useTablesContext } from "../context/tables_context";
 
@@ -13,7 +12,7 @@ const columns = [
 ];
 
 export default function UpdateDeductions() {
-  let history = useHistory();
+
   const classes = useStyles();
   const {
     loadDeductions,

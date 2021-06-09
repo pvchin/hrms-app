@@ -9,7 +9,12 @@ import SearchIcon from "@material-ui/icons/Search";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import BuildOutlinedIcon from "@material-ui/icons/BuildOutlined";
 import { useHistory, Link } from "react-router-dom";
-
+import { useSetRecoilState, useRecoilValue } from "recoil";
+import {
+  payPeriodState,
+  payPeriodEndMonthState,
+  payPeriodEmpIdState,
+} from "./data/atomdata";
 import { usePayslipsContext } from "../context/payslips_context";
 import { useEmployeesContext } from "../context/employees_context";
 
@@ -19,16 +24,27 @@ const columns = [
     field: "name",
   },
   { title: "Period", field: "period" },
-  { title: "Date", field: "date", type: "date" },
-  { title: "Nett Pay", field: "nett_pay", type: "numeric" },
-  { title: "Bank Name", field: "bank_name" },
-  { title: "Bank AC No", field: "bank_accno" },
+  {
+    title: "Date",
+    field: "date",
+    type: "date",
+    dateSetting: { locale: "en-GB" },
+  },
+  { title: "Basic Pay", field: "basic_pay", type: "currency" },
+  { title: "TAP Amount", field: "tap_amount", type: "currency" },
+  { title: "SCP Amount", field: "scp_amount", type: "currency" },
+  { title: "Earnings", field: "total_earnings", type: "currency" },
+  { title: "Deductions", field: "total_deductions", type: "currency" },
+  { title: "Nett Pay", field: "nett_pay", type: "currency" },
+  // { title: "Bank Name", field: "bank_name" },
+  // { title: "Bank AC No", field: "bank_accno" },
   { title: "Status", field: "status" },
 ];
 
-export default function AllEmployeesTable() {
+export default function PayslipTable() {
   let history = useHistory();
   const classes = useStyles();
+  const setPayPeriodEmpId = useSetRecoilState(payPeriodEmpIdState);
   const {
     payslips,
     addPayslip,
@@ -56,6 +72,7 @@ export default function AllEmployeesTable() {
 
   const update_Payslip = async (data) => {
     const { id } = data;
+    setPayPeriodEmpId(id); //save to recoil
     setEditPayslipID(id);
     setIsPayslipEditingOn();
     getSinglePayslip(id);
@@ -81,11 +98,11 @@ export default function AllEmployeesTable() {
     const current_period = payslip_period;
     const current_endmonthdate = Date.parse(payslip_endmonthdate);
 
-    loadEmployees();
+    // loadEmployees();
     console.log(current_period);
     getSingleBatchPayslip(payslip_period);
-    const paydata = singlebatchpayslip.map((e) => e.name);
-    console.log("paydata", singlebatchpayslip.length, paydata);
+    const paydata = singlebatchpayslip.map((e) => e.name) || [];
+  
     {
       employees.map((emp) => {
         const {
@@ -94,30 +111,39 @@ export default function AllEmployeesTable() {
           bank_name,
           bank_acno,
           basic_salary,
+          nett_pay,
           tap_acno,
+          tap_amount,
           scp_acno,
+          scp_amount
         } = emp;
         const data = {
           name: name,
           period: current_period,
           date: current_endmonthdate,
           basic_pay: basic_salary,
-          nett_pay: 0,
+          nett_pay: nett_pay,
           bank_name: bank_name,
           bank_acno: bank_acno,
           tap_acno: tap_acno,
+          tap_amount: tap_amount,
           scp_acno: scp_acno,
+          scp_amount: scp_amount,
           empid: id,
           status: "Pending",
         };
-        const res = paydata.includes(emp.name);
-        if (!res) {
-          console.log("add", data);
-          addPayslip({ ...data });
+        if (paydata) {
+          const res = paydata.includes(emp.name);
+          if (!res) {
+            console.log("add", data);
+            addPayslip({ ...data });
+          } else {
+            addPayslip({ ...data });
+          }
         }
       });
     }
-    //loadDailyAllowances();
+   getSingleBatchPayslip(payslip_period);
   };
 
   if (singlebatch_payslip_loading) {

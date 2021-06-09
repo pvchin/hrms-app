@@ -6,45 +6,17 @@ import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 
+import CardLayout3 from "../helpers/CardLayout3";
 import Copyright from "../components/Copyright";
-
+import HomeAdmin from "../components/HomeAdmin";
 const drawerWidth = 240;
 
 const HomePage = () => {
-  const classes = useStyles();
-  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+  // const classes = useStyles();
+  // const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
   return (
     <div>
-      <div className={classes.appBarSpacer} />
-      <div style={{ paddingLeft: 50 }}>
-        <h2>Welcome Admin!</h2>
-        <h3>Dashboard</h3>
-      </div>
-      <Container maxWidth="lg" className={classes.container}>
-        <Grid container spacing={3}>
-          {/* Chart */}
-          <Grid item xs={12} md={8} lg={9}>
-            <Paper className={fixedHeightPaper}>
-              <div>Chart</div>
-            </Paper>
-          </Grid>
-          {/* Recent Deposits */}
-          <Grid item xs={12} md={4} lg={3}>
-            <Paper className={fixedHeightPaper}>
-              <div>Leaves Pending for Apprival</div>
-            </Paper>
-          </Grid>
-          {/* Recent Orders */}
-          <Grid item xs={12}>
-            <Paper className={classes.paper}>
-              <div>Expenses Pending for Approval</div>
-            </Paper>
-          </Grid>
-        </Grid>
-        <Box pt={4}>
-          <Copyright />
-        </Box>
-      </Container>
+      <HomeAdmin />
     </div>
   );
 };

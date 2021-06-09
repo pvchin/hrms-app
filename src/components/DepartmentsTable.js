@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
 import MaterialTable from "material-table";
 import { makeStyles } from "@material-ui/core/styles";
-import { useHistory, Link } from "react-router-dom";
-
+import { useRecoilState, useRecoilValueLoadable } from "recoil";
+import { fetchDepartmentsSelector } from "./data/selectordata";
+import { deptDataState } from "./data/atomdata";
 import { useTablesContext } from "../context/tables_context";
 
 const columns = [
@@ -13,8 +14,10 @@ const columns = [
 ];
 
 export default function UpdateDepartments() {
-  let history = useHistory();
   const classes = useStyles();
+  const [deptdata, setDeptdata] = useRecoilState(deptDataState);
+  const deptDetails = useRecoilValueLoadable(fetchDepartmentsSelector);
+  const { state, contents } = deptDetails;
   const {
     loadDepartments,
     departments,
@@ -47,10 +50,11 @@ export default function UpdateDepartments() {
   if (departments_loading) {
     return (
       <div>
-        <h2>Loading.....Departments</h2>
+        <h2>Loading.....Designations</h2>
       </div>
     );
   }
+
   return (
     <div className={classes.root}>
       <div style={{ maxWidth: "100%", paddingTop: "5px" }}>
@@ -94,7 +98,6 @@ export default function UpdateDepartments() {
     </div>
   );
 }
-
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: 0,

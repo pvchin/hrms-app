@@ -1,11 +1,10 @@
-import React, { useState, useReducer, useEffect } from "react";
+import React from "react";
 import {
   Button,
   Icon,
   TextField,
   Paper,
   Typography,
-  Select,
   Divider,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
@@ -13,7 +12,6 @@ import MenuItem from "@material-ui/core/MenuItem";
 import { useEmployeesContext } from "../context/employees_context";
 import { useLeavesContext } from "../context/leaves_context";
 import { Controller, useForm } from "react-hook-form";
-import { useHistory } from "react-router-dom";
 
 const initial_values = {
   name: "",
@@ -22,10 +20,10 @@ const initial_values = {
   reason: "",
   status: "Pending",
   no_of_days: 0,
+  leave_bal: 0,
 };
 
 const LeaveForm = ({ handleDialogClose }) => {
-  let history = useHistory();
   const classes = useStyles();
   const {
     isLeaveEditing,
@@ -33,11 +31,10 @@ const LeaveForm = ({ handleDialogClose }) => {
     updateLeave,
     addLeave,
     editLeaveID,
-    loadLeaves,
     single_leave_loading,
   } = useLeavesContext();
-  const { loadEmployees, employees } = useEmployeesContext();
-  const { name, to_date, from_date, reason, status, no_of_days } =
+  const { employees } = useEmployeesContext();
+  const { name, to_date, from_date, reason, status, no_of_days, leave_bal } =
     single_leave || initial_values;
   const { handleSubmit, control } = useForm();
 
@@ -55,6 +52,11 @@ const LeaveForm = ({ handleDialogClose }) => {
   if (single_leave_loading) {
     return <div>Loading...</div>;
   }
+
+  const handleOnChangeName = (name) => {
+    console.log(name);
+  };
+
   return (
     <div>
       <Paper className={classes.root}>
@@ -78,9 +80,13 @@ const LeaveForm = ({ handleDialogClose }) => {
                     label="Name"
                     id="margin-normal"
                     name="name"
-                    defaultValue={name}
+                    value={value}
                     className={classes.textField}
-                    onChange={onChange}
+                    //onChange={onChange}
+                    onChange={(e) => {
+                      console.log(e.target.value);
+                      onChange(e.target.value)
+                    }}
                     error={!!error}
                     helperText={error ? error.message : null}
                     select
@@ -154,6 +160,36 @@ const LeaveForm = ({ handleDialogClose }) => {
                 );
               }}
               rules={{ required: "To Date is required" }}
+            />
+          </div>
+          <div>
+            <Controller
+              name="leave_bal"
+              control={control}
+              defaultValue={leave_bal}
+              render={({
+                field: { onChange, value },
+                fieldState: { error },
+              }) => {
+                return (
+                  <TextField
+                    disable
+                    label="Leave Balance"
+                    type="number"
+                    id="standard-number"
+                    name="leave_bal"
+                    defaultValue={leave_bal}
+                    className={classes.textField}
+                    //onChange={onChange}
+                    onChange={(e) => {
+                      onChange(parseInt(e.target.value, 10));
+                    }}
+                    error={!!error}
+                    helperText={error ? error.message : null}
+                  />
+                );
+              }}
+              //rules={{ required: "IC No required" }}
             />
           </div>
           <div>
@@ -233,8 +269,8 @@ const LeaveForm = ({ handleDialogClose }) => {
                   >
                     <MenuItem value="Pending">Pending</MenuItem>
                     <MenuItem value="Cancel">Cancel</MenuItem>
-                    <MenuItem value="Approved">Approved</MenuItem>
-                    <MenuItem value="Rejected">Rejected</MenuItem>
+                    <MenuItem value="Approve">Approve</MenuItem>
+                    <MenuItem value="Reject">Reject</MenuItem>
                   </TextField>
                 );
               }}

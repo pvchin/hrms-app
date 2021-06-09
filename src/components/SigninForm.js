@@ -1,10 +1,8 @@
 import React, { useState } from "react";
 import { Button, TextField } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { useHistory, Link } from "react-router-dom";
 
 const SigninForm = ({ setLogin }) => {
-  let history = useHistory();
   const classes = useStyles();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -58,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
 
     "& .MuiTextField-root": {
       margin: theme.spacing(1),
-      width: "300px",
+      width: "550px",
     },
     "& .MuiButtonBase-root": {
       margin: theme.spacing(2),

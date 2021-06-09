@@ -1,25 +1,26 @@
 import React, { useState } from "react";
 import {
+  Container,
   Card,
   CardContent,
   CardHeader,
+  CardActionArea,
   CardMedia,
-  Avatar,
   Divider,
   Typography,
+  Paper,
 } from "@material-ui/core";
-import { makeStyles } from "@material-ui/core/styles";
-import { useHistory, Link } from "react-router-dom";
 
-import img from "../assets/appsmithslogo.png";
+import { makeStyles } from "@material-ui/core/styles";
+
+import img from "../assets/AppSutLogo.jpg";
 import SigninForm from "./SigninForm";
 import DashboardAdmin from "./DashboardAdmin";
 
 const Login = ({ setLogin }) => {
-  let history = useHistory();
   const classes = useStyles();
-
   const [openDialog, setOpenDialog] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleOpenDialog = () => {
     setOpenDialog(true);
@@ -27,16 +28,20 @@ const Login = ({ setLogin }) => {
 
   const handleCloseDialog = () => {
     setOpenDialog(false);
+    setIsLoading(true);
     return <DashboardAdmin />;
   };
 
   return (
-    <div className={classes.app}>
+    <Container className={classes.root}>
       {/* <Button variant="contained" color="primary" onClick={handleOpen}>
         Signin
       </Button> */}
+      <Paper variant="outlined">
+        <img src={img} />
+      </Paper>
       <Card className={classes.card}>
-        <CardHeader
+        {/* <CardHeader
           //  avatar={
           //    <Avatar aria-label="recipe" className={classes.avatar}>
           //      L
@@ -52,41 +57,45 @@ const Login = ({ setLogin }) => {
             fontSize: 60,
             // backgroundColor: "background",
           }}
-        />
-        {/* <CardMedia
-          className={classes.media}
-          image={img}
-          title="Contemplative Reptile"
         /> */}
-        <Divider className={classes.divider} />
-        <CardContent>
-          <Typography
-            gutterBottom
-            variant="h4"
-            component="h3"
-            className={classes.typography}
-            style={{ textAlign: "center" }}
-          >
-            Login
-          </Typography>
-          <Typography
-            variant="h6"
-            color="textSecondary"
-            component="h3"
-            style={{ textAlign: "center" }}
-          >
-            Access to Admin dashboard
-          </Typography>
-          <SigninForm setLogin={setLogin} />
-        </CardContent>
+        <CardActionArea>
+          {/* <CardMedia
+            style={{ height: 0, paddingTop: "56.25%" }}
+            // className={classes.media}
+            image={img}
+            title="Contemplative Reptile"
+          /> */}
+          <Divider className={classes.divider} />
+          <CardContent>
+            <Typography
+              gutterBottom
+              variant="h4"
+              component="h3"
+              className={classes.typography}
+              style={{ textAlign: "center" }}
+            >
+              Login
+            </Typography>
+            <Typography
+              variant="h6"
+              color="textSecondary"
+              component="h3"
+              style={{ textAlign: "center" }}
+            >
+              Access to Admin dashboard
+            </Typography>
+            <SigninForm setLogin={setLogin} />
+          </CardContent>
+        </CardActionArea>
       </Card>
-    </div>
+    </Container>
   );
 };
 
 const useStyles = makeStyles((theme) => ({
   app: {
     height: "100vh",
+    width: "500",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
@@ -106,7 +115,7 @@ const useStyles = makeStyles((theme) => ({
       margin: theme.spacing(2),
     },
   },
-  card: {
+  card2: {
     position: "relative",
     width: "400px",
     color: "primary",
@@ -125,7 +134,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
     align: "center",
   },
-  media: {
+  media2: {
     margin: "-70px auto 0",
     width: "80%",
     height: 300,
@@ -134,6 +143,21 @@ const useStyles = makeStyles((theme) => ({
     position: "relative",
     zIndex: 1000,
     paddingTop: "56.25%",
+  },
+  card: {
+    width: 650,
+    margin: "auto",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  media: {
+    height: "800",
+    width: "100%",
+    objectFit: "cover",
+    // marginLeft: '33%'
+    // paddingTop: "56.25%", // 16:9
   },
   divider: {
     // Theme Color, or use css color in quote

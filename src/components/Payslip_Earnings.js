@@ -1,22 +1,32 @@
 import React, { useState, useEffect, useRef } from "react";
 
-import MaterialTable from "material-table";
+import MaterialTable, { MTableToolbar } from "material-table";
 import { makeStyles } from "@material-ui/core/styles";
-import AddIcon from "@material-ui/icons/Add";
-import EditIcon from "@material-ui/icons/Edit";
-import DeleteIcon from "@material-ui/icons/Delete";
-import CheckIcon from "@material-ui/icons/Check";
-import SearchIcon from "@material-ui/icons/Search";
-import { useHistory, Link } from "react-router-dom";
+import { Button, Icon, TextField, MenuItem } from "@material-ui/core";
 
+import { useHistory, Link } from "react-router-dom";
+import { useSetRecoilState, useRecoilValue } from "recoil";
+import {
+  payPeriodState,
+  payPeriodEndMonthState,
+  payPeriodEmpIdState,
+  payEarningDataState,
+} from "./data/atomdata";
 import { usePayslipsContext } from "../context/payslips_context";
 import { useTablesContext } from "../context/tables_context";
 
-export default function Payslip_Earnings({ setCalc }) {
+export default function Payslip_Earnings({
+  setCalc,
+  earningsdata,
+  oldEarningsdata,
+  setEarningsdata,
+  handleDialogClose,
+}) {
   let history = useHistory();
-  const [obj, setObj] = useState({});
-  const [load, setLoad] = useState(true);
-  const classes = useStyles();
+   const classes = useStyles();
+  const payPeriodEmpId = useRecoilValue(payPeriodEmpIdState);
+  const payPeriod = useRecoilValue(payPeriodState);
+  const payEarningData = useRecoilValue(payEarningDataState);
   const {
     payslipearnings,
     payslip_earning_amount,
@@ -35,15 +45,30 @@ export default function Payslip_Earnings({ setCalc }) {
   const { name, amount } = payslipearnings;
   const { allowances } = useTablesContext();
 
+  const columns = [
+    {
+      title: "Description",
+      field: "description",
+      editComponent: (props) => (
+        <TextField
+          //defaultValue={props.value || null}
+          onChange={(e) => props.onChange(e.target.value)}
+          style={{ width: 200 }}
+          value={props.value}
+          select
+        >
+          {allowances.map((r) => {
+            return <MenuItem value={r.name}>{r.name}</MenuItem>;
+          })}
+        </TextField>
+      ),
+    },
+    { title: "Amount", field: "amount", type: "currency" },
+  ];
+
   useEffect(() => {
     getSingleBatchPayslipEarnings(single_payslip.empid, payslip_period);
   }, []);
-
-  useEffect(() => {
-    handleLookup();
-    setLoad(false);
-    console.log("effect", obj);
-  }, [load]);
 
   const calc_Earning = (data) => {
     const sum = data.reduce((a, v) => (a = a + v.amount), 0);
@@ -90,13 +115,36 @@ export default function Payslip_Earnings({ setCalc }) {
     getSingleBatchPayslipEarnings(single_payslip.empid, payslip_period);
   };
 
-  const handleLookup = () => {
-    setObj(
-      allowances.reduce(function (acc, cur, i) {
-        acc[cur.rec_id] = cur.name;
-        return acc;
-      }, {})
-    );
+  const Save_EarningsData = () => {
+    // delete unwanted data
+    console.log("update", earningsdata, oldEarningsdata);
+    oldEarningsdata.forEach((row) => {
+      const { id, rec_id } = row;
+      const res = earningsdata.find((r) => r.rec_id === rec_id);
+      console.log("find", id, res);
+      if (!res) {
+        deletePayslipEarning(id);
+      }
+    });
+    //add or update new data
+
+    earningsdata.forEach((data) => {
+      const { id, description, amount } = data;
+      if (id) {
+        const { id, rec_id, tableData, ...fields } = data;
+        updatePayslipEarning({ id, ...fields });
+      } else {
+        addPayslipEarning({
+          description: description,
+          amount: amount,
+          name: single_payslip.name,
+          empid: payPeriodEmpId,
+          period: payPeriod,
+        });
+      }
+    });
+
+    handleDialogClose();
   };
 
   if (payslipearnings_loading) {
@@ -113,36 +161,24 @@ export default function Payslip_Earnings({ setCalc }) {
 
       <div style={{ maxWidth: "100%", paddingTop: "5px" }}>
         <MaterialTable
-          //columns={columns}
-          columns={[
-            {
-              title: "Name",
-              field: "description",
-              lookup: obj,
-            },
-            { title: "Amount", field: "amount", type: "numeric" },
-          ]}
-          data={payslipearnings}
+          columns={columns}
+          data={earningsdata}
           title="Income"
           editable={{
             onRowAdd: (newData) =>
               new Promise((resolve, reject) => {
                 setTimeout(() => {
-                  // setData([...data, newData]);
-                  add_PayslipEarning(newData);
-                  calc_Earning([...payslipearnings, newData]);
+                  setEarningsdata([...earningsdata, newData]);
                   resolve();
                 }, 1000);
               }),
             onRowUpdate: (newData, oldData) =>
               new Promise((resolve, reject) => {
                 setTimeout(() => {
-                  const dataUpdate = [...payslipearnings];
+                  const dataUpdate = [...earningsdata];
                   const index = oldData.tableData.id;
                   dataUpdate[index] = newData;
-                  //setData([...dataUpdate]);
-                  update_PayslipEarning(newData);
-                  calc_Earning(dataUpdate);
+                  setEarningsdata([...dataUpdate]);
 
                   resolve();
                 }, 1000);
@@ -150,15 +186,40 @@ export default function Payslip_Earnings({ setCalc }) {
             onRowDelete: (oldData) =>
               new Promise((resolve, reject) => {
                 setTimeout(() => {
-                  const dataDelete = [...payslipearnings];
+                  const dataDelete = [...earningsdata];
                   const index = oldData.tableData.id;
                   dataDelete.splice(index, 1);
-                  // setData([...dataDelete]);
-                  delete_PayslipEarning(oldData);
-                  calc_Earning(dataDelete);
+                  setEarningsdata([...dataDelete]);
+
                   resolve();
                 }, 1000);
               }),
+          }}
+          options={{
+            filtering: true,
+            headerStyle: {
+              backgroundColor: "orange",
+              color: "primary",
+            },
+            showTitle: true,
+          }}
+          components={{
+            Toolbar: (props) => (
+              <div>
+                <MTableToolbar {...props} />
+                <div style={{ padding: "5px 10px" }}>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="secondary"
+                    className={classes.button}
+                    onClick={Save_EarningsData}
+                  >
+                    Update <Icon className={classes.rightIcon}>send</Icon>
+                  </Button>
+                </div>
+              </div>
+            ),
           }}
         />
       </div>

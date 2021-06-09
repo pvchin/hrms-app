@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
-
 import MaterialTable from "material-table";
+import { TextField, MenuItem } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import CheckIcon from "@material-ui/icons/Check";
 import SearchIcon from "@material-ui/icons/Search";
-import { useHistory, Link } from "react-router-dom";
 import LeaveForm from "./LeaveForm";
 import { CustomDialog } from "../helpers/CustomDialog";
 import { AlertDialog } from "../helpers/AlertDialog";
@@ -18,25 +17,58 @@ const columns = [
   {
     title: "Name",
     field: "name",
+    editable: "never",
   },
-  { title: "From Date", field: "from_date" },
-  { title: "To Date", field: "to_date" },
-  { title: "No of Days", field: "no_of_days" },
-  { title: "Status", field: "status" },
+  {
+    title: "From Date",
+    field: "from_date",
+    type: "date",
+    dateSetting: { locale: "en-GB" },
+    editable: "never",
+  },
+  {
+    title: "To Date",
+    field: "to_date",
+    type: "date",
+    dateSetting: { locale: "en-GB" },
+    editable: "never",
+  },
+  { title: "Leave Balance", field: "leave_bal", type:"numeric",editable: "never" },
+  { title: "No of Days", field: "no_of_days", type: "mumeric",editable: "never" },
+  {
+    title: "Reason",
+    field: "reason",
+    editable: "never"
+  },
+  {
+    title: "Status",
+    field: "status",
+    editComponent: (props) => (
+      <TextField
+        //defaultValue={props.value || null}
+        onChange={(e) => props.onChange(e.target.value)}
+        style={{ width: 100 }}
+        value={props.value}
+        select
+      >
+        <MenuItem value="Pending">Pending</MenuItem>
+        <MenuItem value="Approve">Approve</MenuItem>
+        <MenuItem value="Reject">Reject</MenuItem>
+        <MenuItem value="Cancel">Cancel</MenuItem>
+      </TextField>
+    ),
+  },
 ];
 
 export default function LeaveTable() {
-  let history = useHistory();
   const classes = useStyles();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
-  const { loadEmployees, employees } = useEmployeesContext();
+  const { loadEmployees } = useEmployeesContext();
   const {
     leaves,
-    addLeave,
     editLeaveID,
     leaves_loading,
-    updateLeave,
     deleteLeave,
     loadLeaves,
     getSingleLeave,
@@ -64,7 +96,7 @@ export default function LeaveTable() {
   };
 
   const add_Leave = async (data) => {
-    const { id } = data;
+    // const { id } = data;
     resetSingleLeave();
     setEditLeaveID("");
     setIsLeaveEditingOff();
@@ -104,7 +136,11 @@ export default function LeaveTable() {
   };
 
   if (leaves_loading) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <h2>Loading...Leaves</h2>
+      </div>
+    );
   }
   return (
     <div className={classes.root}>
@@ -124,6 +160,7 @@ export default function LeaveTable() {
             Search: (props) => <SearchIcon />,
             ResetSearch: (props) => <DeleteIcon />,
           }}
+          
           actions={[
             {
               icon: "edit",

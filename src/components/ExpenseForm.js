@@ -1,18 +1,10 @@
-import React, { useState, useReducer, useEffect } from "react";
-import {
-  Button,
-  Icon,
-  TextField,
-  Paper,
-  Typography,
-  Select,
-} from "@material-ui/core";
+import React from "react";
+import { Button, Icon, TextField, Paper, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import MenuItem from "@material-ui/core/MenuItem";
 import { useEmployeesContext } from "../context/employees_context";
 import { useExpensesContext } from "../context/expenses_context";
 import { Controller, useForm } from "react-hook-form";
-import { useHistory } from "react-router-dom";
 
 const initial_values = {
   name: "",
@@ -26,7 +18,6 @@ const initial_values = {
 };
 
 const ExpenseForm = ({ handleDialogClose }) => {
-  let history = useHistory();
   const classes = useStyles();
   const {
     isExpenseEditing,
@@ -34,10 +25,9 @@ const ExpenseForm = ({ handleDialogClose }) => {
     updateExpense,
     addExpense,
     editExpenseID,
-    loadExpenses,
     single_expense_loading,
   } = useExpensesContext();
-  const { loadEmployees, employees } = useEmployeesContext();
+  const { employees } = useEmployeesContext();
   const {
     name,
     from_date,
@@ -120,7 +110,6 @@ const ExpenseForm = ({ handleDialogClose }) => {
                 return (
                   <TextField
                     label="From Date"
-                    type="from_date"
                     type="date"
                     id="margin-normal"
                     name="from_date"
@@ -294,8 +283,8 @@ const ExpenseForm = ({ handleDialogClose }) => {
                   >
                     <MenuItem value="Pending">Pending</MenuItem>
                     <MenuItem value="Cancel">Cancel</MenuItem>
-                    <MenuItem value="Approved">Approved</MenuItem>
-                    <MenuItem value="Rejected">Rejected</MenuItem>
+                    <MenuItem value="Approve">Approve</MenuItem>
+                    <MenuItem value="Reject">Reject</MenuItem>
                   </TextField>
                 );
               }}

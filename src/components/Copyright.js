@@ -8,9 +8,8 @@ const Copyright = () => {
       {"Copyright © "}
       <Link color="inherit" href="https://material-ui.com/">
         SK Communication Services
-      </Link>{" "}
+      </Link>
       {new Date().getFullYear()}
-      {"."}
     </Typography>
   );
 };

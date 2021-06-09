@@ -116,6 +116,20 @@ export const DailyAllowancesProvider = ({ children }) => {
     }
   };
 
+  const loadPendingDailyAllowances = async (fi) => {
+    dispatch({ type: GET_DAILYALLOWANCES_BEGIN });
+    try {
+      // const res = await fetch(
+      //   `${employees_url}?filterValue="${state.filterValue}"&filterField="${state.filterField}"`
+      // );
+      const { data } = await axios.get(`${dailyallowances_url}?fi=${fi}`);
+      const dailyallowances = data;
+      dispatch({ type: GET_DAILYALLOWANCES_SUCCESS, payload: dailyallowances });
+    } catch (error) {
+      dispatch({ type: GET_DAILYALLOWANCES_ERROR });
+    }
+  };
+
   const setIsDailyAllowanceEditingOn = () => {
     dispatch({ type: SET_ISDAILYALLOWANCEEDITING_ON });
   };
@@ -341,6 +355,7 @@ export const DailyAllowancesProvider = ({ children }) => {
       value={{
         ...state,
         loadDailyAllowances,
+        loadPendingDailyAllowances,
         addDailyAllowance,
         updateDailyAllowance,
         deleteDailyAllowance,

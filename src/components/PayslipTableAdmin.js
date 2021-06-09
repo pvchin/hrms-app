@@ -145,6 +145,7 @@ export default function PayslipTableAdmin({
           }}
           options={{
             filtering: true,
+            exportButton: true,
             headerStyle: {
               backgroundColor: "orange",
               color: "#FFF",

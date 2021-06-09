@@ -1,4 +1,5 @@
 export const employees_url = "/api/employees";
+export const wpexpiry_url = "/api/wpexpiryview";
 export const leaves_url = "/api/leaves";
 export const onleaves_url = "/api/onleavesview";
 export const expenses_url = "/api/expenses";

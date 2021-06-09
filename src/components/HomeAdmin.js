@@ -21,6 +21,7 @@ import PayslipTableAdmin from "./PayslipTableAdmin";
 import DailyAllowancesTableView from "./DailyAllowancesTableView";
 import DailyAllowancesTableAdmin from "./DailyAllowancesTableAdmin";
 import OnLeavesView from "./OnLeavesView";
+import WPExpiryView from "./WPExpiryView"
 
 const drawerWidth = 240;
 
@@ -41,14 +42,10 @@ const EmployeeView = () => {
     useState(false);
 
   const { leaves, loadPendingLeaves } = useLeavesContext();
-
   const { expenses, loadPendingExpenses } = useExpensesContext();
-
   const { payslips, loadPendingPayslips } = usePayslipsContext();
-
   const { dailyallowances, loadPendingDailyAllowances } =
     useDailyAllowancesContext();
-
   const handleLeaveDialogOpen = () => {
     setLeavesdata([]);
     setLeavesdata([...leaves]);
@@ -115,6 +112,11 @@ const EmployeeView = () => {
           <Grid item xs={6} md={8} lg={6}>
             <CardLayout3 title="Staffs Onleave within 30 Days">
               <OnLeavesView />
+            </CardLayout3>
+          </Grid>
+          <Grid item xs={6} md={8} lg={6}>
+            <CardLayout3 title="Work Permit Expiry within 90 Days">
+              <WPExpiryView />
             </CardLayout3>
           </Grid>
           <Grid item xs={6} md={8} lg={6}>

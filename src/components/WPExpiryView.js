@@ -15,7 +15,7 @@ import {
 } from "recoil";
 // import { useRecoilValue, useSetRecoilState, useRecoilState } from "recoil";
 // import { departmentsSelector } from "../helpers/Recoilhelpers";
-import { onleaves_url } from "../utils/constants";
+import { wpexpiry_url } from "../utils/constants";
 import { fetchDepartmentsSelector } from "./data/selectordata";
 
 const drawerWidth = 240;
@@ -27,15 +27,13 @@ const columns = [
     editable: "never",
   },
   {
-    title: "From Data",
-    field: "from_date",
-    type: "date",
-    dateSetting: { locale: "en-GB" },
+    title: "Work Permit No",
+    field: "workpermitno",
     editable: "never",
   },
   {
-    title: "To Data",
-    field: "to_date",
+    title: "Work Permit Expiry",
+    field: "workpermit_expirydate",
     type: "date",
     dateSetting: { locale: "en-GB" },
     editable: "never",
@@ -47,12 +45,12 @@ export const onleavesdatastate = atom({
   default: [],
 });
 
-const fetchOnLeavesDetails = selector({
-  key: "onLeaveDetailsSelector",
+const fetchWPExpiryDetails = selector({
+  key: "wpExpiryDetailsSelector",
   get: async ({ get }) => {
     try {
-      const { data } = await axios.get(onleaves_url);
-      const onleavesdata = data;
+      const { data } = await axios.get(wpexpiry_url);
+      const wpexpirydata = data;
 
       return data;
     } catch (error) {
@@ -61,23 +59,25 @@ const fetchOnLeavesDetails = selector({
   },
 });
 
-const OnLeavesView = () => {
+const WPExpiryView = () => {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
   const [userdata, setUserdata] = useState([]);
   //const [userdata, setUserdata] = useRecoilState(userdatastate);
-  const onLeavesDetails = useRecoilValueLoadable(fetchOnLeavesDetails);
-  const { state, contents } = onLeavesDetails;
+  const wpExpiryDetails = useRecoilValueLoadable(fetchWPExpiryDetails);
+  const { state, contents } = wpExpiryDetails;
 
-  console.log(onLeavesDetails);
-  if (onLeavesDetails.state === "hasError") {
+  console.log(wpExpiryDetails);
+  if (wpExpiryDetails.state === "hasError") {
     return <div> There is Internet connection problem! </div>;
   }
 
   if (state === "loading") {
-      return <div>
-          <h2>Loading....On Leaves</h2>
-          </div>;
+    return (
+      <div>
+        <h2>Loading....WP Expiry</h2>
+      </div>
+    );
   }
 
   if (state === "hasValue") {
@@ -90,7 +90,7 @@ const OnLeavesView = () => {
           <MaterialTable
             columns={columns}
             data={editable}
-            title="Staffs On Leave within 30 Days"
+            title="Work Permit Expiry in 90 Days"
             options={{
               filtering: false,
               search: false,
@@ -115,4 +115,4 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default OnLeavesView;
+export default WPExpiryView;

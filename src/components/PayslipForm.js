@@ -376,7 +376,7 @@ const PayslipForm = () => {
                       return (
                         <TextField
                           label="TAP Contrinution"
-                          type="number"
+                          type="currency"
                           id="standard-number"
                           name="tap_amount"
                           defaultValue={tap_amount}
@@ -404,7 +404,7 @@ const PayslipForm = () => {
                       return (
                         <TextField
                           label="SCP Contribution"
-                          type="number"
+                          type="currency"
                           id="standard-number"
                           name="scp_amount"
                           defaultValue={scp_amount}

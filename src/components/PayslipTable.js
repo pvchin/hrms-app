@@ -19,25 +19,20 @@ import { usePayslipsContext } from "../context/payslips_context";
 import { useEmployeesContext } from "../context/employees_context";
 
 const columns = [
-  {
-    title: "Name",
-    field: "name",
-  },
   { title: "Period", field: "period" },
   {
-    title: "Date",
-    field: "date",
+    title: "Payrun Batch",
+    field: "payrun",
     type: "date",
     dateSetting: { locale: "en-GB" },
   },
-  { title: "Basic Pay", field: "basic_pay", type: "currency" },
-  { title: "TAP Amount", field: "tap_amount", type: "currency" },
-  { title: "SCP Amount", field: "scp_amount", type: "currency" },
-  { title: "Earnings", field: "total_earnings", type: "currency" },
-  { title: "Deductions", field: "total_deductions", type: "currency" },
-  { title: "Nett Pay", field: "nett_pay", type: "currency" },
-  // { title: "Bank Name", field: "bank_name" },
-  // { title: "Bank AC No", field: "bank_accno" },
+  {
+    title: "Pay Date",
+    field: "pay_date",
+    type: "date",
+    dateSetting: { locale: "en-GB" },
+  },
+
   { title: "Status", field: "status" },
 ];
 
@@ -46,9 +41,12 @@ export default function PayslipTable() {
   const classes = useStyles();
   const setPayPeriodEmpId = useSetRecoilState(payPeriodEmpIdState);
   const {
+    payrun,
+    getPayrun,
     payslips,
     addPayslip,
-    payslips_loading,
+    payrun_loading,
+    payrun_error,
     updatePayslip,
     deletePayslip,
     loadPayslips,
@@ -67,7 +65,7 @@ export default function PayslipTable() {
   const { loadEmployees, employees } = useEmployeesContext();
 
   useEffect(() => {
-    getSingleBatchPayslip(payslip_period);
+    getPayrun();
   }, []);
 
   const update_Payslip = async (data) => {
@@ -94,62 +92,19 @@ export default function PayslipTable() {
     loadPayslips();
   };
 
-  const build_Payslip = () => {
-    const current_period = payslip_period;
-    const current_endmonthdate = Date.parse(payslip_endmonthdate);
+ 
 
-    // loadEmployees();
-    console.log(current_period);
-    getSingleBatchPayslip(payslip_period);
-    const paydata = singlebatchpayslip.map((e) => e.name) || [];
-  
-    {
-      employees.map((emp) => {
-        const {
-          id,
-          name,
-          bank_name,
-          bank_acno,
-          basic_salary,
-          nett_pay,
-          tap_acno,
-          tap_amount,
-          scp_acno,
-          scp_amount
-        } = emp;
-        const data = {
-          name: name,
-          period: current_period,
-          date: current_endmonthdate,
-          basic_pay: basic_salary,
-          nett_pay: nett_pay,
-          bank_name: bank_name,
-          bank_acno: bank_acno,
-          tap_acno: tap_acno,
-          tap_amount: tap_amount,
-          scp_acno: scp_acno,
-          scp_amount: scp_amount,
-          empid: id,
-          status: "Pending",
-        };
-        if (paydata) {
-          const res = paydata.includes(emp.name);
-          if (!res) {
-            console.log("add", data);
-            addPayslip({ ...data });
-          } else {
-            addPayslip({ ...data });
-          }
-        }
-      });
-    }
-   getSingleBatchPayslip(payslip_period);
-  };
-
-  if (singlebatch_payslip_loading) {
+  if (payrun_loading) {
     return (
       <div>
         <h2>Loading.....Payslips</h2>
+      </div>
+    );
+  }
+  if (payrun_error) {
+    return (
+      <div>
+        <h2>Internet connection problem!</h2>
       </div>
     );
   }
@@ -158,8 +113,8 @@ export default function PayslipTable() {
       <div style={{ maxWidth: "100%", paddingTop: "5px" }}>
         <MaterialTable
           columns={columns}
-          data={singlebatchpayslip}
-          title="Payslips"
+          data={payrun}
+          title="Payroll"
           icons={{
             Add: (props) => <AddIcon />,
             Edit: (props) => <EditIcon />,
@@ -170,38 +125,31 @@ export default function PayslipTable() {
             ResetSearch: (props) => <DeleteIcon />,
             Build: (props) => <BuildOutlinedIcon />,
           }}
-          actions={[
-            {
-              icon: "edit",
-              tooltip: "Edit Record",
-              onClick: (event, rowData) => {
-                update_Payslip(rowData);
-              },
-            },
-            {
-              icon: "delete",
-              tooltip: "Delete Record",
-              onClick: (event, rowData) => {
-                delete_Payslip(rowData);
-              },
-            },
-            {
-              icon: "add",
-              tooltip: "Add Record",
-              isFreeAction: true,
-              onClick: (event, rowData) => {
-                add_Payslip(rowData);
-              },
-            },
-            {
-              icon: "build",
-              tooltip: "Build Records",
-              isFreeAction: true,
-              onClick: (event, rowData) => {
-                build_Payslip();
-              },
-            },
-          ]}
+          // actions={[
+          //   {
+          //     icon: "edit",
+          //     tooltip: "Edit Record",
+          //     onClick: (event, rowData) => {
+          //       update_Payslip(rowData);
+          //     },
+          //   },
+          //   {
+          //     icon: "delete",
+          //     tooltip: "Delete Record",
+          //     onClick: (event, rowData) => {
+          //       delete_Payslip(rowData);
+          //     },
+          //   },
+          //   {
+          //     icon: "add",
+          //     tooltip: "Add Record",
+          //     isFreeAction: true,
+          //     onClick: (event, rowData) => {
+          //       add_Payslip(rowData);
+          //     },
+          //   },
+           
+          // ]}
           options={{
             filtering: true,
             headerStyle: {
@@ -215,7 +163,7 @@ export default function PayslipTable() {
               <div>
                 <MTableToolbar {...props} />
                 <div style={{ paddingLeft: 22 }}>
-                  <h3>{`Batch: ${payslip_period}      End Month: ${payslip_endmonthdate}`}</h3>
+                  {/* <h3>{`Batch: ${payslip_period}      End Month: ${payslip_endmonthdate}`}</h3> */}
                 </div>
                 {/* <div style={{ paddingLeft: 22 }}>
                   <h3>{`End Month: ${payslip_endmonthdate}`}</h3>

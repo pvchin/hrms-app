@@ -8,8 +8,21 @@ import { designations_url } from "../utils/constants";
 import { family_url } from "../utils/constants";
 import { educations_url } from "../utils/constants";
 import { experiences_url } from "../utils/constants";
+import { payitems_url } from "../utils/constants";
 
 import {
+  GET_PAYITEMS_BEGIN,
+  GET_PAYITEMS_SUCCESS,
+  GET_PAYITEMS_ERROR,
+  ADD_PAYITEM_BEGIN,
+  ADD_PAYITEM_SUCCESS,
+  ADD_PAYITEM_ERROR,
+  UPDATE_PAYITEM_BEGIN,
+  UPDATE_PAYITEM_SUCCESS,
+  UPDATE_PAYITEM_ERROR,
+  DELETE_PAYITEM_BEGIN,
+  DELETE_PAYITEM_SUCCESS,
+  DELETE_PAYITEM_ERROR,
   GET_ALLOWANCES_BEGIN,
   GET_ALLOWANCES_SUCCESS,
   GET_ALLOWANCES_ERROR,
@@ -110,6 +123,9 @@ import {
 } from "../actions";
 
 const initialState = {
+  payitems: [],
+  payitems_loading: false,
+  payitems_error: false,
   allowances: [],
   allowances_loading: false,
   allowances_error: false,
@@ -147,6 +163,66 @@ const TablesContext = React.createContext();
 
 export const TablesProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
+
+  // payitems
+  const loadPayitems = async () => {
+    dispatch({ type: GET_PAYITEMS_BEGIN });
+    try {
+      // const res = await fetch(
+      //   `${employees_url}?filterValue="${state.filterValue}"&filterField="${state.filterField}"`
+      // );
+      const res = await fetch(payitems_url);
+      //const { data } = await axios.get(employees_url);
+      //const employees = data;
+      const payitems = await res.json();
+      dispatch({ type: GET_PAYITEMS_SUCCESS, payload: payitems });
+    } catch (error) {
+      dispatch({ type: GET_PAYITEMS_ERROR });
+    }
+  };
+
+  const addPayitem = async (data) => {
+    const { id, name } = data;
+    //
+    dispatch({ type: ADD_PAYITEM_BEGIN });
+    try {
+      await fetch(payitems_url, {
+        method: "POST",
+        body: JSON.stringify({ ...data }),
+      });
+      dispatch({ type: ADD_PAYITEM_SUCCESS });
+    } catch (err) {
+      dispatch({ type: ADD_PAYITEM_ERROR });
+    }
+  };
+
+  const updatePayitem = async (data) => {
+    const { id, ...fields } = data;
+
+    dispatch({ type: UPDATE_PAYITEM_BEGIN });
+    try {
+      await fetch(payitems_url, {
+        method: "PUT",
+        body: JSON.stringify({ id, ...fields }),
+      });
+      dispatch({ type: UPDATE_PAYITEM_SUCCESS });
+    } catch (error) {
+      dispatch({ type: UPDATE_PAYITEM_ERROR });
+    }
+  };
+
+  const deletePayitem = async (id) => {
+    dispatch({ type: DELETE_PAYITEM_BEGIN });
+    try {
+      await fetch(payitems_url, {
+        method: "DELETE",
+        body: JSON.stringify({ id: id }),
+      });
+      dispatch({ type: DELETE_PAYITEM_SUCCESS });
+    } catch (err) {
+      dispatch({ type: DELETE_PAYITEM_ERROR });
+    }
+  };
 
   // Allowances
   const loadAllowances = async () => {
@@ -615,6 +691,10 @@ export const TablesProvider = ({ children }) => {
     <TablesContext.Provider
       value={{
         ...state,
+        loadPayitems,
+        addPayitem,
+        deletePayitem,
+        updatePayitem,
         loadAllowances,
         addAllowance,
         deleteAllowance,

@@ -41,9 +41,7 @@ export default function AllEmployeesTable() {
     resetEmployees,
   } = useEmployeesContext();
 
-  const {
-    resetTables,
-  } = useTablesContext();
+  const { resetTables } = useTablesContext();
 
   useEffect(() => {
     resetEmployees();
@@ -63,7 +61,7 @@ export default function AllEmployeesTable() {
   };
 
   const add_Employee = async (data) => {
-       resetSingleEmployee();
+    resetSingleEmployee();
     setEditEmployeeID("");
     setIsEditingOff();
     handleDialogOpen();
@@ -104,7 +102,7 @@ export default function AllEmployeesTable() {
   if (employees_loading) {
     return <div>Loading...</div>;
   } else {
-    console.log(employees)
+    console.log(employees);
   }
   return (
     <div className={classes.root}>

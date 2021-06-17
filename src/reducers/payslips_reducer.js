@@ -3,6 +3,9 @@ import {
   SET_ISPAYSLIPEDITING_ON,
   SET_ISPAYSLIPEDITING_OFF,
   SET_PAYSLIP_PERIOD,
+  SET_PAYSLIPS_DATA,
+  RESET_PAYSLIPS_DATA,
+  UPDATE_PAYSLIPS_DATA,
   SET_PAYSLIP_ENDMONTHDATE,
   SET_PAYSLIPEARNING_AMOUNT,
   SET_PAYSLIPDEDUCTION_AMOUNT,
@@ -16,6 +19,30 @@ import {
   GET_SINGLEBATCH_PAYSLIP_BEGIN,
   GET_SINGLEBATCH_PAYSLIP_SUCCESS,
   GET_SINGLEBATCH_PAYSLIP_ERROR,
+  GET_PAYSLIPITEMS_BEGIN,
+  GET_PAYSLIPITEMS_SUCCESS,
+  GET_PAYSLIPITEMS_ERROR,
+  ADD_PAYSLIPITEM_BEGIN,
+  ADD_PAYSLIPITEM_SUCCESS,
+  ADD_PAYSLIPITEM_ERROR,
+  UPDATE_PAYSLIPITEM_BEGIN,
+  UPDATE_PAYSLIPITEM_SUCCESS,
+  UPDATE_PAYSLIPITEM_ERROR,
+  DELETE_PAYSLIPITEM_BEGIN,
+  DELETE_PAYSLIPITEM_SUCCESS,
+  DELETE_PAYSLIPITEM_ERROR,
+  GET_PAYRUN_BEGIN,
+  GET_PAYRUN_SUCCESS,
+  GET_PAYRUN_ERROR,
+  ADD_PAYRUN_BEGIN,
+  ADD_PAYRUN_SUCCESS,
+  ADD_PAYRUN_ERROR,
+  UPDATE_PAYRUN_BEGIN,
+  UPDATE_PAYRUN_SUCCESS,
+  UPDATE_PAYRUN_ERROR,
+  DELETE_PAYRUN_BEGIN,
+  DELETE_PAYRUN_SUCCESS,
+  DELETE_PAYRUN_ERROR,
   ADD_PAYSLIP_BEGIN,
   ADD_PAYSLIP_SUCCESS,
   ADD_PAYSLIP_ERROR,
@@ -74,6 +101,18 @@ const payslips_reducer = (state, action) => {
   }
   if (action.type === SET_PAYSLIPDEDUCTION_AMOUNT) {
     return { ...state, payslip_deduction_amount: action.payload };
+  }
+  if (action.type === SET_PAYSLIPS_DATA) {
+    return { ...state, payslipsdata: action.payload };
+  }
+  if (action.type === RESET_PAYSLIPS_DATA) {
+    return { ...state, payslipsdata: [] };
+  }
+
+  if (action.type === UPDATE_PAYSLIPS_DATA) {
+    console.log("reducer", action.payload.name, action.payload.value)
+    //return { ...state, payslipsdata: { [action.payload.name]: action.payload.value } };
+    return null
   }
 
   if (action.type === SET_ISPAYSLIPEDITING_ON) {
@@ -233,7 +272,7 @@ const payslips_reducer = (state, action) => {
   if (action.type === ADD_PAYSLIPEARNING_ERROR) {
     return {
       ...state,
-      payslipearnings_loading: false,
+      add_payslipearnings_loading: false,
       add_payslipearning_error: true,
     };
   }
@@ -244,7 +283,7 @@ const payslips_reducer = (state, action) => {
   if (action.type === UPDATE_PAYSLIPEARNING_SUCCESS) {
     return {
       ...state,
-      payslipearnings_loading: false,
+      update_payslipearnings_loading: false,
       single_payslipearning: action.payload,
     };
   }
@@ -337,7 +376,7 @@ const payslips_reducer = (state, action) => {
   if (action.type === ADD_PAYSLIPDEDUCTION_ERROR) {
     return {
       ...state,
-      payslipdeductions_loading: false,
+      add_payslipdeductions_loading: false,
       add_payslipdeduction_error: true,
     };
   }
@@ -348,7 +387,7 @@ const payslips_reducer = (state, action) => {
   if (action.type === UPDATE_PAYSLIPDEDUCTION_SUCCESS) {
     return {
       ...state,
-      payslipdeductions_loading: false,
+      update_payslipdeductions_loading: false,
       single_payslipdeduction: action.payload,
     };
   }
@@ -404,6 +443,168 @@ const payslips_reducer = (state, action) => {
       ...state,
       single_payslipdeduction_loading: false,
       single_payslipdeduction_error: true,
+    };
+  }
+
+  // ..........payslip items
+  // get payslip items
+  if (action.type === GET_PAYSLIPITEMS_BEGIN) {
+    return { ...state, payslipitems_loading: true };
+  }
+  if (action.type === GET_PAYSLIPITEMS_SUCCESS) {
+    return {
+      ...state,
+      payslipitems_loading: false,
+      payslipitems: action.payload,
+    };
+  }
+  if (action.type === GET_PAYSLIPITEMS_ERROR) {
+    return {
+      ...state,
+      payslipitems_loading: false,
+      payslipitems_error: true,
+    };
+  }
+
+  // add payslip item
+  if (action.type === ADD_PAYSLIPITEM_BEGIN) {
+    return { ...state, add_payslipitem_loading: true };
+  }
+  if (action.type === ADD_PAYSLIPITEM_SUCCESS) {
+    return {
+      ...state,
+      add_payslipitem_loading: false,
+      payslipitem: action.payload,
+    };
+  }
+  if (action.type === ADD_PAYSLIPITEM_ERROR) {
+    return {
+      ...state,
+      add_payslipitem_loading: false,
+      add_payslipitem_error: true,
+    };
+  }
+  // update payslip items
+  if (action.type === UPDATE_PAYSLIPITEM_BEGIN) {
+    return { ...state, update_payslipitem_loading: true };
+  }
+  if (action.type === UPDATE_PAYSLIPITEM_SUCCESS) {
+    return {
+      ...state,
+      update_payslipitem_loading: false,
+      single_payslipitem: action.payload,
+    };
+  }
+  if (action.type === UPDATE_PAYSLIPITEM_ERROR) {
+    return {
+      ...state,
+      update_payslipitem_loading: false,
+      update_payslipitem_error: true,
+    };
+  }
+
+  // delete payslip item
+  if (action.type === DELETE_PAYSLIPITEM_BEGIN) {
+    return {
+      ...state,
+      delete_payslipitem_loading: true,
+      delete_payslipitem_error: false,
+    };
+  }
+
+  if (action.type === DELETE_PAYSLIPITEM_SUCCESS) {
+    return {
+      ...state,
+      delete_payslipitem_loading: false,
+      delete_payslipitem_error: false,
+    };
+  }
+  if (action.type === DELETE_PAYSLIPITEM_ERROR) {
+    return {
+      ...state,
+      delete_payslipitem_loading: false,
+      delete_payslipitem_error: true,
+    };
+  }
+
+  // ..........payrun
+  // get payrun
+  if (action.type === GET_PAYRUN_BEGIN) {
+    return { ...state, payrun_loading: true };
+  }
+  if (action.type === GET_PAYRUN_SUCCESS) {
+    return {
+      ...state,
+      payrun_loading: false,
+      payrun: action.payload,
+    };
+  }
+  if (action.type === GET_PAYRUN_ERROR) {
+    return {
+      ...state,
+      payrun_loading: false,
+      payrun_error: true,
+    };
+  }
+
+  // add payrun
+  if (action.type === ADD_PAYRUN_BEGIN) {
+    return { ...state, add_payrun_loading: true };
+  }
+  if (action.type === ADD_PAYRUN_SUCCESS) {
+    return {
+      ...state,
+      add_payrun_loading: false,
+      single_payrun: action.payload,
+    };
+  }
+  if (action.type === ADD_PAYRUN_ERROR) {
+    return {
+      ...state,
+      add_payrun_loading: false,
+      add_payrun_error: true,
+    };
+  }
+  // update payslip items
+  if (action.type === UPDATE_PAYRUN_BEGIN) {
+    return { ...state, update_payrun_loading: true };
+  }
+  if (action.type === UPDATE_PAYRUN_SUCCESS) {
+    return {
+      ...state,
+      update_payrun_loading: false,
+      single_payrun: action.payload,
+    };
+  }
+  if (action.type === UPDATE_PAYRUN_ERROR) {
+    return {
+      ...state,
+      update_payrun_loading: false,
+      update_payrun_error: true,
+    };
+  }
+
+  // delete payslip item
+  if (action.type === DELETE_PAYRUN_BEGIN) {
+    return {
+      ...state,
+      delete_payrun_loading: true,
+      delete_payrun_error: false,
+    };
+  }
+
+  if (action.type === DELETE_PAYRUN_SUCCESS) {
+    return {
+      ...state,
+      delete_payrun_loading: false,
+      delete_payrun_error: false,
+    };
+  }
+  if (action.type === DELETE_PAYRUN_ERROR) {
+    return {
+      ...state,
+      delete_payrun_loading: false,
+      delete_payrun_error: true,
     };
   }
 

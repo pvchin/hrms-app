@@ -1,5 +1,6 @@
 import React from "react";
 import ReactDOM from "react-dom";
+import DevTools from "react-async-devtools"
 import { RecoilRoot } from "recoil";
 import { ApolloProvider } from "react-apollo";
 import { ApolloClient } from "apollo-client";
@@ -34,6 +35,7 @@ ReactDOM.render(
                 <DailyAllowancesProvider>
                   <TrainingsProvider>
                     <TablesProvider>
+                      {/* <DevTools /> */}
                       <App />
                     </TablesProvider>
                   </TrainingsProvider>

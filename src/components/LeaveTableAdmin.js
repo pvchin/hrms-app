@@ -83,7 +83,7 @@ export default function LeaveTable({
   const classes = useStyles();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
-  const { loadEmployees } = useEmployeesContext();
+   const { loadEmployees } = useEmployeesContext();
   const {
     leaves,
     editLeaveID,

@@ -9,6 +9,7 @@ import {
   deepOrange,
 } from "@material-ui/core/colors";
 import DashboardMain from "./components/DashboardMain";
+import Main from "./components/Main"
 
 const App = () => {
   const [darkState, setDarkState] = useState(true);
@@ -36,7 +37,8 @@ const App = () => {
       <CssBaseline />
       <div>
         <React.Suspense fallback={<h1>Loading profile...</h1>}>
-          <DashboardMain />
+          {/* <DashboardMain /> */}
+          <Main />
         </React.Suspense>
       </div>
       <Switch checked={darkState} onChange={handleThemeChange} />

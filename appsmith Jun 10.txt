@@ -1,0 +1,74 @@
+training expiry - admin & staff
+workpermit - admin & staff
+
+Payslips-
+Other Allowances /Reimbursement
+
+Other Allowances
+
+Payroll 
+ - Expenses
+ - Site Allowances
+- Payslip
+
+One Payrun - go xero
+
+Void - cancell alll
+
+Employees:
+- site allowances
+- allowances
+
+xero.com
+
+exmployees - add - unlock the fields 
+
+Pay Run -> Generate -> Review
+
+HR System
+-> Payroll
+     -> Include Pay Run
+     -> Dropdown Menu
+          -> Payroll
+
+Employees Windows:
+   - Profile
+   - Leave Application
+   - Site Allowances
+   - Expenses / Reimbursements
+  -  Password Login Settings
+  - Payslips history
+
+Employees/Admin Dashboard
+- Leave approval
+- Expenses approval
+- Trainings expiry
+- Work Permit expiry
+
+Admin Assistant:
+- All Employees w/o salary
+
+Manager
+- Payroll
+- Leave
+- 
+Aveline
+- lastt approval for payroll
+- approval for site allowances
+- expenses / alowances
+
+Jeffrey
+- Pay run - payslips
+- After approval, do payments
+
+   - 
+
+// ---- later 
+Leaves carry forward
+HSE HOC Card
+
+
+
+
+
+

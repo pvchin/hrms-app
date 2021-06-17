@@ -5,18 +5,41 @@ import Box from "@material-ui/core/Box";
 import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
+import { useRecoilState } from "recoil";
 
+import { loginLevelState } from "../components/data/atomdata";
 import CardLayout3 from "../helpers/CardLayout3";
 import Copyright from "../components/Copyright";
 import HomeAdmin from "../components/HomeAdmin";
+import HomeStaff from "../components/HomeStaff";
+import HomeAdminManager from "../components/HomeAdminManager";
+import HomeManager from "../components/HomeManager";
 const drawerWidth = 240;
 
 const HomePage = () => {
   // const classes = useStyles();
   // const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+  const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
+
+const SwitchCase = () => {
+  console.log(loginLevel);
+  switch (loginLevel.loginLevel) {
+    case "Staff":
+      return <HomeStaff />;
+    case "Admin":
+      return <HomeAdmin />;
+    case "AdminManager":
+      return <HomeAdminManager />;
+    case "Manager":
+      return <HomeManager />;
+    default:
+      return "You are not authorised user!";
+  }
+};
+
   return (
     <div>
-      <HomeAdmin />
+      <SwitchCase />
     </div>
   );
 };

@@ -2,11 +2,16 @@ import React, { useContext, useEffect, useReducer } from "react";
 import axios from "axios";
 import reducer from "../reducers/payslips_reducer";
 import { payslips_url } from "../utils/constants";
+import { payslipitems_url } from "../utils/constants";
+import { payrun_url } from "../utils/constants";
 import { payslipearnings_url } from "../utils/constants";
 import { payslipdeductions_url } from "../utils/constants";
 
 import {
   SET_EDITPAYSLIPID,
+  SET_PAYSLIPS_DATA,
+  RESET_PAYSLIPS_DATA,
+  UPDATE_PAYSLIPS_DATA,
   SET_ISPAYSLIPEDITING_ON,
   SET_ISPAYSLIPEDITING_OFF,
   SET_PAYSLIP_PERIOD,
@@ -17,6 +22,30 @@ import {
   GET_PAYSLIPS_BEGIN,
   GET_PAYSLIPS_SUCCESS,
   GET_PAYSLIPS_ERROR,
+  GET_PAYSLIPITEMS_BEGIN,
+  GET_PAYSLIPITEMS_SUCCESS,
+  GET_PAYSLIPITEMS_ERROR,
+  ADD_PAYSLIPITEM_BEGIN,
+  ADD_PAYSLIPITEM_SUCCESS,
+  ADD_PAYSLIPITEM_ERROR,
+  DELETE_PAYSLIPITEM_BEGIN,
+  DELETE_PAYSLIPITEM_SUCCESS,
+  DELETE_PAYSLIPITEM_ERROR,
+  UPDATE_PAYSLIPITEM_BEGIN,
+  UPDATE_PAYSLIPITEM_SUCCESS,
+  UPDATE_PAYSLIPITEM_ERROR,
+  GET_PAYRUN_BEGIN,
+  GET_PAYRUN_SUCCESS,
+  GET_PAYRUN_ERROR,
+  ADD_PAYRUN_BEGIN,
+  ADD_PAYRUN_SUCCESS,
+  ADD_PAYRUN_ERROR,
+  UPDATE_PAYRUN_BEGIN,
+  UPDATE_PAYRUN_SUCCESS,
+  UPDATE_PAYRUN_ERROR,
+  DELETE_PAYRUN_BEGIN,
+  DELETE_PAYRUN_SUCCESS,
+  DELETE_PAYRUN_ERROR,
   GET_SINGLE_PAYSLIP_BEGIN,
   GET_SINGLE_PAYSLIP_SUCCESS,
   GET_SINGLE_PAYSLIP_ERROR,
@@ -76,6 +105,7 @@ const initialState = {
   payslip_earning_amount: 0,
   payslip_deduction_amount: 0,
   payslips: [],
+  payslipsdata: [],
   single_payslip_loading: false,
   single_payslip_error: false,
   single_payslip: {},
@@ -123,6 +153,26 @@ const initialState = {
   update_payslipdeduction_error: false,
   add_payslipdeduction_loading: false,
   add_payslipdeduction_error: false,
+  payslipitems_loading: false,
+  payslipitems_error: false,
+  payslipitems: [],
+  delete_payslipitem_loading: false,
+  delete_payslipitem_error: false,
+  update_payslipitem_loading: false,
+  update_payslipitem_error: false,
+  add_payslipitem_loading: false,
+  add_payslipitem_error: false,
+  single_payslipitem: {},
+  payrun_loading: false,
+  payrun_error: false,
+  payrun: [],
+  delete_payrun_loading: false,
+  delete_payrun_error: false,
+  update_payrun_loading: false,
+  update_payrun_error: false,
+  add_payrun_loading: false,
+  add_payrun_error: false,
+  single_payrun: {},
 };
 
 const PayslipsContext = React.createContext();
@@ -163,12 +213,28 @@ export const PayslipsProvider = ({ children }) => {
     }
   };
 
-  const getSingleBatchPayslip = async (period) => {
+  const loadEmpPayslips = async (em) => {
+    dispatch({ type: GET_PAYSLIPS_BEGIN });
+    try {
+      // const res = await fetch(
+      //   `${employees_url}?filterValue="${state.filterValue}"&filterField="${state.filterField}"`
+      // );
+      const res = await fetch(`${payslips_url}?em=${em}`);
+      //const { data } = await axios.get(employees_url);
+      //const employees = data;
+      const payslips = await res.json();
+      dispatch({ type: GET_PAYSLIPS_SUCCESS, payload: payslips });
+    } catch (error) {
+      dispatch({ type: GET_PAYSLIPS_ERROR });
+    }
+  };
+
+  const getSingleBatchPayslip = async (payrun) => {
     dispatch({ type: GET_SINGLEBATCH_PAYSLIP_BEGIN });
     try {
-      const res = await fetch(`${payslips_url}?fv=${period}`);
+      const res = await fetch(`${payslips_url}?fv=${payrun}`);
       const singlebatchpayslip = await res.json();
-
+      console.log("context",singlebatchpayslip)
       dispatch({
         type: GET_SINGLEBATCH_PAYSLIP_SUCCESS,
         payload: singlebatchpayslip,
@@ -184,6 +250,18 @@ export const PayslipsProvider = ({ children }) => {
 
   const setIsPayslipEditingOff = () => {
     dispatch({ type: SET_ISPAYSLIPEDITING_OFF });
+  };
+
+  const setPayslipsData = (value) => {
+    dispatch({ type: SET_PAYSLIPS_DATA, payload: value });
+  };
+
+  const resetPayslipsData = () => {
+    dispatch({ type: RESET_PAYSLIPS_DATA });
+  };
+
+  const updatePayslipsData = (name, value) => {
+    dispatch({ type: UPDATE_PAYSLIPS_DATA, payload: { name, value } });
   };
 
   const resetSinglePayslip = () => {
@@ -269,9 +347,118 @@ export const PayslipsProvider = ({ children }) => {
         body: JSON.stringify({ id: id }),
       });
       dispatch({ type: DELETE_PAYSLIP_SUCCESS });
-      loadPayslips();
     } catch (err) {
       dispatch({ type: DELETE_PAYSLIP_ERROR });
+    }
+  };
+
+  //.... payslip items
+  const getPayslipitems = async (fv) => {
+    dispatch({ type: GET_PAYSLIPITEMS_BEGIN });
+    try {
+      const { data } = await axios.get(`${payslipitems_url}?period=${fv}`);
+      const payslipitems = data;
+      dispatch({ type: GET_PAYSLIPITEMS_SUCCESS, payload: payslipitems });
+    } catch (error) {
+      dispatch({ type: GET_PAYSLIPITEMS_ERROR });
+    }
+  };
+
+  const addPayslipitem = async (data) => {
+    //const { id, name, empid, period, payitem, paytype, amount } = data;
+    //
+    dispatch({ type: ADD_PAYSLIPITEM_BEGIN });
+    try {
+      await fetch(payslipitems_url, {
+        method: "POST",
+        body: JSON.stringify({ ...data }),
+      });
+      dispatch({ type: ADD_PAYSLIPITEM_SUCCESS });
+    } catch (err) {
+      dispatch({ type: ADD_PAYSLIPITEM_ERROR });
+    }
+  };
+
+  const updatePayslipitem = async (data) => {
+    const { id, ...fields } = data;
+
+    dispatch({ type: UPDATE_PAYSLIPITEM_BEGIN });
+    try {
+      await fetch(payslipitems_url, {
+        method: "PUT",
+        body: JSON.stringify({ id, ...fields }),
+      });
+      dispatch({ type: UPDATE_PAYSLIPITEM_SUCCESS });
+    } catch (error) {
+      dispatch({ type: UPDATE_PAYSLIPITEM_ERROR });
+    }
+  };
+
+  const deletePayslipitem = async (id) => {
+    dispatch({ type: DELETE_PAYSLIPITEM_BEGIN });
+    try {
+      await fetch(payslipitems_url, {
+        method: "DELETE",
+        body: JSON.stringify({ id: id }),
+      });
+      dispatch({ type: DELETE_PAYSLIPITEM_SUCCESS });
+    } catch (err) {
+      dispatch({ type: DELETE_PAYSLIPITEM_ERROR });
+    }
+  };
+
+  //.... payrun
+  const getPayrun = async () => {
+    dispatch({ type: GET_PAYRUN_BEGIN });
+    try {
+      const { data } = await axios.get(`${payrun_url}`);
+      const payrun = data;
+      dispatch({ type: GET_PAYRUN_SUCCESS, payload: payrun });
+    } catch (error) {
+      dispatch({ type: GET_PAYRUN_ERROR });
+    }
+  };
+
+  const addPayrun = async (data) => {
+    //const { id, name, empid, period, payitem, paytype, amount } = data;
+    //
+    dispatch({ type: ADD_PAYRUN_BEGIN });
+    try {
+      await fetch(payrun_url, {
+        method: "POST",
+        body: JSON.stringify({ ...data }),
+      });
+      dispatch({ type: ADD_PAYRUN_SUCCESS });
+    } catch (err) {
+      dispatch({ type: ADD_PAYRUN_ERROR });
+    }
+  };
+
+  const updatePayrun = async (data) => {
+    const { id, ...fields } = data;
+
+    dispatch({ type: UPDATE_PAYRUN_BEGIN });
+    try {
+      await fetch(payrun_url, {
+        method: "PUT",
+        body: JSON.stringify({ id, ...fields }),
+      });
+      dispatch({ type: UPDATE_PAYRUN_SUCCESS });
+    } catch (error) {
+      dispatch({ type: UPDATE_PAYRUN_ERROR });
+    }
+  };
+
+  const deletePayrun = async (id) => {
+    dispatch({ type: DELETE_PAYRUN_BEGIN });
+    try {
+      await fetch(payrun_url, {
+        method: "DELETE",
+        body: JSON.stringify({ id: id }),
+      });
+      dispatch({ type: DELETE_PAYRUN_SUCCESS });
+    } catch (err) {
+      dispatch({ type: DELETE_PAYRUN_ERROR });
     }
   };
 
@@ -440,6 +627,7 @@ export const PayslipsProvider = ({ children }) => {
         ...state,
         loadPayslips,
         loadPendingPayslips,
+        loadEmpPayslips,
         addPayslip,
         updatePayslip,
         deletePayslip,
@@ -448,6 +636,9 @@ export const PayslipsProvider = ({ children }) => {
         setEditPayslipID,
         setIsPayslipEditingOn,
         setIsPayslipEditingOff,
+        setPayslipsData,
+        resetPayslipsData,
+        updatePayslipsData,
         loadPayslipEarnings,
         addPayslipEarning,
         updatePayslipEarning,
@@ -463,6 +654,14 @@ export const PayslipsProvider = ({ children }) => {
         resetSinglePayslip,
         setPayslipPeriod,
         setPayslipEndMonthDate,
+        getPayslipitems,
+        deletePayslipitem,
+        updatePayslipitem,
+        addPayslipitem,
+        getPayrun,
+        deletePayrun,
+        updatePayrun,
+        addPayrun,
       }}
     >
       {children}

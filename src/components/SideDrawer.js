@@ -8,14 +8,45 @@ import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import {
+  RecoilRoot,
+  atom,
+  selector,
+  useRecoilState,
+  useRecoilValue,
+  useSetRecoilState,
+} from "recoil";
 
 import MenuListItems from "./MenuListItems";
+import { loginLevelState } from "./data/atomdata";
+import MenuListItemsStaff from "./MenuListItemsStaff";
+import MenuListItemsAdmin from "./MenuListItemsAdmin";
+import MenuListItemsAdminManager from "./MenuListItemsAdminManager";
+import MenuListItemsManager from "./MenuListItemsManager";
 import headerlogo from "../assets/headerlogo.png";
 
 const drawerWidth = 240;
 
 const SideDrawer = ({ HandleDrawerOpen, handleDrawerClose, open }) => {
   const classes = useStyles();
+  const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
+
+  const SwitchCase = () => {
+    console.log(loginLevel);
+    switch (loginLevel.loginLevel) {
+      case "Staff":
+        return <MenuListItemsStaff />;
+      case "Admin":
+        return <MenuListItemsAdmin />;
+      case "AdminManager":
+        return <MenuListItemsAdminManager />;
+      case "Manager":
+       return <MenuListItemsManager />;
+      default:
+        return "You are not authorised user!";
+    }
+  };
+
   return (
     <div>
       <Drawer
@@ -35,7 +66,7 @@ const SideDrawer = ({ HandleDrawerOpen, handleDrawerClose, open }) => {
 
         <Divider />
         <List>
-          <MenuListItems />
+          <SwitchCase />
         </List>
       </Drawer>
     </div>

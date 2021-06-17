@@ -18,6 +18,7 @@ module.exports = async (event) => {
 
     return formattedReturn(200, formattedEmployees);
   }
+  
   try {
     if (fv) {
       const employees = await table

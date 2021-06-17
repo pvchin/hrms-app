@@ -119,39 +119,7 @@ const EmployeeView = () => {
               <WPExpiryView />
             </CardLayout3>
           </Grid>
-          <Grid item xs={6} md={8} lg={6}>
-            <CardLayout3
-              title="Payroll pending for approval"
-              handleClick={handlePayslipDialogOpen}
-            >
-              <PayslipTableView />
-            </CardLayout3>
-          </Grid>
-          <Grid item xs={6} md={8} lg={6}>
-            <CardLayout3
-              title="Site Allowances pending for approval"
-              handleClick={handleDailyAllowancesDialogOpen}
-            >
-              <DailyAllowancesTableView />
-            </CardLayout3>
-          </Grid>
-          <Grid item xs={6} md={8} lg={6}>
-            <CardLayout3
-              title="Leaves pending for approval"
-              handleClick={handleLeaveDialogOpen}
-            >
-              <LeaveTableView />
-            </CardLayout3>
-          </Grid>
-          {/* Recent Orders */}
-          <Grid item xs={6} md={8} lg={6}>
-            <CardLayout3
-              title="Expenses pending for approval"
-              handleClick={handleExpenseDialogOpen}
-            >
-              <ExpenseTableView />
-            </CardLayout3>
-          </Grid>
+          
         </Grid>
         <Box pt={4}>
           <Copyright />

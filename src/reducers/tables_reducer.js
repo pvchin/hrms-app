@@ -1,4 +1,16 @@
 import {
+  GET_PAYITEMS_BEGIN,
+  GET_PAYITEMS_SUCCESS,
+  GET_PAYITEMS_ERROR,
+  ADD_PAYITEM_BEGIN,
+  ADD_PAYITEM_SUCCESS,
+  ADD_PAYITEM_ERROR,
+  UPDATE_PAYITEM_BEGIN,
+  UPDATE_PAYITEM_SUCCESS,
+  UPDATE_PAYITEM_ERROR,
+  DELETE_PAYITEM_BEGIN,
+  DELETE_PAYITEM_SUCCESS,
+  DELETE_PAYITEM_ERROR,
   GET_ALLOWANCES_BEGIN,
   GET_ALLOWANCES_SUCCESS,
   GET_ALLOWANCES_ERROR,
@@ -98,6 +110,78 @@ import {
 } from "../actions";
 
 const tables_reducer = (state, action) => {
+  // ....... payitems
+  // get payitems
+  if (action.type === GET_PAYITEMS_BEGIN) {
+    return { ...state, payitems_loading: true };
+  }
+  if (action.type === GET_PAYITEMS_SUCCESS) {
+    return { ...state, payitems_loading: false, payitems: action.payload };
+  }
+  if (action.type === GET_PAYITEMS_ERROR) {
+    return { ...state, payitems_loading: false, payitems_error: true };
+  }
+  // add payitems
+  if (action.type === ADD_PAYITEM_BEGIN) {
+    return { ...state, add_payitem_loading: true };
+  }
+  if (action.type === ADD_PAYITEM_SUCCESS) {
+    return {
+      ...state,
+      add_payitem_loading: false,
+      single_payitems: action.payload,
+    };
+  }
+  if (action.type === ADD_PAYITEM_ERROR) {
+    return {
+      ...state,
+      add_payitems_loading: false,
+      payitems_error: true,
+    };
+  }
+  // update payitems
+  if (action.type === UPDATE_PAYITEM_BEGIN) {
+    return { ...state, update_payitem_loading: true };
+  }
+  if (action.type === UPDATE_PAYITEM_SUCCESS) {
+    return {
+      ...state,
+      update_payitems_loading: false,
+      single_payitem: action.payload,
+    };
+  }
+  if (action.type === UPDATE_PAYITEM_ERROR) {
+    return {
+      ...state,
+      update_payitem_loading: false,
+      update_payitem_error: true,
+    };
+  }
+
+  // delete payitem
+  if (action.type === DELETE_PAYITEM_BEGIN) {
+    return {
+      ...state,
+      delete_payitem_loading: true,
+      delete_payitem_error: false,
+    };
+  }
+
+  if (action.type === DELETE_PAYITEM_SUCCESS) {
+    return {
+      ...state,
+      delete_payitem_loading: false,
+      delete_payitem_error: false,
+    };
+  }
+  if (action.type === DELETE_PAYITEM_ERROR) {
+    return {
+      ...state,
+      delete_payitem_loading: false,
+      delete_payitem_error: true,
+    };
+  }
+
   // ....... allowances
   // get allowances
   if (action.type === GET_ALLOWANCES_BEGIN) {

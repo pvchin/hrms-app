@@ -32,7 +32,7 @@ const ErrorPage = () => {
                   <div className="error-box">
                     <h1>404</h1>
                     <h3>
-                      <i className="fa fa-warning" /> Oops! Page not found!
+                      <i className="fa fa-warning" /> Oops! Internet connection disconnected!
                     </h3>
                     <p>The page you requested was not found.</p>
                     <a

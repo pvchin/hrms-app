@@ -1,20 +1,50 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
-//import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 
 // import Chart from "./Chart";
 // import Deposits from "./Deposits";
 // import Orders from "./Orders";
 
 import Appbanner from "./Appbanner";
+import Example from "./Example7";
 import SideDrawer from "./SideDrawer";
+import SingleEmployee from "./SingleEmployee";
+import SingleLeave from "./SingleLeave";
+import SingleExpense from "./SingleExpense";
+import SingleDailyAllowance from "./SingleDailyAllowance";
+import SingleDailyAllowsDetls from "./SingleDailyAllowsDetls";
+import BatchDailyAllowances from "./BatchDailyAllowances";
+import SinglePayslip from "./SinglePayslip";
+import Login from "./LoginForm";
+import Payrun from "./Payrun";
+import Payrunbatch from "./Payrunbatch";
+
+import {
+  Home,
+  AllEmployees,
+  Leave,
+  Expenses,
+  Payslip,
+  BatchPayslips,
+  Payroll,
+  Departments,
+  Designation,
+  Tables,
+  Clients,
+  Allowances,
+  DailyAllowances,
+  // PrivateRoute,
+  Error,
+} from "../pages";
 
 const drawerWidth = 240;
 
 export default function DashboardAdmin() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
+  const [login, setLogin] = React.useState(true);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -23,24 +53,82 @@ export default function DashboardAdmin() {
     setOpen(false);
   };
 
-  // const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+  //  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
+  if (!login) {
+    return <Login setLogin={setLogin} />;
+  }
   return (
     <div className={classes.root}>
       <CssBaseline />
+      <Router>
+        <Appbanner
+          handleDrawerOpen={handleDrawerOpen}
+          handleDrawerClose={handleDrawerClose}
+          open={open}
+          setLogin={setLogin}
+          title="Human Resource Management System - AppSmiths Sutera Sdn Bhd (Main)"
+        />
 
-      <Appbanner
-        handleDrawerOpen={handleDrawerOpen}
-        handleDrawerClose={handleDrawerClose}
-        open={open}
-        title="Human Resource Management System - AppSmith"
-      />
+        <SideDrawer
+          handleDrawerOpen={handleDrawerOpen}
+          handleDrawerClose={handleDrawerClose}
+          open={open}
+        />
 
-      <SideDrawer
-        handleDrawerOpen={handleDrawerOpen}
-        handleDrawerClose={handleDrawerClose}
-        open={open}
-      />
+        <main className={classes.content}>
+          <Switch>
+            <Route exact path="/">
+              <Home />
+            </Route>
+            {/* <Route exact path="/home">
+              <Home />
+            </Route> */}
+            <Route exact path="/allemployees">
+              <AllEmployees />
+            </Route>
+
+            <Route exact path="/departments">
+              <Departments />
+            </Route>
+            <Route exact path="/designation">
+              <Designation />
+            </Route>
+            <Route exact path="/tables">
+              <Tables />
+            </Route>
+            <Route exact path="/allowances">
+              <Allowances />
+            </Route>
+            <Route exact path="/clients">
+              <Clients />
+            </Route>
+            <Route exact path="/example">
+              <Example />
+            </Route>
+            <Route exact path="/singleemployee">
+              <SingleEmployee />
+            </Route>
+            <Route exact path="/singleleave">
+              <SingleLeave />
+            </Route>
+            <Route exact path="/singleexpense">
+              <SingleExpense />
+            </Route>
+            <Route exact path="/error">
+              <Error />
+            </Route>
+            {/* <Route
+              exact
+              path="/employees/:empId"
+              children={<SingleEmployee />}
+            /> */}
+            <Route path="*">
+              <Error />
+            </Route>
+          </Switch>
+        </main>
+      </Router>
     </div>
   );
 }

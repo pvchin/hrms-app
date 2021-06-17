@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
+import { List, ListItem, ListItemText, Grid } from "@material-ui/core";
 import clsx from "clsx";
 import axios from "axios";
+import { useAsync } from "react-async";
 import MaterialTable from "material-table";
 import Paper from "@material-ui/core/Paper";
 import {
@@ -13,8 +15,7 @@ import {
   useRecoilValueLoadable,
   useRecoilStateLoadable,
 } from "recoil";
-// import { useRecoilValue, useSetRecoilState, useRecoilState } from "recoil";
-// import { departmentsSelector } from "../helpers/Recoilhelpers";
+import { loginLevelState } from "./data/atomdata";
 import { onleaves_url } from "../utils/constants";
 import { fetchDepartmentsSelector } from "./data/selectordata";
 
@@ -42,10 +43,10 @@ const columns = [
   },
 ];
 
-export const onleavesdatastate = atom({
-  key: "onleavesdatastate",
-  default: [],
-});
+// export const onleavesdatastate = atom({
+//   key: "onleavesdatastate",
+//   default: [],
+// });
 
 const fetchOnLeavesDetails = selector({
   key: "onLeaveDetailsSelector",
@@ -61,57 +62,63 @@ const fetchOnLeavesDetails = selector({
   },
 });
 
+const loadUsers = async () => {
+  const { data } = await axios.get(onleaves_url);
+  return data;
+};
+//   await fetch("https://jsonplaceholder.typicode.com/users")
+//     .then((res) => (res.ok ? res : Promise.reject(res)))
+//     .then((res) => res.json());
+
+const fetchDetails = async () =>
+  await fetch("localhost:8888/api/onleavesview")
+    .then((res) => (res.ok ? res : Promise.reject(res)))
+    .then((res) => res.json());
+
 const OnLeavesView = () => {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
-  const [userdata, setUserdata] = useState([]);
+    const [userdata, setUserdata] = useState([]);
+    const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
+    
   //const [userdata, setUserdata] = useRecoilState(userdatastate);
-  const onLeavesDetails = useRecoilValueLoadable(fetchOnLeavesDetails);
-  const { state, contents } = onLeavesDetails;
-
-  console.log(onLeavesDetails);
-  if (onLeavesDetails.state === "hasError") {
-    return <div> There is Internet connection problem! </div>;
-  }
-
-  if (state === "loading") {
-      return <div>
-          <h2>Loading....On Leaves</h2>
-          </div>;
-  }
-
-  if (state === "hasValue") {
-    const editable = contents.map((r) => {
-      return { ...r };
-    });
-    return (
-      <div className={classes.root}>
-        <div style={{ maxWidth: "100%", paddingTop: "5px" }}>
-          <MaterialTable
-            columns={columns}
-            data={editable}
-            title="Staffs On Leave within 30 Days"
-            options={{
-              filtering: false,
-              search: false,
-              toolbar: false,
-              exportButton: true,
-              headerStyle: {
-                backgroundColor: "orange",
-                color: "primary",
-              },
-              showTitle: false,
-            }}
-          />
-        </div>
-      </div>
-    );
-  }
+  //const onLeavesDetails = useRecoilValueLoadable(fetchOnLeavesDetails);
+  const { data, error, isLoading } = useAsync({ promiseFn: loadUsers });
+  if (isLoading) return "Loading...";
+ if (error) return `Internet connections problem!`;
+  if (data) console.log("data", data);
+  return (
+    <List className={classes.roow}>
+      <Grid container direction="row">
+        {data.map((row) => {
+          return (
+            <ListItem key={row.id}>
+              <Grid item sm={4} align="center">
+                <ListItemText>{row.name}</ListItemText>
+              </Grid>
+              <Grid item sm={4} align="center">
+                <ListItemText>{row.from_date}</ListItemText>
+              </Grid>
+              <Grid item sm={4} align="center">
+                <ListItemText>{row.to_date}</ListItemText>
+              </Grid>
+            </ListItem>
+          );
+        })}
+      </Grid>
+    </List>
+  );
 };
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    padding: 0,
+    padding: "2",
+  },
+
+  paper: {
+    padding: theme.spacing(1), //grid padding
+    textAlign: "center",
+    color: theme.palette.text.secondary,
   },
 }));
 

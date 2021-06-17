@@ -10,17 +10,15 @@ import ExitToApplication from "@material-ui/icons/ExitToApp";
 import Badge from "@material-ui/core/Badge";
 import MenuIcon from "@material-ui/icons/Menu";
 import NotificationsIcon from "@material-ui/icons/Notifications";
+import { useRecoilState } from "recoil";
+import { loginLevelState } from "./data/atomdata";
 
 const drawerWidth = 255;
 
-const Appbanner = ({
-  handleDrawerOpen,
-  handleDrawerClose,
-  open,
-  title,
-  setLogin,
-}) => {
+const Appbanner = ({ handleDrawerOpen, handleDrawerClose, open, title }) => {
   const classes = useStyles();
+  const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
+
   return (
     <AppBar
       position="absolute"
@@ -51,7 +49,10 @@ const Appbanner = ({
           </Badge>
         </IconButton>
         <Tooltip title="Logout">
-          <IconButton color="inherit" onClick={() => setLogin(false)}>
+          <IconButton
+            color="inherit"
+            onClick={() => setLoginLevel({ ...loginLevel, login: false })}
+          >
             <ExitToApplication />
           </IconButton>
         </Tooltip>

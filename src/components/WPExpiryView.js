@@ -3,16 +3,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import axios from "axios";
 import MaterialTable from "material-table";
-import Paper from "@material-ui/core/Paper";
-import {
-  atom,
-  selector,
-  useRecoilValue,
-  useRecoilState,
-  useSetRecoilState,
-  useRecoilValueLoadable,
-  useRecoilStateLoadable,
-} from "recoil";
+import { Grid, List, ListItem, ListItemText } from "@material-ui/core";
+import { atom, selector, useRecoilValueLoadable } from "recoil";
 // import { useRecoilValue, useSetRecoilState, useRecoilState } from "recoil";
 // import { departmentsSelector } from "../helpers/Recoilhelpers";
 import { wpexpiry_url } from "../utils/constants";
@@ -69,7 +61,11 @@ const WPExpiryView = () => {
 
   console.log(wpExpiryDetails);
   if (wpExpiryDetails.state === "hasError") {
-    return <div> There is Internet connection problem! </div>;
+    return (
+      <div>
+        <h2>Internet connections problem!</h2>
+      </div>
+    );
   }
 
   if (state === "loading") {
@@ -85,26 +81,25 @@ const WPExpiryView = () => {
       return { ...r };
     });
     return (
-      <div className={classes.root}>
-        <div style={{ maxWidth: "100%", paddingTop: "5px" }}>
-          <MaterialTable
-            columns={columns}
-            data={editable}
-            title="Work Permit Expiry in 90 Days"
-            options={{
-              filtering: false,
-              search: false,
-              toolbar: false,
-              exportButton: true,
-              headerStyle: {
-                backgroundColor: "orange",
-                color: "primary",
-              },
-              showTitle: false,
-            }}
-          />
-        </div>
-      </div>
+      <List className={classes.root}>
+        <Grid container direction="row">
+          {editable.map((row) => {
+            return (
+              <ListItem key={row.id}>
+                <Grid item sm={4} align="center">
+                  <ListItemText>{row.name}</ListItemText>
+                </Grid>
+                <Grid item sm={4} align="center">
+                  <ListItemText>{row.workpermitno}</ListItemText>
+                </Grid>
+                <Grid item sm={4} align="center">
+                  <ListItemText>{row.workpermit_expirydate}</ListItemText>
+                </Grid>
+              </ListItem>
+            );
+          })}
+        </Grid>
+      </List>
     );
   }
 };

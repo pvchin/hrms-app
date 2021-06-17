@@ -7,6 +7,15 @@ import {
   Typography,
   Divider,
 } from "@material-ui/core";
+import {
+  RecoilRoot,
+  atom,
+  selector,
+  useRecoilState,
+  useRecoilValue,
+  useSetRecoilState,
+} from "recoil";
+import { loginLevelState } from "./data/atomdata";
 import { makeStyles } from "@material-ui/core/styles";
 import MenuItem from "@material-ui/core/MenuItem";
 import { useEmployeesContext } from "../context/employees_context";
@@ -14,7 +23,7 @@ import { useLeavesContext } from "../context/leaves_context";
 import { Controller, useForm } from "react-hook-form";
 
 const initial_values = {
-  name: "",
+   name: "",
   to_date: "",
   from_date: "",
   reason: "",
@@ -25,6 +34,7 @@ const initial_values = {
 
 const LeaveForm = ({ handleDialogClose }) => {
   const classes = useStyles();
+  const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
   const {
     isLeaveEditing,
     single_leave,
@@ -42,7 +52,7 @@ const LeaveForm = ({ handleDialogClose }) => {
     if (isLeaveEditing) {
       updateLeave({ id: editLeaveID, ...data });
     } else {
-      addLeave({ ...data });
+      addLeave({ ...data, empid: loginLevel.loginUserId });
     }
     // loadLeaves();
     //history.push("/leave");

@@ -63,6 +63,7 @@ export default function LeaveTableView() {
   const { loadEmployees } = useEmployeesContext();
   const {
     leaves,
+    leaves_error,
     editLeaveID,
     leaves_loading,
     deleteLeave,
@@ -107,6 +108,13 @@ export default function LeaveTableView() {
         <h2>Loading...Leaves</h2>
       </div>
     );
+  }
+  if (leaves_error) {
+    return (
+      <div>
+        <h2>Internet connection problem!</h2>
+      </div>
+    )
   }
   return (
     <div className={classes.root}>

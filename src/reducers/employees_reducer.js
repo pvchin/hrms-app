@@ -37,7 +37,7 @@ const employees_reducer = (state, action) => {
     return { ...state, single_employee: {} };
   }
   if (action.type === RESET_EMPLOYEES) {
-    return { ...state, employees: {} };
+    return { ...state, employee: {} };
   }
   // get employees
   if (action.type === GET_EMPLOYEES_BEGIN) {

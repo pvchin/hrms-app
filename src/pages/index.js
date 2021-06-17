@@ -2,7 +2,9 @@ import Home from "./HomePage";
 import Dashboard from "./DashboardPage";
 import AllEmployees from "./AllEmployeesPage";
 import Leave from "./LeavePage";
+import LeaveStaff from "./LeaveStaffPage";
 import Expenses from "./ExpensesPage";
+import ExpensesStaff from "./ExpensesStaffPage";
 import Payroll from "./PayrollPage";
 import Payslip from "./PayslipPage";
 import BatchPayslips from "./BatchPayslipsPage";
@@ -20,7 +22,9 @@ export {
   Dashboard,
   AllEmployees,
   Leave,
+  LeaveStaff,
   Expenses,
+  ExpensesStaff,
   Payslip,
   BatchPayslips,
   Payroll,

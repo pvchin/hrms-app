@@ -1,6 +1,8 @@
 import React from "react";
 import { Button, Icon, TextField, Paper, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { useRecoilState } from "recoil";
+import { loginLevelState } from "./data/atomdata";
 import MenuItem from "@material-ui/core/MenuItem";
 import { useEmployeesContext } from "../context/employees_context";
 import { useExpensesContext } from "../context/expenses_context";
@@ -19,6 +21,7 @@ const initial_values = {
 
 const ExpenseForm = ({ handleDialogClose }) => {
   const classes = useStyles();
+  const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
   const {
     isExpenseEditing,
     single_expense,
@@ -44,11 +47,9 @@ const ExpenseForm = ({ handleDialogClose }) => {
     if (isExpenseEditing) {
       updateExpense({ id: editExpenseID, ...data });
     } else {
-      addExpense({ ...data });
+      addExpense({ empid: loginLevel.loginUserId, ...data });
     }
-    //loadExpenses();
 
-    //history.push("/expenses");
     handleDialogClose();
   };
 

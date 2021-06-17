@@ -2,7 +2,7 @@ const { table } = require("./airtable-dailyallowances");
 const formattedReturn = require("../formattedReturn");
 
 module.exports = async (event) => {
-  const { id, fv, fi } = event.queryStringParameters;
+  const { id, fv, fi,em } = event.queryStringParameters;
   // const { id, filterValue, filterField } = event.queryStringParameters;
   // console.log(filterValue, filterField);
 
@@ -32,6 +32,17 @@ module.exports = async (event) => {
 
     return formattedReturn(200, formattedDailyAllowances);
   }
+   if (em) {
+     const dailyallowances = await table
+       .select({ filterByFormula: `empid = '${em}'` })
+       .firstPage();
+     const formattedDailyAllowances = dailyallowances.map((dailyallowance) => ({
+       id: dailyallowance.id,
+       ...dailyallowance.fields,
+     }));
+
+     return formattedReturn(200, formattedDailyAllowances);
+   }
 
   if (fi) {
     const dailyallowances = await table

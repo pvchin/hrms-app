@@ -102,7 +102,7 @@ const PaySummary = ({ singlebatchpayslip }) => {
     const totaltap = Math.ceil(totalwages * 0.05);
     const totalscp =
       Math.round((totalwages + Number.EPSILON) * 0.035 * 100) / 100;
-    const totalpayroll = totalallows - totaltap - totalscp - totaldeducts;
+    const totalpayroll = totalwages + totalallows - totaltap - totalscp - totaldeducts;
     setPayrundata({
       ...payrundata,
       totalpayroll: totalpayroll,
@@ -208,10 +208,10 @@ const PaySummary = ({ singlebatchpayslip }) => {
           <div>
             <TextField
               label="Pay Date"
-              name="paydate"
+              name="pay_date"
               variant="filled"
               type="date"
-              value={payrundata.paydate}
+              value={payrundata.pay_date}
               style={{ width: "100%" }}
               InputLabelProps={{
                 shrink: true,

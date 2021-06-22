@@ -43,8 +43,8 @@ const Payrunbatch = () => {
   const [formdata, setFormdata] = useState([]);
   const [rowindex, setRowIndex] = useState(0);
   const [showSumm, setShowSumm] = useState(false);
-   const [showSaveAlert, setShowSaveAlert] = useState(false);
-  console.log("payslip period", payslip_period);
+  const [showSaveAlert, setShowSaveAlert] = useState(false);
+  const [isCalc, setIsCalc] = useState(false);
 
   useEffect(() => {
     loadPayitems();
@@ -71,7 +71,7 @@ const Payrunbatch = () => {
     }
     //update payrun
     handleSavePayrun();
-    setShowSaveAlert(true)
+    setShowSaveAlert(true);
   };
 
   const handleSavePayrun = () => {
@@ -98,6 +98,7 @@ const Payrunbatch = () => {
     const paydata = singlebatchpayslip[index];
     setFormdata({ ...paydata });
     setFormdata({ ...paydata });
+    setIsCalc(true);
     setLoadFormdata(true);
   };
 
@@ -142,8 +143,10 @@ const Payrunbatch = () => {
               }}
             >
               <h2>Payroll Details</h2>
-              <div style={{ marginTop: 10, marginLeft: 20}}>
-                {showSaveAlert && <Alert severity="success">Changes have been saved!</Alert>}
+              <div style={{ marginTop: 10, marginLeft: 20 }}>
+                {showSaveAlert && (
+                  <Alert severity="success">Changes have been saved!</Alert>
+                )}
               </div>
             </div>
           </Grid>
@@ -242,6 +245,8 @@ const Payrunbatch = () => {
                 payitems={payitems}
                 setLoadUpdatedata={setLoadUpdatedata}
                 rowindex={rowindex}
+                isCalc={isCalc}
+                setIsCalc={setIsCalc}
               />
             )}
             {showSumm && (

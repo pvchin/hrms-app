@@ -137,14 +137,14 @@ const Payrun = () => {
       employees.forEach((emp, index) => {
         if (emp.tableData.checked) {
           let exp = 0;
-          if (expenses) {
-            expenses
-              .filter((r) => r.empid === emp.id)
-              .map((i) => {
-                updateExpenses({ id: i.id, payrun: period });
-                return (exp = exp + i.amount);
-              });
-          }
+          // if (expenses) {
+          //   expenses
+          //     .filter((r) => r.empid === emp.id)
+          //     .map((i) => {
+          //       updateExpenses({ id: i.id, payrun: period });
+          //       return (exp = exp + i.amount);
+          //     });
+          // }
 
           const {
             id,

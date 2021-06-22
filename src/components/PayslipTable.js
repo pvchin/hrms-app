@@ -67,6 +67,15 @@ export default function PayslipTable() {
     setInput({
       ...input,
       payfreq: data.payfreq,
+      fromdate: new Date(data.fromdate).toDateString(),
+      todate: data.todate,
+      paydate: data.paydate,
+      period: data.period,
+      payrun: data.payrun,
+    });
+    setInput({
+      ...input,
+      payfreq: data.payfreq,
       fromdate: data.fromdate,
       todate: data.todate,
       paydate: data.paydate,
@@ -164,11 +173,11 @@ export default function PayslipTable() {
                 {/* <div style={{ paddingLeft: 22 }}>
                   <h3>{`End Month: ${payslip_endmonthdate}`}</h3>
                 </div> */}
-                <Link to="/payslip">
+                {/* <Link to="/payslip">
                   <div>
                     <ArrowBackIcon fontSize="large" color="primary" />
                   </div>
-                </Link>
+                </Link> */}
               </div>
             ),
           }}

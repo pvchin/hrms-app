@@ -76,6 +76,8 @@ const PayForm = ({
   payitems,
   setLoadUpdatedata,
   rowindex,
+  isCalc,
+  setIsCalc
 }) => {
   const classes = useStyles();
   const [state, setState] = useState(initial_state);
@@ -87,6 +89,13 @@ const PayForm = ({
     setLoadFormdata(false);
     console.log("useeffect state", state);
   }, [loadFormdata]);
+
+  // useEffect(() => {
+  //   if (formdata) {
+  //     handleCalc()
+  //     setIsCalc(false)
+  //   }
+  // },[isCalc])
 
   const Update_Empdata = ({ name, value }) => {
     let data = singlebatchpayslip[rowindex];

@@ -252,7 +252,7 @@ export default function DailyAllowancesTableStaff() {
             handleClose={handleAllowsDetlDialogClose}
             title=""
             showButton={true}
-            isFullscreen={true}
+            isFullscreen={false}
             isFullwidth={true}
           >
             <DailyAllowsDetlsTableStaff

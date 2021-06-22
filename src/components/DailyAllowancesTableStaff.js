@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import MaterialTable, { MTableToolbar } from "material-table";
 import { makeStyles } from "@material-ui/core/styles";
 import { TextField, Icon, Button, MenuItem } from "@material-ui/core";
-import { Alert} from "@material-ui/lab"
+import { Alert } from "@material-ui/lab";
 import { useSetRecoilState, useRecoilValue, useRecoilState } from "recoil";
 import {
   allowsPeriodState,
@@ -68,7 +68,8 @@ export default function DailyAllowancesTableStaff() {
   const [allows_period, setAllows_period] = useRecoilState(allowsPeriodState);
   const [allows_empid, setAllows_empid] = useRecoilState(empidState);
   const [allowsdataId, setAllowsdataId] = useState("");
-  const [error,setError] = useState("")
+  const [toLoad, settoLoad] = useState(true);
+  const [error, setError] = useState("");
   const [isAllowsDetlDialogOpen, setIsAllowsDetlDialogOpen] = useState(false);
   const title = `Site Allowances`;
   const {
@@ -81,7 +82,7 @@ export default function DailyAllowancesTableStaff() {
 
   useEffect(() => {
     loadEmpDailyAllowances(loginLevel.loginUserId);
-  }, []);
+  }, [toLoad]);
 
   const Save_DailyAllowancesData = () => {
     dailyallowances.forEach((data) => {
@@ -129,8 +130,12 @@ export default function DailyAllowancesTableStaff() {
   };
 
   const handleAllowsDetlDialogClose = () => {
-     loadEmpDailyAllowances(loginLevel.loginUserId);
+    settoLoad(true);
     setIsAllowsDetlDialogOpen(false);
+  };
+
+  const Refresh_SiteAllows = () => {
+    loadEmpDailyAllowances(loginLevel.loginUserId);
   };
 
   if (dailyallowances_loading) {
@@ -207,14 +212,21 @@ export default function DailyAllowancesTableStaff() {
             Toolbar: (props) => (
               <div>
                 <MTableToolbar {...props} />
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="secondary"
+                  className={classes.button}
+                  onClick={Refresh_SiteAllows}
+                >
+                  Refresh
+                </Button>
                 <div style={{ padding: "5px 10px" }}>
-                  
                   {error && (
                     <Alert severity="error" onClose={() => setError(false)}>
                       Period already existed!
                     </Alert>
                   )}
-                  
                 </div>
               </div>
             ),

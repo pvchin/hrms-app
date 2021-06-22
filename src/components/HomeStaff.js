@@ -120,40 +120,40 @@ const EmployeeView = () => {
           </Grid>
           {/* Recent Deposits */}
           <Grid item xs={6} md={8} lg={6}>
-            <CardLayout3 title="Leave Schedule">
+            <CardLayout2 title="Leave Schedule">
               <OnLeavesViewStaff />
-            </CardLayout3>
+            </CardLayout2>
           </Grid>
           <Grid item xs={6} md={8} lg={6}>
-            <CardLayout3 title="Work Permit Expiry within 90 Days">
+            <CardLayout2 title="Work Permit Expiry within 90 Days">
               <WPExpiryViewStaff />
-            </CardLayout3>
+            </CardLayout2>
           </Grid>
           <Grid item xs={6} md={8} lg={6}>
-            <CardLayout3
+            <CardLayout2
               title="Payroll History"
               handleClick={handlePayslipDialogOpen}
             >
               <PayslipTableViewStaff />
-            </CardLayout3>
+            </CardLayout2>
           </Grid>
           <Grid item xs={6} md={8} lg={6}>
-            <CardLayout3
+            <CardLayout2
               title="Site Allowances History"
               handleClick={handleDailyAllowancesDialogOpen}
             >
               <DailyAllowancesTableViewStaff />
-            </CardLayout3>
+            </CardLayout2>
           </Grid>
           
           {/* Recent Orders */}
           <Grid item xs={6} md={8} lg={6}>
-            <CardLayout3
+            <CardLayout2
               title="Expenses History"
               handleClick={handleExpenseDialogOpen}
             >
               <ExpenseTableViewStaff />
-            </CardLayout3>
+            </CardLayout2>
           </Grid>
         </Grid>
         <Box pt={4}>

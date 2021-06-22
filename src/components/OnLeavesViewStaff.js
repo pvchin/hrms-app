@@ -33,6 +33,11 @@ const columns = [
     dateSetting: { locale: "en-GB" },
     editable: "never",
   },
+  {
+    title: "Status",
+    field: "status",
+    editable: "never",
+  },
 ];
 
 // export const onleavesdatastate = atom({
@@ -87,14 +92,17 @@ const OnLeavesViewStaff = () => {
           .map((row) => {
             return (
               <ListItem key={row.id}>
-                <Grid item sm={4} align="center">
+                {/* <Grid item sm={4} align="center">
                   <ListItemText>{row.name}</ListItemText>
-                </Grid>
+                </Grid> */}
                 <Grid item sm={4} align="center">
                   <ListItemText>{row.from_date}</ListItemText>
                 </Grid>
                 <Grid item sm={4} align="center">
                   <ListItemText>{row.to_date}</ListItemText>
+                </Grid>
+                <Grid item sm={4} align="center">
+                  <ListItemText>{row.status}</ListItemText>
                 </Grid>
               </ListItem>
             );

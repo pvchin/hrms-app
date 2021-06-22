@@ -7,7 +7,7 @@ import { Grid } from "@material-ui/core";
 import CardLayout from "../helpers/CardLayout";
 import CardLayout2 from "../helpers/CardLayout2";
 import { CustomDialog } from "../helpers/CustomDialog";
-import { selector, useRecoilState, useRecoilValueLoadable } from "recoil";
+import { useRecoilState} from "recoil";
 import { loginLevelState } from "./data/atomdata";
 import { useEmployeesContext } from "../context/employees_context";
 import { useTablesContext } from "../context/tables_context";
@@ -187,6 +187,15 @@ if (single_employee_loading) {
                     label="Gender"
                     name="gender"
                     value={single_employee.gender}
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  />
+
+                  <TextField
+                    label="Leave Balance"
+                    name="leave_bal"
+                    value={single_employee.leave_bal}
                     InputProps={{
                       readOnly: true,
                     }}

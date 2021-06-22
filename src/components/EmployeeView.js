@@ -184,6 +184,14 @@ const EmployeeView = () => {
                       readOnly: true,
                     }}
                   />
+                  <TextField
+                    label="Leave Balance"
+                    name="leave_bal"
+                    value={single_employee.leave_bal}
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  />
                 </form>
               </div>
             </CardLayout2>

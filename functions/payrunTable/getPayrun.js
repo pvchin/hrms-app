@@ -6,8 +6,8 @@ module.exports = async (event) => {
 
   if (id) {
     const payrun = await table.find(id);
-    const formattedPayrun = { id: payitem.id, ...payitem.fields };
-    if (payitem.error) {
+    const formattedPayrun = { id: payrun.id, ...payrun.fields };
+    if (payrun.error) {
       return {
         statusCode: 404,
         body: `No Payrun batch with id: ${id}`,

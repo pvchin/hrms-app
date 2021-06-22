@@ -64,6 +64,8 @@ const EmployeeForm = () => {
     bank_acno,
     tap_acno,
     scp_acno,
+    leave_bal,
+    leave_entitled,
     date_of_join,
     date_of_resign,
     designation,
@@ -582,6 +584,62 @@ const EmployeeForm = () => {
                         name="date_of_resign"
                         type="date"
                         defaultValue={date_of_resign}
+                        className={classes.textField}
+                        onChange={onChange}
+                        error={!!error}
+                        helperText={error ? error.message : null}
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                      />
+                    );
+                  }}
+                  //rules={{ required: "Email is required" }}
+                />
+              </div>
+              <div>
+                <Controller
+                  name="leave_entitled"
+                  control={control}
+                  defaultValue={leave_entitled}
+                  render={({
+                    field: { onChange, value },
+                    fieldState: { error },
+                  }) => {
+                    return (
+                      <TextField
+                        label="Annual Leaves Entitled"
+                        id="margin-normal"
+                        name="leave_entitled"
+                        type="numeric"
+                        defaultValue={leave_entitled}
+                        className={classes.textField}
+                        onChange={onChange}
+                        error={!!error}
+                        helperText={error ? error.message : null}
+                        InputLabelProps={{
+                          shrink: true,
+                        }}
+                      />
+                    );
+                  }}
+                  //rules={{ required: "Email is required" }}
+                />
+                <Controller
+                  name="leave_bal"
+                  control={control}
+                  defaultValue={leave_bal}
+                  render={({
+                    field: { onChange, value },
+                    fieldState: { error },
+                  }) => {
+                    return (
+                      <TextField
+                        label="Leaves Balance"
+                        id="margin-normal"
+                        name="leave_bal"
+                        type="numeric"
+                        defaultValue={leave_bal}
                         className={classes.textField}
                         onChange={onChange}
                         error={!!error}

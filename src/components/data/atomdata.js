@@ -19,6 +19,11 @@ export const payPeriodState = atom({
   default: "",
 });
 
+export const payrunIdState = atom({
+  key: "payRunIdState",
+  default: "",
+});
+
 export const payPeriodEndMonthState = atom({
   key: "payPeriodEndMonthState",
   default: "",
@@ -73,6 +78,8 @@ export const payPeriodIdState = atom({
 export const payrunState = atom({
   key: "payrunState",
   default: {
+    copyfrom: "",
+    selectmonth: "",
     payfreq: "",
     fromdate: null,
     todate: null,
@@ -102,4 +109,29 @@ export const payrundataState = atom({
 export const paydataState = atom({
   key: "paydataState",
   default: {},
+});
+
+export const siteallowsState = atom({
+  key: "siteallowsState",
+  default: {
+    year: "",
+    month: "",
+    period: "",
+    fromdate: null,
+    todate: null,
+    manager: "",
+    payfreq: "",
+    district: "",
+    location: "",
+    typeoperation: "",
+    client: "",
+    jobno: "",
+    crewoperation: "",
+    jobbonus: 0,
+    perdiem: 0,
+    no_of_days: 0,
+    amount: 0,
+    empid: "",
+    name: "",
+  },
 });

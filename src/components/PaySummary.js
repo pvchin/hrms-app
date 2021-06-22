@@ -1,25 +1,10 @@
 import React, { useState, useEffect } from "react";
 import MaterialTable from "material-table";
-import {
-  Button,
-  ButtonGroup,
-  Grid,
-  Icon,
-  TextField,
-  Divider,
-  ListSubheader,
-  MenuItem,
-} from "@material-ui/core";
+import { Button, Icon, Grid, TextField } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import {
-  RecoilRoot,
-  atom,
-  selector,
-  useRecoilState,
-  useRecoilValue,
-  useSetRecoilState,
-} from "recoil";
+import { useRecoilState } from "recoil";
 import { payrunState } from "./data/atomdata";
+import { usePayslipsContext } from "../context/payslips_context";
 
 const columns = [
   {
@@ -35,25 +20,25 @@ const columns = [
   },
   {
     title: "TAP Amount",
-    field: "tapamount",
+    field: "tap_amount",
     editable: "never",
     type: "currency",
   },
   {
     title: "SCP Amount",
-    field: "scpamount",
+    field: "scp_amount",
     editable: "never",
     type: "currency",
   },
   {
     title: "Allowances",
-    field: "allowancws",
+    field: "total_allowancws",
     editable: "never",
     type: "currency",
   },
   {
     title: "Deductions",
-    field: "deductions",
+    field: "total_deductions",
     editable: "never",
     type: "currency",
   },
@@ -81,6 +66,7 @@ const PaySummary = ({ singlebatchpayslip }) => {
   const [state, setState] = useState(initial_state);
   const [payrundata, setPayrundata] = useRecoilState(payrunState);
   const [isCalc, setIsCalc] = useState(true);
+  const { payrun, updatePayrun, payslip_period } = usePayslipsContext();
 
   const handleCalcTotals = () => {
     const data = singlebatchpayslip;
@@ -126,6 +112,20 @@ const PaySummary = ({ singlebatchpayslip }) => {
       totalallows: totalallows,
       totaldeducts: totaldeducts,
     });
+    payrun
+      .filter((r) => r.payrun === payslip_period)
+      .map((rec) => {
+        //update payrun
+        return updatePayrun({
+          id: rec.id,
+          totalpayroll: totalpayroll,
+          totalwages: totalwages,
+          totaltap: totaltap,
+          totalscp: totalscp,
+          totalallows: totalallows,
+          totaldeducts: totaldeducts,
+        });
+      });
     console.log("payrundata", payrundata);
     console.log(
       "totals",
@@ -138,6 +138,11 @@ const PaySummary = ({ singlebatchpayslip }) => {
     );
   };
 
+  const handleSaveCalcTotals = (e) => {
+    e.preventDefault();
+    handleCalcTotals();
+  };
+
   useEffect(() => {
     handleCalcTotals();
     setIsCalc(false);
@@ -147,7 +152,19 @@ const PaySummary = ({ singlebatchpayslip }) => {
     <form>
       <Grid container direction="row" style={{ border: "1px solid white" }}>
         <Grid item sm={12} align="center" style={{ border: "1px solid white" }}>
-          <h2>Summary</h2>
+          <div>
+            {/* <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              className={classes.button}
+              style={{ marginLeft: 5 }}
+              onClick={(e) => handleSaveCalcTotals(e)}
+            >
+              Save <Icon className={classes.rightIcon}>send</Icon>
+            </Button> */}
+            <h2>Summary</h2>
+          </div>
         </Grid>
       </Grid>
       <Grid container direction="row" style={{ border: "1px solid white" }}>

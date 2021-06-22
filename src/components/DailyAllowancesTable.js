@@ -25,7 +25,6 @@ import { useDailyAllowancesContext } from "../context/dailyallowances_context";
 //import { useEmployeesContext } from "../context/employees_context";
 import DailyAllowsDetlsTable from "./DailyAllowsDetlsTable";
 
-
 const columns = [
   {
     title: "Name",
@@ -40,7 +39,7 @@ const columns = [
 ];
 
 export default function DailyAllowancesTable() {
-  let history = useHistory()
+  let history = useHistory();
   const classes = useStyles();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [tmpallowsdata, setTmpallowsdata] = useState([]);
@@ -62,14 +61,14 @@ export default function DailyAllowancesTable() {
   } = useDailyAllowancesContext();
 
   useEffect(() => {
-    getSingleBatchDailyAllowance(allows_period)
-  },[])
+    getSingleBatchDailyAllowance(allows_period);
+  }, []);
 
   const update_DailyAllowance = async (data) => {
     const { empid, period } = data;
-    console.log("id",empid, period)
+    console.log("id", empid, period);
     setEmpID(empid);
-        setEditDailyAllowanceID(empid);
+    setEditDailyAllowanceID(empid);
     setIsDailyAllowanceEditingOn();
     //getSingleBatchDailyAllowsDetl(empid, period);
     // getSingleBatchDailyAllowsDetl(empid, period);
@@ -106,9 +105,11 @@ export default function DailyAllowancesTable() {
   };
 
   if (singlebatch_dailyallowance_loading) {
-    return <div>
-      <h2>Loading... daily allowances</h2>
-    </div>
+    return (
+      <div>
+        <h2>Loading... daily allowances</h2>
+      </div>
+    );
   }
 
   return (

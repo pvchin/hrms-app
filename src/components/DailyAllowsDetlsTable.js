@@ -11,9 +11,10 @@ import {
   useRecoilStateLoadable,
 } from "recoil";
 import {
-  allowsPeriodState,
+  loginLevelState,
   allowsDataState,
   empidState,
+  allowsPeriodState,
 } from "./data/atomdata";
 import { fetchDailyAllowsDetlsSelector } from "./data/selectordata";
 import { useDailyAllowancesContext } from "../context/dailyallowances_context";
@@ -77,6 +78,7 @@ export default function DailyAllowsDetlsTable() {
   // useRecoilState(allowsDataDetlsState);
   //console.log("detlstable", singlebatch_dailyallowsdetl);
   //const [allowsDetlsdata, setAllowsDetilsdata] = useRecoilStateLoadable(fetchDailyAllowsDetlsSelector);
+  const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
   const allows_period = useRecoilValue(allowsPeriodState);
   const allows_empid = useRecoilValue(empidState);
   const {
@@ -94,7 +96,7 @@ export default function DailyAllowsDetlsTable() {
   } = useDailyAllowancesContext();
 
   useEffect(() => {
-    getSingleBatchDailyAllowsDetl(editDailyAllowanceID, allows_period);
+    getSingleBatchDailyAllowsDetl(allows_empid, allows_period);
   }, []);
 
   // const add_DailyAllowsDetl = async (data) => {

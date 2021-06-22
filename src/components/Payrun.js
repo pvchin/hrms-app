@@ -3,36 +3,24 @@ import { makeStyles } from "@material-ui/core/styles";
 import MaterialTable from "material-table";
 import clsx from "clsx";
 import { useHistory } from "react-router-dom";
-import axios from "axios";
-import { useAsync } from "react-async";
-import Alert from "@material-ui/lab/Alert";
 import {
   Button,
-  Checkbox,
   Paper,
   Grid,
   Icon,
   Divider,
   TextField,
-  MenuItem,
-  FormControlLabel,
+  NativeSelect,
+  InputLabel,
 } from "@material-ui/core";
-import {
-  RecoilRoot,
-  atom,
-  selector,
-  useRecoilState,
-  useRecoilValue,
-  useSetRecoilState,
-} from "recoil";
+import { useRecoilState } from "recoil";
 
-import { employees_url } from "../utils/constants";
 import { useEmployeesContext } from "../context/employees_context";
 import { usePayslipsContext } from "../context/payslips_context";
-import { payrunState, payPeriodIdState, paydataState } from "./data/atomdata";
+import { useExpensesContext } from "../context/expenses_context";
+import { payrunState } from "./data/atomdata";
 
-const drawerWidth = 240;
-const url = "https://course-api.com/react-tabs-project";
+//const drawerWidth = 240;
 
 const columns = [
   {
@@ -46,30 +34,54 @@ const columns = [
   },
 ];
 
+const selectmonths = [
+  { mth: "January" },
+  { mth: "February" },
+  { mth: "March" },
+  { mth: "April" },
+  { mth: "May" },
+  { mth: "June" },
+  { mth: "July" },
+  { mth: "August" },
+  { mth: "September" },
+  { mth: "October" },
+  { mth: "November" },
+  { mth: "December" },
+];
+
 const Payrun = () => {
   let history = useHistory();
+  let date = new Date();
+  let longMonth = date.toLocaleString("en-us", { month: "long" });
+
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
   const [loadPaybatch, setLoadPaybatch] = useState(false);
-  const { loadEmployees, employees, employees_loading } = useEmployeesContext();
+  const { loadEmployees, employees } = useEmployeesContext();
+  const { loadUnpaidExpenses, expenses, updateExpenses } = useExpensesContext();
   const {
     addPayrun,
     getPayrun,
     payrun,
-    addPayslip,
     payrun_loading,
-    payslipsdata,
-    setPayslipsData,
+    addPayslip,
     resetPayslipsData,
-    singlebatchpayslip,
+    dailyallowances,
+    updateDailyAllowance,
+    loadUnpaidDailyAllows,
     singlebatch_payslip_loading,
-    singlebatch_payslip_error,
-    getSingleBatchPayslip,
+    setPayslipPeriod,
   } = usePayslipsContext();
   const [input, setInput] = useRecoilState(payrunState);
   const [alert, setAlert] = useState(false);
   const [error, setError] = useState(false);
   const [isPayrunExist, setIsPayrunExist] = useState(false);
+
+  useEffect(() => {
+    if (!payrun_loading) {
+      setLoadPaybatch(false);
+    }
+  }, [loadPaybatch]);
 
   function formatDate(string) {
     var options = { year: "numeric", month: "long", day: "numeric" };
@@ -81,7 +93,6 @@ const Payrun = () => {
       input.fromdate.substring(0, 4) + "-" + input.fromdate.substring(5, 7);
     const mm = input.fromdate.substring(5, 7);
     const d = input.fromdate;
-    console.log("payrun", payrun);
   }
 
   const payrunExists = (data) => {
@@ -102,133 +113,140 @@ const Payrun = () => {
       input.fromdate.substring(0, 4) + "-" + input.fromdate.substring(5, 7);
     setInput({ ...input, period: period, payrun: payrundata });
     formatPayrun();
-
+    setPayslipPeriod(payrundata);
     const isExist = payrunExists(payrundata);
-    console.log("isExist", isExist);
+
     if (isExist) {
-      console.log("exist", payrundata);
+      console.log("exist");
       setIsPayrunExist(true);
       setAlert(true);
     } else {
       console.log("add");
-      add_Payrun();
+      add_Payrun(period, payrundata);
+      checkSelectedEmployees(period, payrundata);
       setIsPayrunExist(false);
-      setAlert(false);
+      setAlert(true);
       setLoadPaybatch(true);
     }
   };
 
   const checkSelectedEmployees = (period, payrun) => {
-    let items = [];
-    let payitems = [];
     resetPayslipsData();
-    const paydata = singlebatchpayslip.map((e) => e.name) || [];
-    {
-      employees &&
-        employees.forEach((emp, index) => {
-          if (emp.tableData.checked) {
-            const {
-              id,
-              name,
-              bank_name,
-              bank_acno,
-              basic_salary,
-              nett_pay,
-              tap_acno,
-              tap_amount,
-              scp_acno,
-              scp_amount,
-            } = emp;
-            const data = {
-              name: name,
-              period: period,
-              date: input.pay_date,
-              payrun: payrun,
-              wages: basic_salary,
-              nett_pay: nett_pay,
-              bank_name: bank_name,
-              bank_acno: bank_acno,
-              tap_acno: tap_acno,
-              tap_amount: tap_amount,
-              scp_acno: scp_acno,
-              scp_amount: scp_amount,
-              empid: id,
-              status: "Pending",
-              allows_type1: "Basic Salary",
-              allows_type1amt: basic_salary,
-              allows_type2: "Site Allowances",
-              allows_type2amt: 0,
-              allows_type3: "Expenses Claims",
-              allows_type3amt: 0,
-              allows_type4: " ",
-              allows_type4amt: 0,
-              allows_type5: " ",
-              allows_type5amt: 0,
-              allows_type6: " ",
-              allows_type6amt: 0,
-              allows_type7: " ",
-              allows_type7amt: 0,
-              allows_type8: " ",
-              allows_type8amt: 0,
-              deducts_type1: " ",
-              deducts_type1amt: 0,
-              deducts_type2: " ",
-              deducts_type2amt: 0,
-              deducts_type3: " ",
-              deducts_type3amt: 0,
-              deducts_type4: " ",
-              deducts_type4amt: 0,
-              deducts_type5: " ",
-              deducts_type5amt: 0,
-              deducts_type6: " ",
-              deducts_type6amt: 0,
-              deducts_type7: " ",
-              deducts_type7amt: 0,
-              deducts_type8: " ",
-              deducts_type8amt: 0,
-            };
-            if (paydata) {
-              const res = paydata.includes(emp.name);
-              if (!res) {
-                addPayslip({ ...data });
-              }
-            } else {
-              addPayslip({ ...data });
-            }
+
+    employees &&
+      employees.forEach((emp, index) => {
+        if (emp.tableData.checked) {
+          let exp = 0;
+          if (expenses) {
+            expenses
+              .filter((r) => r.empid === emp.id)
+              .map((i) => {
+                updateExpenses({ id: i.id, payrun: period });
+                return (exp = exp + i.amount);
+              });
           }
-        });
-    }
+
+          const {
+            id,
+            name,
+            bank_name,
+            bank_acno,
+            basic_salary,
+            tap_acno,
+            scp_acno,
+          } = emp;
+          const data = {
+            name: name,
+            period: period,
+            pay_date: input.pay_date,
+            payrun: payrun,
+            wages: basic_salary,
+            nett_pay: 0,
+            bank_name: bank_name,
+            bank_acno: bank_acno,
+            tap_acno: tap_acno,
+            tap_amount: 0,
+            scp_acno: scp_acno,
+            scp_amount: 0,
+            total_allowances: 0,
+            total_deductions: 0,
+            empid: id,
+            status: "Pending",
+            allows_type1: "Site Allowances",
+            allows_type1amt: 0,
+            allows_type2: "Expenses Claims",
+            allows_type2amt: exp,
+            allows_type3: " ",
+            allows_type3amt: 0,
+            allows_type4: " ",
+            allows_type4amt: 0,
+            allows_type5: " ",
+            allows_type5amt: 0,
+            allows_type6: " ",
+            allows_type6amt: 0,
+            allows_type7: " ",
+            allows_type7amt: 0,
+            allows_type8: " ",
+            allows_type8amt: 0,
+            deducts_type1: " ",
+            deducts_type1amt: 0,
+            deducts_type2: " ",
+            deducts_type2amt: 0,
+            deducts_type3: " ",
+            deducts_type3amt: 0,
+            deducts_type4: " ",
+            deducts_type4amt: 0,
+            deducts_type5: " ",
+            deducts_type5amt: 0,
+            deducts_type6: " ",
+            deducts_type6amt: 0,
+            deducts_type7: " ",
+            deducts_type7amt: 0,
+            deducts_type8: " ",
+            deducts_type8amt: 0,
+          };
+          addPayslip({ ...data });
+        }
+      });
   };
 
   const handleNext = () => {
     history.push("/payrunbatch");
   };
 
-  const add_Payrun = () => {
+  const add_Payrun = (period, payrun) => {
     //update payrun
     addPayrun({
       pay_freq: input.payfreq,
       from_date: input.fromdate,
       to_date: input.todate,
       pay_date: input.paydate,
-      period: input.period,
-      payrun: input.payrun,
+      period: period,
+      payrun: payrun,
+      status: "Pending",
     });
     getPayrun();
   };
 
   useEffect(() => {
     loadEmployees();
+    loadUnpaidExpenses();
     getPayrun();
   }, []);
 
-  useEffect(() => {
-    getSingleBatchPayslip(input.payrun);
-    if (singlebatchpayslip) {
-      checkSelectedEmployees(input.period, input.payrun);
-      setLoadPaybatch(false);
-    }
-  }, [loadPaybatch]);
+  // useEffect(() => {
+  //   loadUnpaidDailyAllows();
+  // }, []);
+
+  // useEffect(() => {
+  //   console.log("useEffect here", input.payrun);
+
+  //   // getSingleBatchPayslip(input.payrun);
+  //   if (singlebatchpayslip) {
+  //     checkSelectedEmployees(input.period, input.payrun);
+  //     setLoadPaybatch(false);
+  //   }
+  // }, [loadPaybatch]);
 
   //   useEffect(() => {
   //     if (input.period && input.payrun) {
@@ -245,27 +263,91 @@ const Payrun = () => {
           direction="row"
           container
           spacing={1}
-          style={{ border: "1px solid white" }}
+          // style={{ border: "1px solid white" }}
         >
-          <Grid container item sm={3} direction="column" align="left">
+          <Grid
+            container
+            item
+            sm={3}
+            style={{ border: "1px solid white" }}
+            direction="column"
+            align="left"
+          >
             <article className={classes.jobinfo}>
               <h2>Pay Run</h2>
               <form onSubmit={handlePayrunSubmit}>
+                <div>
+                  {/* <InputLabel
+                    htmlFor="deduct-customized-native-simple"
+                    className={classes.formLabel}
+                  >
+                    Copy From
+                  </InputLabel>
+                  <NativeSelect
+                    name="copyfrom"
+                    value={"New"}
+                    style={{
+                      padding: 4,
+                      marginLeft: 5,
+                      width: "100%",
+                      textAlign: "left",
+                    }}
+                    onChange={(e) => handleChange(e)}
+                  >
+                    <option value="">New</option>
+                    {payrun.map((row) => {
+                      return (
+                        <option key={row.id} value={row.payrun}>
+                          {row.payrun}
+                        </option>
+                      );
+                    })}
+                  </NativeSelect> */}
+                </div>
                 <div>
                   <TextField
                     label="Pay Frequency"
                     variant="filled"
                     required
-                    style={{ width: 250 }}
+                    defaultValue="Monthly"
+                    style={{ width: "100%" }}
                     name="payfreq"
                     value={input.payfreq}
                     onChange={(e) => handleChange(e)}
-                    select
+                    // select
                   >
                     {/* <MenuItem value="Weekly">Weekly</MenuItem> */}
-                    <MenuItem value="Monthly">Monthly</MenuItem>
+                    {/* <MenuItem value="Monthly">Monthly</MenuItem> */}
                   </TextField>
                 </div>
+                {/* <div>
+                  <InputLabel
+                    htmlFor="deduct-customized-native-simple"
+                    className={classes.formLabel}
+                  >
+                    Month
+                  </InputLabel>
+                  <NativeSelect
+                    name="selectmonth"
+                    defaultValue={longMonth}
+                    // value={input.selectmonth}
+                    style={{
+                      padding: 4,
+                      marginLeft: 5,
+                      width: "100%",
+                      textAlign: "left",
+                    }}
+                    onChange={(e) => handleChange(e)}
+                  >
+                    {selectmonths.map((row, i) => {
+                      return (
+                        <option key={i} value={row.mth}>
+                          {row.mth}
+                        </option>
+                      );
+                    })}
+                  </NativeSelect>
+                </div> */}
                 <div>
                   <TextField
                     label="From Date"
@@ -274,7 +356,7 @@ const Payrun = () => {
                     type="date"
                     value={input.fromdate}
                     required
-                    style={{ width: 250 }}
+                    style={{ width: "100%" }}
                     onChange={(e) => handleChange(e)}
                     InputLabelProps={{
                       shrink: true,
@@ -290,8 +372,7 @@ const Payrun = () => {
                     value={input.todate}
                     required
                     onChange={(e) => handleChange(e)}
-                    style={{ width: 250 }}
-                    onChange={handleChange}
+                    style={{ width: "100%" }}
                     InputLabelProps={{
                       shrink: true,
                     }}
@@ -305,7 +386,7 @@ const Payrun = () => {
                     name="paydate"
                     value={input.paydate}
                     required
-                    style={{ width: 250 }}
+                    style={{ width: "100%" }}
                     onChange={(e) => handleChange(e)}
                     InputLabelProps={{
                       shrink: true,
@@ -352,7 +433,13 @@ const Payrun = () => {
             flexItem
             style={{ background: "white" }}
           />
-          <Grid container item sm={8} align="right">
+          <Grid
+            container
+            item
+            sm={3}
+            style={{ border: "1px solid white" }}
+            align="right"
+          >
             <MaterialTable
               columns={columns}
               data={employees}
@@ -469,6 +556,12 @@ const useStyles = makeStyles((theme) => ({
   },
   rightIcon: {
     marginLeft: theme.spacing(1),
+  },
+  formLabel: {
+    fontSize: 12,
+    textAlign: "left",
+    marginLeft: 8,
+    marginTop: 5,
   },
 }));
 

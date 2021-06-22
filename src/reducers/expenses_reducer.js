@@ -6,6 +6,9 @@ import {
   GET_EXPENSES_BEGIN,
   GET_EXPENSES_SUCCESS,
   GET_EXPENSES_ERROR,
+  GET_UNPAIDEXPENSES_BEGIN,
+  GET_UNPAIDEXPENSES_SUCCESS,
+  GET_UNPAIDEXPENSES_ERROR,
   GET_SINGLE_EXPENSE_BEGIN,
   GET_SINGLE_EXPENSE_SUCCESS,
   GET_SINGLE_EXPENSE_ERROR,
@@ -45,6 +48,25 @@ const expenses_reducer = (state, action) => {
   }
   if (action.type === GET_EXPENSES_ERROR) {
     return { ...state, expenses_loading: false, expenses_error: true };
+  }
+
+  // get unpaid expenses
+  if (action.type === GET_UNPAIDEXPENSES_BEGIN) {
+    return { ...state, unpaid_expenses_loading: true };
+  }
+  if (action.type === GET_UNPAIDEXPENSES_SUCCESS) {
+    return {
+      ...state,
+      unpaid_expenses_loading: false,
+      unpaidexpenses: action.payload,
+    };
+  }
+  if (action.type === GET_UNPAIDEXPENSES_ERROR) {
+    return {
+      ...state,
+      unpaid_expenses_loading: false,
+      unpaid_expenses_error: true,
+    };
   }
 
   // add employee

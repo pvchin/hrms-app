@@ -69,17 +69,12 @@ export default function ExpenseTable({
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const { loadEmployees } = useEmployeesContext();
   const {
-    expenses,
     editExpenseID,
     updateExpense,
+    update_expense_error,
     expenses_loading,
     deleteExpense,
     loadPendingExpenses,
-    getSingleExpense,
-    setEditExpenseID,
-    setIsExpenseEditingOn,
-    setIsExpenseEditingOff,
-    resetSingleExpense,
   } = useExpensesContext();
 
   // useEffect(() => {
@@ -100,13 +95,13 @@ export default function ExpenseTable({
   //   }
   // }, [isLoad]);
 
-   const handleExpenseFormDialogOpen = () => {
+  const handleExpenseFormDialogOpen = () => {
     setIsDialogOpen(true);
   };
 
   const handleExpenseFormDialogClose = () => {
     setIsDialogOpen(false);
-     loadPendingExpenses(FILTERSTRING);
+    loadPendingExpenses(FILTERSTRING);
   };
 
   const handleExpenseFormAlertOpen = () => {
@@ -135,11 +130,38 @@ export default function ExpenseTable({
     handleDialogClose();
   };
 
-  //     <div>
-  //       <h2>Loading...Expenses</h2>
-  //     </div>
-  //   );
-  // }
+  const Approve_ExpenseData = () => {
+    expensesdata.forEach((rec) => {
+      if (rec.tableData.checked) {
+        updateExpense({ id: rec.id, status: "Approve" });
+        //update leavesdata
+        if (!update_expense_error) {
+          const recdata = expensesdata.filter((r) => r.id === rec.id);
+          recdata[0].status = "Approve";
+        }
+      }
+    });
+    expensesdata.forEach((d) => {
+      if (d.tableData) d.tableData.checked = false;
+    });
+  };
+
+  const Reject_ExpenseData = () => {
+    expensesdata.forEach((rec) => {
+      if (rec.tableData.checked) {
+        updateExpense({ id: rec.id, status: "Reject" });
+        //update leavesdata
+        if (!update_expense_error) {
+          const recdata = expensesdata.filter((r) => r.id === rec.id);
+          recdata[0].status = "Reject";
+        }
+      }
+    });
+    expensesdata.forEach((d) => {
+      if (d.tableData) d.tableData.checked = false;
+    });
+  };
+
   if (!expensesdata) {
     return (
       <div>
@@ -165,22 +187,23 @@ export default function ExpenseTable({
             Search: (props) => <SearchIcon />,
             ResetSearch: (props) => <DeleteIcon />,
           }}
-          editable={{
-            onRowUpdate: (newData, oldData) =>
-              new Promise((resolve, reject) => {
-                setTimeout(() => {
-                  const dataUpdate = [...expensesdata];
-                  const index = oldData.tableData.id;
-                  dataUpdate[index] = newData;
-                  setExpensesdata([...dataUpdate]);
-                  //approve_Expense(newData);
+          // editable={{
+          //   onRowUpdate: (newData, oldData) =>
+          //     new Promise((resolve, reject) => {
+          //       setTimeout(() => {
+          //         const dataUpdate = [...expensesdata];
+          //         const index = oldData.tableData.id;
+          //         dataUpdate[index] = newData;
+          //         setExpensesdata([...dataUpdate]);
+          //         //approve_Expense(newData);
 
-                  resolve();
-                }, 1000);
-              }),
-          }}
+          //         resolve();
+          //       }, 1000);
+          //     }),
+          // }}
           options={{
             filtering: true,
+            selection: true,
             headerStyle: {
               backgroundColor: "orange",
               color: "#FFF",
@@ -197,10 +220,28 @@ export default function ExpenseTable({
                     variant="contained"
                     color="secondary"
                     className={classes.button}
+                    onClick={Approve_ExpenseData}
+                  >
+                    Approve <Icon className={classes.rightIcon}>send</Icon>
+                  </Button>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="secondary"
+                    className={classes.button}
+                    onClick={Reject_ExpenseData}
+                  >
+                    Reject <Icon className={classes.rightIcon}>send</Icon>
+                  </Button>
+                  {/* <Button
+                    type="submit"
+                    variant="contained"
+                    color="secondary"
+                    className={classes.button}
                     onClick={Save_ExpenseData}
                   >
                     Update <Icon className={classes.rightIcon}>send</Icon>
-                  </Button>
+                  </Button> */}
                 </div>
               </div>
             ),
@@ -232,5 +273,8 @@ export default function ExpenseTable({
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: 0,
+  },
+  button: {
+    margin: theme.spacing(1),
   },
 }));

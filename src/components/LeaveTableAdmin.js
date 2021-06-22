@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
-import MaterialTable, { MTableToolbar} from "material-table";
+import MaterialTable, { MTableToolbar } from "material-table";
 import { TextField, MenuItem, Button, Icon } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { useRecoilState } from "recoil";
+import { loginLevelState } from "./data/atomdata";
 import AddIcon from "@material-ui/icons/Add";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
@@ -34,7 +36,16 @@ const columns = [
     editable: "never",
   },
   {
-    title: "No of Days",
+    title: "Leave Balance",
+    field: "leave_bal",
+    editable: "never",
+    cellStyle: {
+      width: 10,
+      maxWidth: 10,
+    },
+  },
+  {
+    title: "Days",
     field: "no_of_days",
     editable: "never",
     cellStyle: {
@@ -54,6 +65,7 @@ const columns = [
   {
     title: "Status",
     field: "status",
+    editable: "never",
     cellStyle: {
       width: 50,
       maxWidth: 50,
@@ -81,28 +93,24 @@ export default function LeaveTable({
   handleDialogClose,
 }) {
   const classes = useStyles();
+  const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
-   const { loadEmployees } = useEmployeesContext();
+
   const {
-    leaves,
     editLeaveID,
-    leaves_loading,
     updateLeave,
     deleteLeave,
     loadLeaves,
-    getSingleLeave,
-    setEditLeaveID,
-    setIsLeaveEditingOn,
-    setIsLeaveEditingOff,
-    resetSingleLeave,
+    update_leave_error,
   } = useLeavesContext();
+
+  const { employees, updateEmployee, update_employee_error } =
+    useEmployeesContext();
 
   // useEffect(() => {
   //   loadLeaves();
   // }, []);
-
-  
 
   const handleLeaveFormDialogOpen = () => {
     setIsDialogOpen(true);
@@ -125,6 +133,48 @@ export default function LeaveTable({
     const id = editLeaveID;
     deleteLeave(id);
     loadLeaves();
+  };
+
+  const Approve_LeaveData = () => {
+    leavesdata.forEach((rec) => {
+      if (rec.tableData.checked) {
+        updateLeave({ id: rec.id, status: "Approve" });
+        //update leavesdata
+        if (!update_leave_error) {
+          const recdata = leavesdata.filter((r) => r.id === rec.id);
+          recdata[0].status = "Approve";
+
+          // update leave bal
+          console.log("leave", rec.empid, employees);
+          const empleavebal = employees
+            .filter((r) => r.id === rec.empid)
+            .map((item) => {
+              return item.leave_bal;
+            });
+          const leavebal = empleavebal - rec.no_of_days;
+          updateEmployee({ id: rec.empid, leave_bal: leavebal });
+        }
+      }
+    });
+    leavesdata.forEach((d) => {
+      if (d.tableData) d.tableData.checked = false;
+    });
+  };
+
+  const Reject_LeaveData = () => {
+    leavesdata.forEach((rec) => {
+      if (rec.tableData.checked) {
+        updateLeave({ id: rec.id, status: "Reject" });
+        //update leavesdata
+        if (!update_leave_error) {
+          const recdata = leavesdata.filter((r) => r.id === rec.id);
+          recdata[0].status = "Reject";
+        }
+      }
+    });
+    leavesdata.forEach((d) => {
+      if (d.tableData) d.tableData.checked = false;
+    });
   };
 
   const Save_LeaveData = () => {
@@ -167,22 +217,23 @@ export default function LeaveTable({
             Search: (props) => <SearchIcon />,
             ResetSearch: (props) => <DeleteIcon />,
           }}
-          editable={{
-            onRowUpdate: (newData, oldData) =>
-              new Promise((resolve, reject) => {
-                setTimeout(() => {
-                  const dataUpdate = [...leavesdata];
-                  const index = oldData.tableData.id;
-                  dataUpdate[index] = newData;
-                  setLeavesdata([...dataUpdate]);
-                  //approve_Expense(newData);
+          // editable={{
+          //   onRowUpdate: (newData, oldData) =>
+          //     new Promise((resolve, reject) => {
+          //       setTimeout(() => {
+          //         const dataUpdate = [...leavesdata];
+          //         const index = oldData.tableData.id;
+          //         dataUpdate[index] = newData;
+          //         setLeavesdata([...dataUpdate]);
+          //         //approve_Expense(newData);
 
-                  resolve();
-                }, 1000);
-              }),
-          }}
+          //         resolve();
+          //       }, 1000);
+          //     }),
+          // }}
           options={{
             filtering: true,
+            selection: true,
             headerStyle: {
               backgroundColor: "orange",
               color: "primary",
@@ -194,6 +245,24 @@ export default function LeaveTable({
               <div>
                 <MTableToolbar {...props} />
                 <div style={{ padding: "5px 10px" }}>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="secondary"
+                    className={classes.button}
+                    onClick={Approve_LeaveData}
+                  >
+                    Approve
+                  </Button>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="secondary"
+                    className={classes.button}
+                    onClick={Reject_LeaveData}
+                  >
+                    Reject
+                  </Button>
                   <Button
                     type="submit"
                     variant="contained"
@@ -234,5 +303,8 @@ export default function LeaveTable({
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: 0,
+  },
+  button: {
+    margin: theme.spacing(1),
   },
 }));

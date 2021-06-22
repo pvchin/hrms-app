@@ -29,6 +29,7 @@ const ExpenseForm = ({ handleDialogClose }) => {
     addExpense,
     editExpenseID,
     single_expense_loading,
+    single_expense_error,
   } = useExpensesContext();
   const { employees } = useEmployeesContext();
   const {
@@ -43,7 +44,8 @@ const ExpenseForm = ({ handleDialogClose }) => {
   } = single_expense || initial_values;
   const { handleSubmit, control } = useForm();
 
-  const onSubmit = (data) => {
+  const onSubmit = (data, e) => {
+    e.preventDefault();
     if (isExpenseEditing) {
       updateExpense({ id: editExpenseID, ...data });
     } else {
@@ -55,6 +57,13 @@ const ExpenseForm = ({ handleDialogClose }) => {
 
   if (single_expense_loading) {
     return <div>Loading...</div>;
+  }
+  if (single_expense_error) {
+    return (
+      <div>
+        <h2>Loading...</h2>
+      </div>
+    );
   }
   return (
     <div>
@@ -69,7 +78,7 @@ const ExpenseForm = ({ handleDialogClose }) => {
             <Controller
               name="name"
               control={control}
-              defaultValue={name}
+              defaultValue={loginLevel.loginUser}
               render={({
                 field: { onChange, value },
                 fieldState: { error },
@@ -79,24 +88,18 @@ const ExpenseForm = ({ handleDialogClose }) => {
                     label="Name"
                     id="margin-normal"
                     name="name"
-                    defaultValue={name}
+                    defaultValue={loginLevel.loginUser}
                     className={classes.textField}
                     onChange={onChange}
                     error={!!error}
                     helperText={error ? error.message : null}
-                    select
-                  >
-                    {employees.map((e) => {
-                      return (
-                        <MenuItem key={e.name} value={e.name}>
-                          {e.name}
-                        </MenuItem>
-                      );
-                    })}
-                  </TextField>
+                  ></TextField>
                 );
               }}
-              rules={{ required: "Name required" }}
+              // rules={{ required: "Name required" }}
+              InputProps={{
+                readOnly: true,
+              }}
             />
           </div>
           <div>
@@ -114,7 +117,7 @@ const ExpenseForm = ({ handleDialogClose }) => {
                     type="date"
                     id="margin-normal"
                     name="from_date"
-                    defaultValue={from_date}
+                    value={value}
                     className={classes.textField}
                     onChange={onChange}
                     error={!!error}
@@ -275,18 +278,15 @@ const ExpenseForm = ({ handleDialogClose }) => {
                     label="Status"
                     id="margin-normal"
                     name="status"
-                    defaultValue={status}
+                    defaultValue="Pending"
                     className={classes.textField}
                     onChange={onChange}
                     error={!!error}
                     helperText={error ? error.message : null}
-                    select
-                  >
-                    <MenuItem value="Pending">Pending</MenuItem>
-                    <MenuItem value="Cancel">Cancel</MenuItem>
-                    <MenuItem value="Approve">Approve</MenuItem>
-                    <MenuItem value="Reject">Reject</MenuItem>
-                  </TextField>
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  ></TextField>
                 );
               }}
               //rules={{ required: "Status is required" }}
@@ -299,6 +299,7 @@ const ExpenseForm = ({ handleDialogClose }) => {
               variant="contained"
               color="primary"
               className={classes.button}
+              //onClick={() => handleSubmit(onSubmit)()}
             >
               Save <Icon className={classes.rightIcon}>send</Icon>
             </Button>

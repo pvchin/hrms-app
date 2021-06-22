@@ -84,18 +84,7 @@ const MenuListItems = () => {
           />
         </ListItem>
       </Link> */}
-      <Link to="/payslip">
-        <ListItem button>
-          <ListItemIcon className={classes.itemIcon}>
-            <MonetizationOnIcon />
-          </ListItemIcon>
-          <ListItemText
-            primary="Payroll"
-            className={classes.categoryHeaderPrimary}
-          />
-        </ListItem>
-      </Link>
-
+      
       <ListItem button onClick={handleClickPay}>
         <ListItemIcon className={classes.itemIcon}>
           <LayersIcon />

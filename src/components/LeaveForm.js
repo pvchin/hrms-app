@@ -7,14 +7,7 @@ import {
   Typography,
   Divider,
 } from "@material-ui/core";
-import {
-  RecoilRoot,
-  atom,
-  selector,
-  useRecoilState,
-  useRecoilValue,
-  useSetRecoilState,
-} from "recoil";
+import { useRecoilState } from "recoil";
 import { loginLevelState } from "./data/atomdata";
 import { makeStyles } from "@material-ui/core/styles";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -23,7 +16,7 @@ import { useLeavesContext } from "../context/leaves_context";
 import { Controller, useForm } from "react-hook-form";
 
 const initial_values = {
-   name: "",
+  name: "",
   to_date: "",
   from_date: "",
   reason: "",
@@ -42,6 +35,7 @@ const LeaveForm = ({ handleDialogClose }) => {
     addLeave,
     editLeaveID,
     single_leave_loading,
+    single_leave_error,
   } = useLeavesContext();
   const { employees } = useEmployeesContext();
   const { name, to_date, from_date, reason, status, no_of_days, leave_bal } =
@@ -60,12 +54,19 @@ const LeaveForm = ({ handleDialogClose }) => {
   };
 
   if (single_leave_loading) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <h2>Loading...Leaves</h2>
+      </div>
+    );
   }
-
-  const handleOnChangeName = (name) => {
-    console.log(name);
-  };
+  if (single_leave_error) {
+    return (
+      <div>
+        <h2>Internet connection error!</h2>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -80,7 +81,7 @@ const LeaveForm = ({ handleDialogClose }) => {
             <Controller
               name="name"
               control={control}
-              defaultValue={name}
+              defaultValue={loginLevel.loginUser}
               render={({
                 field: { onChange, value },
                 fieldState: { error },
@@ -90,28 +91,31 @@ const LeaveForm = ({ handleDialogClose }) => {
                     label="Name"
                     id="margin-normal"
                     name="name"
-                    value={value}
+                    defaultValue={loginLevel.loginUser}
+                    //value={value}
                     className={classes.textField}
-                    //onChange={onChange}
                     onChange={(e) => {
                       console.log(e.target.value);
-                      onChange(e.target.value)
+                      onChange(e.target.value);
+                    }}
+                    InputProps={{
+                      readOnly: true,
                     }}
                     error={!!error}
                     helperText={error ? error.message : null}
-                    select
+                    //select
                   >
-                    {employees.map((e) => {
+                    {/* {employees.map((e) => {
                       return (
                         <MenuItem key={e.name} value={e.name}>
                           {e.name}
                         </MenuItem>
                       );
-                    })}
+                    })} */}
                   </TextField>
                 );
               }}
-              rules={{ required: "Name required" }}
+              // rules={{ required: "Name required" }}
             />
           </div>
           <div>
@@ -176,7 +180,7 @@ const LeaveForm = ({ handleDialogClose }) => {
             <Controller
               name="leave_bal"
               control={control}
-              defaultValue={leave_bal}
+              defaultValue={loginLevel.leave_bal}
               render={({
                 field: { onChange, value },
                 fieldState: { error },
@@ -188,7 +192,7 @@ const LeaveForm = ({ handleDialogClose }) => {
                     type="number"
                     id="standard-number"
                     name="leave_bal"
-                    defaultValue={leave_bal}
+                    defaultValue={loginLevel.leave_bal}
                     className={classes.textField}
                     //onChange={onChange}
                     onChange={(e) => {
@@ -196,6 +200,9 @@ const LeaveForm = ({ handleDialogClose }) => {
                     }}
                     error={!!error}
                     helperText={error ? error.message : null}
+                    InputProps={{
+                      readOnly: true,
+                    }}
                   />
                 );
               }}
@@ -270,17 +277,20 @@ const LeaveForm = ({ handleDialogClose }) => {
                     label="Status"
                     id="margin-normal"
                     name="status"
-                    defaultValue={status}
+                    defaultValue="Pending"
                     className={classes.textField}
                     onChange={onChange}
                     error={!!error}
                     helperText={error ? error.message : null}
-                    select
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                    // select
                   >
-                    <MenuItem value="Pending">Pending</MenuItem>
+                    {/* <MenuItem value="Pending">Pending</MenuItem>
                     <MenuItem value="Cancel">Cancel</MenuItem>
                     <MenuItem value="Approve">Approve</MenuItem>
-                    <MenuItem value="Reject">Reject</MenuItem>
+                    <MenuItem value="Reject">Reject</MenuItem> */}
                   </TextField>
                 );
               }}

@@ -27,6 +27,8 @@ export const CustomDialog = ({
         open={isOpen}
         onClose={handleClose}
         aria-labelledby="max-width-dialog-title"
+        disableBackdropClick={true}
+        disableEscapeKeyDown={true}
       >
         <DialogTitle id="max-width-dialog-title">{title}</DialogTitle>
         <DialogContent>

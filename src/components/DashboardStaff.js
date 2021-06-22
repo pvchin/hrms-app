@@ -35,7 +35,7 @@ import {
   Tables,
   Clients,
   Allowances,
-  DailyAllowances,
+  DailyAllowancesStaff,
   // PrivateRoute,
   Error,
 } from "../pages";
@@ -65,7 +65,7 @@ export default function DashboardMain() {
           handleDrawerOpen={handleDrawerOpen}
           handleDrawerClose={handleDrawerClose}
           open={open}
-            title="AppSmiths Sutera Sdn Bhd (Staff)"
+            title="AppSmiths Sutera Sdn Bhd"
         />
 
         <SideDrawer
@@ -107,7 +107,7 @@ export default function DashboardMain() {
               <Payrunbatch />
             </Route> */}
             <Route exact path="/dailyallowances">
-              <DailyAllowances />
+              <DailyAllowancesStaff />
             </Route>
             <Route exact path="/singledailyallowsdetlstable">
               <SingleDailyAllowsDetls />

@@ -69,6 +69,7 @@ const columns = [
   {
     title: "Status",
     field: "status",
+    editable: "never",
     cellStyle: {
       width: 50,
       maxWidth: 50,
@@ -92,6 +93,7 @@ const columns = [
 
 export default function PayslipTableAdmin({
   payslipsdata,
+  update_payslip_error,
   setPayslipsdata,
   handleDialogClose,
 }) {
@@ -112,6 +114,38 @@ export default function PayslipTableAdmin({
     handleDialogClose();
   };
 
+  const Approve_PayslipData = () => {
+    payslipsdata.forEach((rec) => {
+      if (rec.tableData.checked) {
+        updatePayslip({ id: rec.id, status: "Approve" });
+        
+        if (!update_payslip_error) {
+          const recdata = payslipsdata.filter((r) => r.id === rec.id);
+          recdata[0].status = "Approve";
+        }
+      }
+    });
+    payslipsdata.forEach((d) => {
+      if (d.tableData) d.tableData.checked = false;
+    });
+  };
+
+  const Reject_PayslipData = () => {
+    payslipsdata.forEach((rec) => {
+      if (rec.tableData.checked) {
+        updatePayslip({ id: rec.id, status: "Reject" });
+        //update leavesdata
+        if (!update_payslip_error) {
+          const recdata = payslipsdata.filter((r) => r.id === rec.id);
+          recdata[0].status = "Reject";
+        }
+      }
+    });
+    payslipsdata.forEach((d) => {
+      if (d.tableData) d.tableData.checked = false;
+    });
+  };
+
   return (
     <div className={classes.root}>
       <div style={{ maxWidth: "100%", paddingTop: "5px" }}>
@@ -129,22 +163,23 @@ export default function PayslipTableAdmin({
             ResetSearch: (props) => <DeleteIcon />,
             Build: (props) => <BuildOutlinedIcon />,
           }}
-          editable={{
-            onRowUpdate: (newData, oldData) =>
-              new Promise((resolve, reject) => {
-                setTimeout(() => {
-                  const dataUpdate = [...payslipsdata];
-                  const index = oldData.tableData.id;
-                  dataUpdate[index] = newData;
-                  setPayslipsdata([...dataUpdate]);
-                  //approve_Expense(newData);
+          // editable={{
+          //   onRowUpdate: (newData, oldData) =>
+          //     new Promise((resolve, reject) => {
+          //       setTimeout(() => {
+          //         const dataUpdate = [...payslipsdata];
+          //         const index = oldData.tableData.id;
+          //         dataUpdate[index] = newData;
+          //         setPayslipsdata([...dataUpdate]);
+          //         //approve_Expense(newData);
 
-                  resolve();
-                }, 1000);
-              }),
-          }}
+          //         resolve();
+          //       }, 1000);
+          //     }),
+          // }}
           options={{
             filtering: true,
+            selection: true,
             exportButton: true,
             headerStyle: {
               backgroundColor: "orange",
@@ -162,10 +197,28 @@ export default function PayslipTableAdmin({
                     variant="contained"
                     color="secondary"
                     className={classes.button}
+                    onClick={Approve_PayslipData}
+                  >
+                    Approve <Icon className={classes.rightIcon}>send</Icon>
+                  </Button>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="secondary"
+                    className={classes.button}
+                    onClick={Reject_PayslipData}
+                  >
+                    Reject <Icon className={classes.rightIcon}>send</Icon>
+                  </Button>
+                  {/* <Button
+                    type="submit"
+                    variant="contained"
+                    color="secondary"
+                    className={classes.button}
                     onClick={Save_PayslipData}
                   >
                     Update <Icon className={classes.rightIcon}>send</Icon>
-                  </Button>
+                  </Button> */}
                 </div>
               </div>
             ),
@@ -179,5 +232,8 @@ export default function PayslipTableAdmin({
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: 0,
+  },
+  button: {
+    margin: theme.spacing(1),
   },
 }));

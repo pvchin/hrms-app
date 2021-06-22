@@ -24,14 +24,7 @@ import {
 } from "../context/payslips_context";
 import { useTablesContext } from "../context/tables_context";
 import { payrunState, paydataState } from "./data/atomdata";
-import {
-  RecoilRoot,
-  atom,
-  selector,
-  useRecoilState,
-  useRecoilValue,
-  useSetRecoilState,
-} from "recoil";
+import { useRecoilValue } from "recoil";
 
 const drawerWidth = 240;
 const url = "https://course-api.com/react-tabs-project";
@@ -81,16 +74,7 @@ const Payrunbatch = () => {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
   const { register, handleSubmit, control } = useForm();
-  const { loadEmployees, employees, employees_loading } = useEmployeesContext();
-  const {
-    getPayslipitems,
-    payslipitems,
-    payslipitems_loading,
-    payslipsdata,
-    setPayslipsData,
-    resetPayslipsData,
-    updatePayslipsData,
-  } = usePayslipsContext();
+  const { payslipsdata, setPayslipsData } = usePayslipsContext();
   const { loadPayitems, payitems, payitems_loading, payitems_loading_error } =
     useTablesContext();
   //const [payitemsdata] = useRecoilState(paydataState);
@@ -98,8 +82,6 @@ const Payrunbatch = () => {
   const [loadFormdata, setLoadFormdata] = useState(false);
   const [formdata, setFormdata] = useState([]);
   const [rowindex, setRowIndex] = useState(0);
-  const handleClick = () => {};
-  let i = -1;
 
   const handleButtonClick = (item, index) => {
     const { id, name, basic_pay } = item;
@@ -153,12 +135,12 @@ const Payrunbatch = () => {
     });
   };
 
-    const update_Paydata = (newData) => {
-      console.log("newdata", newData)
+  const update_Paydata = (newData) => {
+    console.log("newdata", newData);
     const datapay = payslipsdata.pay[rowindex];
     const dataUpdate = [...datapay];
     dataUpdate[rowindex][0].empname = formdata.empname;
-    console.log("dataupdate",dataUpdate);
+    console.log("dataupdate", dataUpdate);
     //setData([...dataUpdate]);
   };
 
@@ -173,8 +155,8 @@ const Payrunbatch = () => {
   };
 
   const handleEmpButtonClick = (index) => {
-      console.log("Empbutton");
-      update_Paydata()
+    console.log("Empbutton");
+    update_Paydata();
     Update_Formdata();
   };
 

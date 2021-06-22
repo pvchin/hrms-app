@@ -8,9 +8,12 @@ import {
   Divider,
   ListSubheader,
   MenuItem,
+  Select,
+  NativeSelect,
+  InputLabel,
 } from "@material-ui/core";
+import { Autocomplete } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core/styles";
-import { singlebatchpayslip } from "../context/payslips_context";
 import { usePayslipsContext } from "../context/payslips_context";
 
 const initial_state = [
@@ -26,6 +29,8 @@ const initial_state = [
     tap_amount: 0,
     scp_acno: "",
     scp_amount: 0,
+    total_allowances: 0,
+    total_deductions: 0,
     empid: "",
     status: "",
     allows_type1: " ",
@@ -40,11 +45,11 @@ const initial_state = [
     allows_type5amt: 0,
     allows_type6: " ",
     allows_type6amt: 0,
-    allows_type7: " ",
+    allows_type7: "",
     allows_type7amt: 0,
-    allows_type8: " ",
+    allows_type8: "",
     allows_type8amt: 0,
-    deducts_type1: " ",
+    deducts_type1: "",
     deducts_type1amt: 0,
     deducts_type2: " ",
     deducts_type2amt: 0,
@@ -92,9 +97,9 @@ const PayForm = ({
 
   const handleChange = (e) => {
     e.preventDefault();
-     const { name, type, value } = e.target;
-     const val = type === "number" ? parseFloat(value) : value;
-     //setFormInput({ [name]: val });
+    const { name, type, value } = e.target;
+    const val = type === "number" ? parseFloat(value) : value;
+    //setFormInput({ [name]: val });
     setState({ ...state, [name]: val });
     Update_Empdata({ name: name, value: val });
   };
@@ -106,12 +111,13 @@ const PayForm = ({
   };
 
   const handleCalc = (e) => {
-    const wages = state.basic_salary;
+    let data = singlebatchpayslip[rowindex];
     const totalTAP = Math.ceil(state.wages * 0.05);
     const totalSCP =
       Math.round((state.wages + Number.EPSILON) * 0.035 * 100) / 100;
 
     const allows =
+      parseInt(state.allows_type1amt, 10) +
       parseInt(state.allows_type2amt, 10) +
       parseInt(state.allows_type3amt, 10) +
       parseInt(state.allows_type4amt, 10) +
@@ -133,12 +139,18 @@ const PayForm = ({
     const nettPay = state.wages - totalTAP - totalSCP + allows - deducts;
     setState({
       ...state,
-      allowances: allows,
-      deductions: deducts,
-      tapamount: totalTAP,
-      scpamount: totalSCP,
+      total_allowances: allows,
+      total_deductions: deducts,
+      tap_amount: totalTAP,
+      scp_amount: totalSCP,
       nett_pay: nettPay,
     });
+    //update employee data
+    data.tap_amount = totalTAP;
+    data.scp_amount = totalSCP;
+    data.total_allowances = allows;
+    data.total_deductions = deducts;
+    data.nett_pay = nettPay;
   };
 
   return (
@@ -201,221 +213,196 @@ const PayForm = ({
                 ></TextField>
               </div>
               <div>
-                <TextField
-                  label="Allowance"
+                <InputLabel
+                  htmlFor="deduct-customized-native-simple"
+                  className={classes.formLabel}
+                >
+                  Allowance
+                </InputLabel>
+                <NativeSelect
                   name="allows_type3"
-                  variant="filled"
-                  type="text"
                   value={state.allows_type3}
+                  style={{
+                    padding: 4,
+                    marginLeft: 5,
+                    width: "100%",
+                    textAlign: "left",
+                  }}
                   onChange={handleChange}
-                  style={{ width: "100%" }}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  InputProps={{
-                    readOnly: true,
-                  }}
-                ></TextField>
+                >
+                  <option value="">None</option>
+                  {payitems
+                    .filter(function (item) {
+                      return item.pay_type === "Allowances";
+                    })
+                    .map((row) => {
+                      return (
+                        <option key={row.id} value={row.name}>
+                          {row.name}
+                        </option>
+                      );
+                    })}
+                </NativeSelect>
               </div>
               <div>
-                <TextField
-                  label="Allowance"
+                <InputLabel
+                  htmlFor="deduct-customized-native-simple"
+                  className={classes.formLabel}
+                >
+                  Allowance
+                </InputLabel>
+                <NativeSelect
                   name="allows_type4"
-                  variant="filled"
-                  type="text"
                   value={state.allows_type4}
-                  onChange={handleChange}
-                  style={{ width: "100%", textAlign: "left" }}
-                  InputLabelProps={{
-                    shrink: true,
+                  style={{
+                    padding: 4,
+                    marginLeft: 5,
+                    width: "100%",
+                    textAlign: "left",
                   }}
-                  select
+                  onChange={handleChange}
                 >
-                  <ListSubheader>Wages</ListSubheader>
+                  <option value="">None</option>
                   {payitems
                     .filter(function (item) {
-                      return item.pay_type == "Wages";
+                      return item.pay_type === "Allowances";
                     })
                     .map((row) => {
                       return (
-                        <MenuItem key={row.id} value={row.name}>
+                        <option key={row.id} value={row.name}>
                           {row.name}
-                        </MenuItem>
+                        </option>
                       );
                     })}
-                  <ListSubheader>Allowances</ListSubheader>
-                  {payitems
-                    .filter(function (item) {
-                      return item.pay_type == "Allowances";
-                    })
-                    .map((row) => {
-                      return (
-                        <MenuItem key={row.id} value={row.name}>
-                          {row.name}
-                        </MenuItem>
-                      );
-                    })}
-                </TextField>
+                </NativeSelect>
               </div>
               <div>
-                <TextField
-                  label="Allowance"
+                <InputLabel
+                  htmlFor="deduct-customized-native-simple"
+                  className={classes.formLabel}
+                >
+                  Allowance
+                </InputLabel>
+                <NativeSelect
                   name="allows_type5"
-                  variant="filled"
-                  type="text"
                   value={state.allows_type5}
-                  onChange={handleChange}
-                  style={{ width: "100%", textAlign: "left" }}
-                  InputLabelProps={{
-                    shrink: true,
+                  style={{
+                    padding: 4,
+                    marginLeft: 5,
+                    width: "100%",
+                    textAlign: "left",
                   }}
-                  select
+                  onChange={handleChange}
                 >
-                  <ListSubheader>Wages</ListSubheader>
+                  <option value="">None</option>
                   {payitems
                     .filter(function (item) {
-                      return item.pay_type == "Wages";
+                      return item.pay_type === "Allowances";
                     })
                     .map((row) => {
                       return (
-                        <MenuItem key={row.id} value={row.name}>
+                        <option key={row.id} value={row.name}>
                           {row.name}
-                        </MenuItem>
+                        </option>
                       );
                     })}
-                  <ListSubheader>Allowances</ListSubheader>
-                  {payitems
-                    .filter(function (item) {
-                      return item.pay_type == "Allowances";
-                    })
-                    .map((row) => {
-                      return (
-                        <MenuItem key={row.id} value={row.name}>
-                          {row.name}
-                        </MenuItem>
-                      );
-                    })}
-                </TextField>
+                </NativeSelect>
               </div>
               <div>
-                <TextField
-                  label="Allowance"
+                <InputLabel
+                  htmlFor="deduct-customized-native-simple"
+                  className={classes.formLabel}
+                >
+                  Allowance
+                </InputLabel>
+                <NativeSelect
                   name="allows_type6"
-                  variant="filled"
-                  type="text"
                   value={state.allows_type6}
-                  onChange={handleChange}
-                  style={{ width: "100%", textAlign: "left" }}
-                  InputLabelProps={{
-                    shrink: true,
+                  style={{
+                    padding: 4,
+                    marginLeft: 5,
+                    width: "100%",
+                    textAlign: "left",
                   }}
-                  select
+                  onChange={handleChange}
                 >
-                  <ListSubheader>Wages</ListSubheader>
+                  <option value="">None</option>
                   {payitems
                     .filter(function (item) {
-                      return item.pay_type == "Wages";
+                      return item.pay_type === "Allowances";
                     })
                     .map((row) => {
                       return (
-                        <MenuItem key={row.id} value={row.name}>
+                        <option key={row.id} value={row.name}>
                           {row.name}
-                        </MenuItem>
+                        </option>
                       );
                     })}
-                  <ListSubheader>Allowances</ListSubheader>
-                  {payitems
-                    .filter(function (item) {
-                      return item.pay_type == "Allowances";
-                    })
-                    .map((row) => {
-                      return (
-                        <MenuItem key={row.id} value={row.name}>
-                          {row.name}
-                        </MenuItem>
-                      );
-                    })}
-                </TextField>
+                </NativeSelect>
               </div>
               <div>
-                <TextField
-                  label="Allowance"
+                <InputLabel
+                  htmlFor="deduct-customized-native-simple"
+                  className={classes.formLabel}
+                >
+                  Allowance
+                </InputLabel>
+                <NativeSelect
                   name="allows_type7"
-                  variant="filled"
-                  type="text"
                   value={state.allows_type7}
-                  onChange={handleChange}
-                  style={{ width: "100%", textAlign: "left" }}
-                  InputLabelProps={{
-                    shrink: true,
+                  style={{
+                    padding: 4,
+                    marginLeft: 5,
+                    width: "100%",
+                    textAlign: "left",
                   }}
-                  select
+                  onChange={handleChange}
                 >
-                  <ListSubheader>Wages</ListSubheader>
+                  <option value="">None</option>
                   {payitems
                     .filter(function (item) {
-                      return item.pay_type == "Wages";
+                      return item.pay_type === "Allowances";
                     })
                     .map((row) => {
                       return (
-                        <MenuItem key={row.id} value={row.name}>
+                        <option key={row.id} value={row.name}>
                           {row.name}
-                        </MenuItem>
+                        </option>
                       );
                     })}
-                  <ListSubheader>Allowances</ListSubheader>
-                  {payitems
-                    .filter(function (item) {
-                      return item.pay_type == "Allowances";
-                    })
-                    .map((row) => {
-                      return (
-                        <MenuItem key={row.id} value={row.name}>
-                          {row.name}
-                        </MenuItem>
-                      );
-                    })}
-                </TextField>
+                </NativeSelect>
               </div>
               <div>
-                <TextField
-                  label="Allowance"
-                  name="allows_type8"
-                  variant="filled"
-                  type="text"
-                  value={state.allows_type8}
-                  onChange={handleChange}
-                  style={{ width: "100%", textAlign: "left" }}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  select
+                <InputLabel
+                  htmlFor="deduct-customized-native-simple"
+                  className={classes.formLabel}
                 >
-                  <ListSubheader>Wages</ListSubheader>
+                  Allowance
+                </InputLabel>
+                <NativeSelect
+                  name="allows_type8"
+                  value={state.allows_type8}
+                  style={{
+                    padding: 4,
+                    marginLeft: 5,
+                    width: "100%",
+                    textAlign: "left",
+                  }}
+                  onChange={handleChange}
+                >
+                  <option value="">None</option>
                   {payitems
                     .filter(function (item) {
-                      return item.pay_type == "Wages";
+                      return item.pay_type === "Allowances";
                     })
                     .map((row) => {
                       return (
-                        <MenuItem key={row.id} value={row.name}>
+                        <option key={row.id} value={row.name}>
                           {row.name}
-                        </MenuItem>
+                        </option>
                       );
                     })}
-                  <ListSubheader>Allowances</ListSubheader>
-                  {payitems
-                    .filter(function (item) {
-                      return item.pay_type == "Allowances";
-                    })
-                    .map((row) => {
-                      return (
-                        <MenuItem key={row.id} value={row.name}>
-                          {row.name}
-                        </MenuItem>
-                      );
-                    })}
-                </TextField>
+                </NativeSelect>
               </div>
             </Grid>
             <Grid
@@ -542,228 +529,260 @@ const PayForm = ({
               style={{ border: "1px solid white" }}
             >
               <div>
-                <TextField
-                  label="Deduction"
+                <InputLabel
+                  htmlFor="deduct-customized-native-simple"
+                  className={classes.formLabel}
+                >
+                  Deduction
+                </InputLabel>
+                <NativeSelect
                   name="deducts_type1"
-                  variant="filled"
-                  type="text"
                   value={state.deducts_type1}
-                  onChange={handleChange}
-                  style={{ width: "100%", textAlign: "left" }}
-                  InputLabelProps={{
-                    shrink: true,
+                  style={{
+                    padding: 4,
+                    marginLeft: 5,
+                    width: "100%",
+                    textAlign: "left",
                   }}
-                  select
+                  onChange={handleChange}
                 >
-                  <ListSubheader>Deductions</ListSubheader>
+                  <option value="">None</option>
                   {payitems
                     .filter(function (item) {
-                      return item.pay_type == "Deductions";
+                      return item.pay_type === "Deductions";
                     })
                     .map((row) => {
                       return (
-                        <MenuItem key={row.id} value={row.name}>
+                        <option key={row.id} value={row.name}>
                           {row.name}
-                        </MenuItem>
+                        </option>
                       );
                     })}
-                </TextField>
+                </NativeSelect>
               </div>
               <div>
-                <TextField
-                  label="Deduction"
+                <InputLabel
+                  htmlFor="deduct-customized-native-simple"
+                  className={classes.formLabel}
+                >
+                  Deduction
+                </InputLabel>
+                <NativeSelect
                   name="deducts_type2"
-                  variant="filled"
-                  type="text"
                   value={state.deducts_type2}
-                  onChange={handleChange}
-                  style={{ width: "100%", textAlign: "left" }}
-                  InputLabelProps={{
-                    shrink: true,
+                  style={{
+                    padding: 4,
+                    marginLeft: 5,
+                    width: "100%",
+                    textAlign: "left",
                   }}
-                  select
+                  onChange={handleChange}
                 >
-                  <ListSubheader>Deductions</ListSubheader>
+                  <option value="">None</option>
                   {payitems
                     .filter(function (item) {
-                      return item.pay_type == "Deductions";
+                      return item.pay_type === "Deductions";
                     })
                     .map((row) => {
                       return (
-                        <MenuItem key={row.id} value={row.name}>
+                        <option key={row.id} value={row.name}>
                           {row.name}
-                        </MenuItem>
+                        </option>
                       );
                     })}
-                </TextField>
+                </NativeSelect>
               </div>
               <div>
-                <TextField
-                  label="Deduction"
+                <InputLabel
+                  htmlFor="deduct-customized-native-simple"
+                  className={classes.formLabel}
+                >
+                  Deduction
+                </InputLabel>
+                <NativeSelect
                   name="deducts_type3"
-                  variant="filled"
-                  type="text"
                   value={state.deducts_type3}
-                  onChange={handleChange}
-                  style={{ width: "100%", textAlign: "left" }}
-                  InputLabelProps={{
-                    shrink: true,
+                  style={{
+                    padding: 4,
+                    marginLeft: 5,
+                    width: "100%",
+                    textAlign: "left",
                   }}
-                  select
+                  onChange={handleChange}
                 >
-                  <ListSubheader>Deductions</ListSubheader>
+                  <option value="">None</option>
                   {payitems
                     .filter(function (item) {
-                      return item.pay_type == "Deductions";
+                      return item.pay_type === "Deductions";
                     })
                     .map((row) => {
                       return (
-                        <MenuItem key={row.id} value={row.name}>
+                        <option key={row.id} value={row.name}>
                           {row.name}
-                        </MenuItem>
+                        </option>
                       );
                     })}
-                </TextField>
+                </NativeSelect>
               </div>
               <div>
-                <TextField
-                  label="Deduction"
+                <InputLabel
+                  htmlFor="deduct-customized-native-simple"
+                  className={classes.formLabel}
+                >
+                  Deduction
+                </InputLabel>
+                <NativeSelect
                   name="deducts_type4"
-                  variant="filled"
-                  type="text"
                   value={state.deducts_type4}
-                  onChange={handleChange}
-                  style={{ width: "100%", textAlign: "left" }}
-                  InputLabelProps={{
-                    shrink: true,
+                  style={{
+                    padding: 4,
+                    marginLeft: 5,
+                    width: "100%",
+                    textAlign: "left",
                   }}
-                  select
+                  onChange={handleChange}
                 >
-                  <ListSubheader>Deductions</ListSubheader>
+                  <option value="">None</option>
                   {payitems
                     .filter(function (item) {
-                      return item.pay_type == "Deductions";
+                      return item.pay_type === "Deductions";
                     })
                     .map((row) => {
                       return (
-                        <MenuItem key={row.id} value={row.name}>
+                        <option key={row.id} value={row.name}>
                           {row.name}
-                        </MenuItem>
+                        </option>
                       );
                     })}
-                </TextField>
+                </NativeSelect>
               </div>
               <div>
-                <TextField
-                  label="Deduction"
+                <InputLabel
+                  htmlFor="deduct-customized-native-simple"
+                  className={classes.formLabel}
+                >
+                  Deduction
+                </InputLabel>
+                <NativeSelect
                   name="deducts_type5"
-                  variant="filled"
-                  type="text"
                   value={state.deducts_type5}
-                  onChange={handleChange}
-                  style={{ width: "100%", textAlign: "left" }}
-                  InputLabelProps={{
-                    shrink: true,
+                  style={{
+                    padding: 4,
+                    marginLeft: 5,
+                    width: "100%",
+                    textAlign: "left",
                   }}
-                  select
+                  onChange={handleChange}
                 >
-                  <ListSubheader>Deductions</ListSubheader>
+                  <option value="">None</option>
                   {payitems
                     .filter(function (item) {
-                      return item.pay_type == "Deductions";
+                      return item.pay_type === "Deductions";
                     })
                     .map((row) => {
                       return (
-                        <MenuItem key={row.id} value={row.name}>
+                        <option key={row.id} value={row.name}>
                           {row.name}
-                        </MenuItem>
+                        </option>
                       );
                     })}
-                </TextField>
+                </NativeSelect>
               </div>
               <div>
-                <TextField
-                  label="Deduction"
+                <InputLabel
+                  htmlFor="deduct-customized-native-simple"
+                  className={classes.formLabel}
+                >
+                  Deduction
+                </InputLabel>
+                <NativeSelect
                   name="deducts_type6"
-                  variant="filled"
-                  type="text"
                   value={state.deducts_type6}
-                  onChange={handleChange}
-                  style={{ width: "100%", textAlign: "left" }}
-                  InputLabelProps={{
-                    shrink: true,
+                  style={{
+                    padding: 4,
+                    marginLeft: 5,
+                    width: "100%",
+                    textAlign: "left",
                   }}
-                  select
+                  onChange={handleChange}
                 >
-                  <ListSubheader>Deductions</ListSubheader>
+                  <option value="">None</option>
                   {payitems
                     .filter(function (item) {
-                      return item.pay_type == "Deductions";
+                      return item.pay_type === "Deductions";
                     })
                     .map((row) => {
                       return (
-                        <MenuItem key={row.id} value={row.name}>
+                        <option key={row.id} value={row.name}>
                           {row.name}
-                        </MenuItem>
+                        </option>
                       );
                     })}
-                </TextField>
+                </NativeSelect>
               </div>
               <div>
-                <TextField
-                  label="Deduction"
+                <InputLabel
+                  htmlFor="deduct-customized-native-simple"
+                  className={classes.formLabel}
+                >
+                  Deduction
+                </InputLabel>
+                <NativeSelect
                   name="deducts_type7"
-                  variant="filled"
-                  type="text"
                   value={state.deducts_type7}
-                  onChange={handleChange}
-                  style={{ width: "100%", textAlign: "left" }}
-                  InputLabelProps={{
-                    shrink: true,
+                  style={{
+                    padding: 4,
+                    marginLeft: 5,
+                    width: "100%",
+                    textAlign: "left",
                   }}
-                  select
+                  onChange={handleChange}
                 >
-                  <ListSubheader>Deductions</ListSubheader>
+                  <option value="">None</option>
                   {payitems
                     .filter(function (item) {
-                      return item.pay_type == "Deductions";
+                      return item.pay_type === "Deductions";
                     })
                     .map((row) => {
                       return (
-                        <MenuItem key={row.id} value={row.name}>
+                        <option key={row.id} value={row.name}>
                           {row.name}
-                        </MenuItem>
+                        </option>
                       );
                     })}
-                </TextField>
+                </NativeSelect>
               </div>
               <div>
-                <TextField
-                  label="Deduction"
-                  name="deducts_type8"
-                  variant="filled"
-                  type="text"
-                  value={state.deducts_type8}
-                  onChange={handleChange}
-                  style={{ width: "100%", textAlign: "left" }}
-                  InputLabelProps={{
-                    shrink: true,
-                  }}
-                  select
+                <InputLabel
+                  htmlFor="deduct-customized-native-simple"
+                  className={classes.formLabel}
                 >
-                  <ListSubheader>Deductions</ListSubheader>
+                  Deduction
+                </InputLabel>
+                <NativeSelect
+                  name="deducts_type8"
+                  value={state.deducts_type8}
+                  style={{
+                    padding: 4,
+                    marginLeft: 5,
+                    width: "100%",
+                    textAlign: "left",
+                  }}
+                  onChange={handleChange}
+                >
+                  <option value="">None</option>
                   {payitems
                     .filter(function (item) {
-                      return item.pay_type == "Deductions";
+                      return item.pay_type === "Deductions";
                     })
                     .map((row) => {
                       return (
-                        <MenuItem key={row.id} value={row.name}>
+                        <option key={row.id} value={row.name}>
                           {row.name}
-                        </MenuItem>
+                        </option>
                       );
                     })}
-                </TextField>
+                </NativeSelect>
               </div>
             </Grid>
             <Grid
@@ -904,10 +923,10 @@ const PayForm = ({
           <div>
             <TextField
               label="TAP Amount"
-              name="tapamount"
+              name="tap_amount"
               variant="filled"
               type="number"
-              value={state.tapamount}
+              value={state.tap_amount}
               onChange={handleChange}
               style={{ width: "100%" }}
               InputLabelProps={{
@@ -921,10 +940,10 @@ const PayForm = ({
           <div>
             <TextField
               label="SCP Amounut"
-              name="scpamount"
+              name="scp_amount"
               variant="filled"
               type="number"
-              value={state.scpamount}
+              value={state.scp_amount}
               onChange={handleChange}
               style={{ width: "100%" }}
               InputLabelProps={{
@@ -938,10 +957,10 @@ const PayForm = ({
           <div>
             <TextField
               label="Total Allowances"
-              name="allowances"
+              name="total_allowances"
               variant="filled"
               type="number"
-              value={state.allowances}
+              value={state.total_allowances}
               onChange={handleChange}
               style={{ width: "100%" }}
               InputLabelProps={{
@@ -955,10 +974,10 @@ const PayForm = ({
           <div>
             <TextField
               label="Total Deductions"
-              name="deductions"
+              name="total_deductions"
               variant="filled"
               type="number"
-              value={state.deductions}
+              value={state.total_deductions}
               onChange={handleChange}
               style={{ width: "100%" }}
               InputLabelProps={{
@@ -1108,6 +1127,12 @@ const useStyles = makeStyles((theme) => ({
   divContainer: {
     display: "flex",
     flexDirection: "row",
+  },
+  formLabel: {
+    fontSize: 12,
+    textAlign: "left",
+    marginLeft: 8,
+    marginTop: 5,
   },
 }));
 

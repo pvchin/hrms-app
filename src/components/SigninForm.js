@@ -21,14 +21,25 @@ const SigninForm = () => {
   const [alert, setAlert] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
-  const { employees, loadEmployees, employees_loading } = useEmployeesContext();
+  const { employees, loadEmployees, employees_loading, employees_error } = useEmployeesContext();
 
   useEffect(() => {
     loadEmployees();
   }, []);
 
+  if (employees_loading) {
+    <div>
+      <h2>Loading...</h2>
+    </div>
+  }
+   if (employees_error) {
+     <div>
+       <h2>Internet connection problem!</h2>
+     </div>;
+   }
   const handleSubmit = (e) => {
     e.preventDefault();
+    
     const emp = employees
       .filter((item) => item.email === email)
       .map((row) => {
@@ -37,9 +48,12 @@ const SigninForm = () => {
           name: row.name,
           email: row.email,
           password: row.password,
+          leave_bal: row.leave_bal,
+          siteallows_fee: row.siteallows_fee,
+          perdiem_fee: row.perdiem_fee,
         };
       });
-    console.log("login", role, emp[0].name);
+
     if (emp[0].email === email && emp[0].password === password) {
       setLoginLevel({
         ...loginLevel,
@@ -52,7 +66,7 @@ const SigninForm = () => {
         siteallows_fee: emp[0].siteallows_fee,
         perdiem_fee: emp[0].perdiem_fee,
       });
-      console.log(loginLevel);
+
       setPassword("");
     } else {
       setAlert(false);

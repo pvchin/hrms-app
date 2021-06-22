@@ -35,12 +35,22 @@ const columns = [
     dateSetting: { locale: "en-GB" },
     editable: "never",
   },
-  { title: "Leave Balance", field: "leave_bal", type:"numeric",editable: "never" },
-  { title: "No of Days", field: "no_of_days", type: "mumeric",editable: "never" },
+  {
+    title: "Leave Balance",
+    field: "leave_bal",
+    type: "numeric",
+    editable: "never",
+  },
+  {
+    title: "No of Days",
+    field: "no_of_days",
+    type: "mumeric",
+    editable: "never",
+  },
   {
     title: "Reason",
     field: "reason",
-    editable: "never"
+    editable: "never",
   },
   {
     title: "Status",
@@ -66,7 +76,7 @@ export default function LeaveTableStaff() {
   const classes = useStyles();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
-    const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
+  const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
   const { loadEmployees } = useEmployeesContext();
   const {
     leaves,
@@ -80,7 +90,7 @@ export default function LeaveTableStaff() {
     setIsLeaveEditingOff,
     resetSingleLeave,
   } = useLeavesContext();
-
+  console.log("login",loginLevel)
   useEffect(() => {
     loadLeaves();
   }, []);

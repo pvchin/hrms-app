@@ -13,14 +13,7 @@ import {
   Typography,
   Paper,
 } from "@material-ui/core";
-import {
-  RecoilRoot,
-  atom,
-  selector,
-  useRecoilState,
-  useRecoilValue,
-  useSetRecoilState,
-} from "recoil";
+import { useRecoilState } from "recoil";
 
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -176,6 +169,10 @@ const useStyles = makeStyles((theme) => ({
     // Theme Color, or use css color in quote
     background: theme.palette.divider,
     padding: 4,
+  },
+  img: {
+    maxWidth: "100%",
+    height: "auto",
   },
 }));
 

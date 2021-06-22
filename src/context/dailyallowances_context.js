@@ -1,7 +1,11 @@
 import React, { useContext, useEffect, useReducer } from "react";
 import axios from "axios";
 import reducer from "../reducers/dailyallowances_reducer";
-import { dailyallowances_url, dailyallowsdetls_url } from "../utils/constants";
+import {
+  dailyallowances_url,
+  dailyallowsdetls_url,
+  unpaiddailyallows_url,
+} from "../utils/constants";
 
 import {
   SET_EDITDAILYALLOWANCEID,
@@ -13,6 +17,9 @@ import {
   GET_DAILYALLOWANCES_BEGIN,
   GET_DAILYALLOWANCES_SUCCESS,
   GET_DAILYALLOWANCES_ERROR,
+  GET_UNPAIDDAILYALLOWS_BEGIN,
+  GET_UNPAIDDAILYALLOWS_SUCCESS,
+  GET_UNPAIDDAILYALLOWS_ERROR,
   GET_SINGLE_DAILYALLOWANCE_BEGIN,
   GET_SINGLE_DAILYALLOWANCE_SUCCESS,
   GET_SINGLE_DAILYALLOWANCE_ERROR,
@@ -89,6 +96,9 @@ const initialState = {
   update_dailyallowsdetl_error: false,
   add_dailyallowsdetl_loading: false,
   add_dailyallowsdetl_error: false,
+  unpaid_dailyallows_loading: false,
+  unpaid_dailyallows_error: false,
+  unpaiddailyallows: [],
   dailyallowsdetl_period: "",
   // filterValue: "Female",
   // filterfield: "gender",
@@ -113,6 +123,26 @@ export const DailyAllowancesProvider = ({ children }) => {
       dispatch({ type: GET_DAILYALLOWANCES_SUCCESS, payload: dailyallowances });
     } catch (error) {
       dispatch({ type: GET_DAILYALLOWANCES_ERROR });
+    }
+  };
+
+  //unpaid daily allowances
+  const loadUnpaidDailyAllows = async () => {
+    dispatch({ type: GET_UNPAIDDAILYALLOWS_BEGIN });
+    try {
+      // const res = await fetch(
+      //   `${employees_url}?filterValue="${state.filterValue}"&filterField="${state.filterField}"`
+      // );
+      const res = await fetch(unpaiddailyallows_url);
+      //const { data } = await axios.get(employees_url);
+      //const employees = data;
+      const dailyallowances = await res.json();
+      dispatch({
+        type: GET_UNPAIDDAILYALLOWS_SUCCESS,
+        payload: dailyallowances,
+      });
+    } catch (error) {
+      dispatch({ type: GET_UNPAIDDAILYALLOWS_ERROR });
     }
   };
 
@@ -371,6 +401,7 @@ export const DailyAllowancesProvider = ({ children }) => {
         loadDailyAllowances,
         loadPendingDailyAllowances,
         loadEmpDailyAllowances,
+        loadUnpaidDailyAllows,
         addDailyAllowance,
         updateDailyAllowance,
         deleteDailyAllowance,

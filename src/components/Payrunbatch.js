@@ -1,41 +1,24 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import MaterialTable from "material-table";
-import { Controller, useForm } from "react-hook-form";
 import clsx from "clsx";
-import axios from "axios";
-import { useAsync } from "react-async";
 import { useHistory } from "react-router-dom";
 import {
   Button,
   ButtonGroup,
-  Checkbox,
   Paper,
   Grid,
   Icon,
   Divider,
-  TextField,
-  MenuItem,
-  ListSubheader,
 } from "@material-ui/core";
+import { Alert } from "@material-ui/lab";
 import PayForm from "./PayForm";
 import PaySummary from "./PaySummary";
-import { employees_url } from "../utils/constants";
-import { useEmployeesContext } from "../context/employees_context";
 import { usePayslipsContext } from "../context/payslips_context";
 import { useTablesContext } from "../context/tables_context";
 import { payrunState, paydataState } from "./data/atomdata";
-import {
-  RecoilRoot,
-  atom,
-  selector,
-  useRecoilState,
-  useRecoilValue,
-  useSetRecoilState,
-} from "recoil";
+import { useRecoilValue } from "recoil";
 
 const drawerWidth = 240;
-const url = "https://course-api.com/react-tabs-project";
 
 const Payrunbatch = () => {
   let history = useHistory();
@@ -43,58 +26,73 @@ const Payrunbatch = () => {
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
   //const { register, handleSubmit, control, setValue, reset, watch } = useForm();
 
-  const { loadEmployees, employees, employees_loading } = useEmployeesContext();
   const {
-    getPayslipitems,
-    payslipitems,
-    payslipitems_loading,
-    payslipsdata,
-    setPayslipsData,
-    resetPayslipsData,
-    updatePayslipsData,
+    payrun,
     getSingleBatchPayslip,
     singlebatchpayslip,
+    payslip_period,
+    updatePayslip,
+    updatePayrun,
     singlebatch_payslip_loading,
     singlebatch_payslip_error,
   } = usePayslipsContext();
-  const { loadPayitems, payitems, payitems_loading, payitems_loading_error } =
-    useTablesContext();
-  //const [payitemsdata] = useRecoilState(paydataState);
+  const { loadPayitems, payitems } = useTablesContext();
   const payrundata = useRecoilValue(payrunState);
   const [loadFormdata, setLoadFormdata] = useState(false);
   const [loadUpdatedata, setLoadUpdatedata] = useState(false);
   const [formdata, setFormdata] = useState([]);
   const [rowindex, setRowIndex] = useState(0);
   const [showSumm, setShowSumm] = useState(false);
-
-  const handleClick = () => {};
-
-  const onFormSubmit = (data) => {
-    console.log("Data", data);
-  };
+   const [showSaveAlert, setShowSaveAlert] = useState(false);
+  console.log("payslip period", payslip_period);
 
   useEffect(() => {
-    console.log("useeffect");
     loadPayitems();
-    getSingleBatchPayslip(payrundata.payrun);
+    getSingleBatchPayslip(payslip_period);
   }, []);
 
   useEffect(() => {
-    Update_Empdata();
     setLoadFormdata(false);
   }, [loadUpdatedata]);
 
-  const Update_Empdata = () => {
-    if (singlebatchpayslip) {
-      let data = singlebatchpayslip[rowindex];
-      data.allows_type1type = formdata.allows_type1type;
-    }
+  const handleShowSumm = (e) => {
+    e.preventDefault();
+    setShowSumm(!showSumm);
   };
 
-  const handleShowSumm = (e) => {
-    e.preventDefault()
-    setShowSumm(!showSumm)
-  }
+  const handleSavePayslips = (e) => {
+    e.preventDefault();
+    // eslint-disable-next-line no-lone-blocks
+    {
+      singlebatchpayslip.forEach((rec) => {
+        const { id, rec_id, tableData, ...fields } = rec;
+        updatePayslip({ id, ...fields });
+      });
+    }
+    //update payrun
+    handleSavePayrun();
+    setShowSaveAlert(true)
+  };
+
+  const handleSavePayrun = () => {
+    // eslint-disable-next-line no-lone-blocks
+    {
+      payrun
+        .filter((r) => r.payrun === payslip_period)
+        .map((rec) => {
+          //update payrun
+          return updatePayrun({
+            id: rec.id,
+            totalpayroll: payrundata.totalpayroll,
+            totalwages: payrundata.totalwages,
+            totaltap: payrundata.totaltap,
+            totalscp: payrundata.totalscp,
+            totalallows: payrundata.totalallows,
+            totaldeducts: payrundata.totaldeducts,
+          });
+        });
+    }
+  };
 
   const handleEmpButtonClick = (index) => {
     const paydata = singlebatchpayslip[index];
@@ -114,7 +112,13 @@ const Payrunbatch = () => {
   }
 
   if (singlebatch_payslip_error) {
-    history.push("/error");
+    return (
+      <Paper className={fixedHeightPaper} style={{ backgroundColor: "black" }}>
+        <div>
+          <h2>Internet connection problem!</h2>
+        </div>
+      </Paper>
+    );
   }
 
   return (
@@ -130,7 +134,18 @@ const Payrunbatch = () => {
             <h2>Employees</h2>
           </Grid>
           <Grid item sm={10} style={{ border: "1px solid white" }}>
-            <h2>Payroll Details</h2>
+            <div
+              style={{
+                marginLeft: 14,
+                display: "inline-flex",
+                flexDirection: "row",
+              }}
+            >
+              <h2>Payroll Details</h2>
+              <div style={{ marginTop: 10, marginLeft: 20}}>
+                {showSaveAlert && <Alert severity="success">Changes have been saved!</Alert>}
+              </div>
+            </div>
           </Grid>
           <Grid
             item
@@ -189,16 +204,6 @@ const Payrunbatch = () => {
                       variant="contained"
                       color="primary"
                       className={classes.button}
-                      style={{ marginLeft: 5 }}
-                    >
-                      Save <Icon className={classes.rightIcon}>send</Icon>
-                    </Button>
-
-                    <Button
-                      type="submit"
-                      variant="contained"
-                      color="primary"
-                      className={classes.button}
                       onClick={(e) => handleShowSumm(e)}
                       style={{ marginLeft: 10 }}
                     >
@@ -213,6 +218,16 @@ const Payrunbatch = () => {
                       style={{ marginLeft: 10 }}
                     >
                       Summary <Icon className={classes.rightIcon}>send</Icon>
+                    </Button>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      color="primary"
+                      className={classes.button}
+                      style={{ marginLeft: 5 }}
+                      onClick={(e) => handleSavePayslips(e)}
+                    >
+                      Save <Icon className={classes.rightIcon}>send</Icon>
                     </Button>
                   </ButtonGroup>
                 </div>
@@ -229,7 +244,12 @@ const Payrunbatch = () => {
                 rowindex={rowindex}
               />
             )}
-            {showSumm && <PaySummary payrundata={payrundata} singlebatchpayslip={singlebatchpayslip }/>}
+            {showSumm && (
+              <PaySummary
+                payrundata={payrundata}
+                singlebatchpayslip={singlebatchpayslip}
+              />
+            )}
           </Grid>
         </Grid>
       </section>

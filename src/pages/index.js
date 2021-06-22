@@ -13,6 +13,7 @@ import Allowances from "./AllowancesPage";
 import Designation from "./DesignationPage";
 import Tables from "./TablesPage";
 import DailyAllowances from "./DailyAllowancesPage";
+import DailyAllowancesStaff from "./DailyAllowancesStaffPage";
 import PrivateRoute from "./PrivateRoute";
 import Clients from "./ClientsPage";
 import Error from "./ErrorPage";
@@ -32,6 +33,7 @@ export {
   Designation,
   Tables,
   DailyAllowances,
+  DailyAllowancesStaff,
   Clients,
   Allowances,
   PrivateRoute,

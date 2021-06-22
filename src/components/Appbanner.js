@@ -43,11 +43,14 @@ const Appbanner = ({ handleDrawerOpen, handleDrawerClose, open, title }) => {
         >
           {title}
         </Typography>
-        <IconButton color="inherit">
+        <div>
+          {loginLevel.loginUser && <h3>Welcome {loginLevel.loginUser}!</h3>}
+        </div>
+        {/* <IconButton color="inherit">
           <Badge badgeContent={0} color="secondary">
             <NotificationsIcon />
           </Badge>
-        </IconButton>
+        </IconButton> */}
         <Tooltip title="Logout">
           <IconButton
             color="inherit"

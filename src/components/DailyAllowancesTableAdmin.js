@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useHistory, Link } from "react-router-dom";
 import MaterialTable, { MTableToolbar } from "material-table";
 import { makeStyles } from "@material-ui/core/styles";
-import { TextField, Icon, Button, MenuItem} from "@material-ui/core"
+import { TextField, Icon, Button, MenuItem } from "@material-ui/core";
 import {
   useSetRecoilState,
   useRecoilValue,
@@ -67,6 +67,7 @@ const columns = [
 export default function DailyAllowancesTable({
   dailyallowancesdata,
   setDailyAllowancesdata,
+  update_dailyallowance_error,
   handleDialogClose,
 }) {
   let history = useHistory();
@@ -92,27 +93,49 @@ export default function DailyAllowancesTable({
     getSingleBatchDailyAllowance,
   } = useDailyAllowancesContext();
 
-  // useEffect(() => {
-  //   getSingleBatchDailyAllowance(allows_period);
-  // }, []);
+  const Save_DailyAllowancesData = () => {
+    dailyallowancesdata.forEach((data) => {
+      const { id } = data;
+      if (id) {
+        const { id, rec_id, tableData, ...fields } = data;
+        updateDailyAllowance({ id, ...fields });
+      }
+    });
 
-  
- 
-  
+    handleDialogClose();
+  };
 
-const Save_DailyAllowancesData = () => {
-  dailyallowancesdata.forEach((data) => {
-    const { id } = data;
-    if (id) {
-      const { id, rec_id, tableData, ...fields } = data;
-      updateDailyAllowance({ id, ...fields });
-    }
-  });
+  const Approve_DailyAllowancesData = () => {
+    dailyallowancesdata.forEach((rec) => {
+      if (rec.tableData.checked) {
+        updateDailyAllowance({ id: rec.id, status: "Approve" });
+        //update leavesdata
+        if (!update_dailyallowance_error) {
+          const recdata = dailyallowancesdata.filter((r) => r.id === rec.id);
+          recdata[0].status = "Approve";
+        }
+      }
+    });
+    dailyallowancesdata.forEach((d) => {
+      if (d.tableData) d.tableData.checked = false;
+    });
+  };
 
-  handleDialogClose();
-};
-
-
+  const Reject_DailyAllowancesData = () => {
+    dailyallowancesdata.forEach((rec) => {
+      if (rec.tableData.checked) {
+        updateDailyAllowance({ id: rec.id, status: "Reject" });
+        //update leavesdata
+        if (!update_dailyallowance_error) {
+          const recdata = dailyallowancesdata.filter((r) => r.id === rec.id);
+          recdata[0].status = "Reject";
+        }
+      }
+    });
+    dailyallowancesdata.forEach((d) => {
+      if (d.tableData) d.tableData.checked = false;
+    });
+  };
 
   if (dailyallowances_loading) {
     return (
@@ -138,22 +161,23 @@ const Save_DailyAllowancesData = () => {
             Search: (props) => <SearchIcon />,
             ResetSearch: (props) => <DeleteIcon />,
           }}
-          editable={{
-            onRowUpdate: (newData, oldData) =>
-              new Promise((resolve, reject) => {
-                setTimeout(() => {
-                  const dataUpdate = [...dailyallowancesdata];
-                  const index = oldData.tableData.id;
-                  dataUpdate[index] = newData;
-                  setDailyAllowancesdata([...dataUpdate]);
-                  //approve_Expense(newData);
+          // editable={{
+          //   onRowUpdate: (newData, oldData) =>
+          //     new Promise((resolve, reject) => {
+          //       setTimeout(() => {
+          //         const dataUpdate = [...dailyallowancesdata];
+          //         const index = oldData.tableData.id;
+          //         dataUpdate[index] = newData;
+          //         setDailyAllowancesdata([...dataUpdate]);
+          //         //approve_Expense(newData);
 
-                  resolve();
-                }, 1000);
-              }),
-          }}
+          //         resolve();
+          //       }, 1000);
+          //     }),
+          // }}
           options={{
             filtering: true,
+            selection: true,
             headerStyle: {
               backgroundColor: "orange",
               color: "#FFF",
@@ -170,10 +194,28 @@ const Save_DailyAllowancesData = () => {
                     variant="contained"
                     color="secondary"
                     className={classes.button}
+                    onClick={Approve_DailyAllowancesData}
+                  >
+                    Approve
+                  </Button>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="secondary"
+                    className={classes.button}
+                    onClick={Reject_DailyAllowancesData}
+                  >
+                    Reject
+                  </Button>
+                  {/* <Button
+                    type="submit"
+                    variant="contained"
+                    color="secondary"
+                    className={classes.button}
                     onClick={Save_DailyAllowancesData}
                   >
                     Update <Icon className={classes.rightIcon}>send</Icon>
-                  </Button>
+                  </Button> */}
                 </div>
               </div>
             ),
@@ -203,6 +245,9 @@ const Save_DailyAllowancesData = () => {
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: 0,
+  },
+  button: {
+    margin: theme.spacing(1),
   },
   dialog: {
     width: 1000,

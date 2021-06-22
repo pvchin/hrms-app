@@ -8,7 +8,7 @@ module.exports = async (event) => {
 
   if (id) {
     const dailyallowsdetls = await table.find(id);
-    const formattedDailyAllowsdetls = {
+    const formattedDailyAllowsDetls = {
       id: dailyallowsdetls.id,
       ...dailyallowsdetls.fields,
     };

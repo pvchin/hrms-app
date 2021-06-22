@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import MaterialTable, { MTableToolbar } from "material-table";
 import { makeStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
@@ -9,14 +9,9 @@ import SearchIcon from "@material-ui/icons/Search";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import BuildOutlinedIcon from "@material-ui/icons/BuildOutlined";
 import { useHistory, Link } from "react-router-dom";
-import { useSetRecoilState, useRecoilValue } from "recoil";
-import {
-  payPeriodState,
-  payPeriodEndMonthState,
-  payPeriodEmpIdState,
-} from "./data/atomdata";
+import { useSetRecoilState, useRecoilState } from "recoil";
+import { payrunState, payrunIdState } from "./data/atomdata";
 import { usePayslipsContext } from "../context/payslips_context";
-import { useEmployeesContext } from "../context/employees_context";
 
 const columns = [
   { title: "Period", field: "period" },
@@ -32,67 +27,68 @@ const columns = [
     type: "date",
     dateSetting: { locale: "en-GB" },
   },
-
+  // { title: "Total Wages", field: "totalwages", type: "currency" },
+  // { title: "Total Allowances", field: "totalallowances", type: "currency" },
+  // { title: "Total Deductions", field: "totaldeductions", type: "currency" },
+  // { title: "Total Payroll", field: "totalpayroll", type: "currency" },
   { title: "Status", field: "status" },
 ];
 
 export default function PayslipTable() {
   let history = useHistory();
   const classes = useStyles();
-  const setPayPeriodEmpId = useSetRecoilState(payPeriodEmpIdState);
+  const [input, setInput] = useRecoilState(payrunState);
+  const [isLoadInput, setIsLoadInput] = useState(false);
+  const [payrunId, setPayrunId] = useRecoilState(payrunIdState);
   const {
     payrun,
     getPayrun,
-    payslips,
-    addPayslip,
     payrun_loading,
     payrun_error,
-    updatePayslip,
-    deletePayslip,
-    loadPayslips,
     getSinglePayslip,
-    getSingleBatchPayslip,
     setEditPayslipID,
     setIsPayslipEditingOn,
-    setIsPayslipEditingOff,
-    resetSinglePayslip,
-    payslip_period,
-    payslip_endmonthdate,
-    singlebatchpayslip,
-    singlebatch_payslip_loading,
-    singlebatch_payslip_error,
+    single_payslip,
+    setPayslipPeriod,
   } = usePayslipsContext();
-  const { loadEmployees, employees } = useEmployeesContext();
 
   useEffect(() => {
     getPayrun();
   }, []);
 
+  useEffect(() => {
+    if (single_payslip.payrun) {
+      console.log("single_payslip", single_payslip);
+    }
+  }, [single_payslip]);
+
+  const update_Input = async (data) => {
+    console.log("input", data);
+    setInput({
+      ...input,
+      payfreq: data.payfreq,
+      fromdate: data.fromdate,
+      todate: data.todate,
+      paydate: data.paydate,
+      period: data.period,
+      payrun: data.payrun,
+    });
+    console.log("payrun", input);
+  };
+
   const update_Payslip = async (data) => {
-    const { id } = data;
-    setPayPeriodEmpId(id); //save to recoil
+    console.log("data", data);
+    const { id, payrun } = data;
+    setPayslipPeriod(payrun); //save to recoil
     setEditPayslipID(id);
     setIsPayslipEditingOn();
     getSinglePayslip(id);
-    history.push("/singlepayslip");
+    
+    history.push("/payrunbatch");
+    
   };
 
-  const add_Payslip = async (data) => {
-    const { id } = data;
-    resetSinglePayslip();
-    setEditPayslipID("");
-    setIsPayslipEditingOff();
-    history.push("/singlepayslip");
-  };
-
-  const delete_Payslip = (data) => {
-    const { id } = data;
-    setEditPayslipID(id);
-    deletePayslip(id);
-    loadPayslips();
-  };
-
- 
+  
 
   if (payrun_loading) {
     return (
@@ -125,31 +121,31 @@ export default function PayslipTable() {
             ResetSearch: (props) => <DeleteIcon />,
             Build: (props) => <BuildOutlinedIcon />,
           }}
-          // actions={[
-          //   {
-          //     icon: "edit",
-          //     tooltip: "Edit Record",
-          //     onClick: (event, rowData) => {
-          //       update_Payslip(rowData);
-          //     },
-          //   },
-          //   {
-          //     icon: "delete",
-          //     tooltip: "Delete Record",
-          //     onClick: (event, rowData) => {
-          //       delete_Payslip(rowData);
-          //     },
-          //   },
-          //   {
-          //     icon: "add",
-          //     tooltip: "Add Record",
-          //     isFreeAction: true,
-          //     onClick: (event, rowData) => {
-          //       add_Payslip(rowData);
-          //     },
-          //   },
-           
-          // ]}
+          actions={[
+            {
+              icon: "edit",
+              tooltip: "Edit Record",
+              onClick: (event, rowData) => {
+                update_Input(rowData);
+                update_Payslip(rowData);
+              },
+            },
+            // {
+            //   icon: "delete",
+            //   tooltip: "Delete Record",
+            //   onClick: (event, rowData) => {
+            //     delete_Payslip(rowData);
+            //   },
+            // },
+            // {
+            //   icon: "add",
+            //   tooltip: "Add Record",
+            //   isFreeAction: true,
+            //   onClick: (event, rowData) => {
+            //     add_Payslip(rowData);
+            //   },
+            // },
+          ]}
           options={{
             filtering: true,
             headerStyle: {

@@ -7,6 +7,9 @@ import {
   GET_DAILYALLOWANCES_BEGIN,
   GET_DAILYALLOWANCES_SUCCESS,
   GET_DAILYALLOWANCES_ERROR,
+  GET_UNPAIDDAILYALLOWS_BEGIN,
+  GET_UNPAIDDAILYALLOWS_SUCCESS,
+  GET_UNPAIDDAILYALLOWS_ERROR,
   GET_SINGLE_DAILYALLOWANCE_BEGIN,
   GET_SINGLE_DAILYALLOWANCE_SUCCESS,
   GET_SINGLE_DAILYALLOWANCE_ERROR,
@@ -80,6 +83,25 @@ const dailyallowances_reducer = (state, action) => {
       ...state,
       dailyallowances_loading: false,
       dailyallowances_error: true,
+    };
+  }
+
+  // get unpaid daily allowances
+  if (action.type === GET_UNPAIDDAILYALLOWS_BEGIN) {
+    return { ...state, unpaid_dailyallows_loading: true };
+  }
+  if (action.type === GET_UNPAIDDAILYALLOWS_SUCCESS) {
+    return {
+      ...state,
+      unpaid_dailyallows_loading: false,
+      unpaiddailyallows: action.payload,
+    };
+  }
+  if (action.type === GET_UNPAIDDAILYALLOWS_ERROR) {
+    return {
+      ...state,
+      unpaid_dailyallows_loading: false,
+      unpaid_dailyallows_error: true,
     };
   }
 

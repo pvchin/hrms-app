@@ -253,7 +253,7 @@ export default function DailyAllowancesTableStaff() {
             title=""
             showButton={true}
             isFullscreen={false}
-            isFullwidth={true}
+            isFullwidth={false}
           >
             <DailyAllowsDetlsTableStaff
               allowsdata={allowsdata}

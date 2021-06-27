@@ -37,16 +37,16 @@ const LeaveForm = ({ formdata, setFormdata, handleDialogClose }) => {
   const onSubmit = (data) => {
     if (isLeaveEditing) {
      
-      updateLeave({ id: editLeaveID, ...data });
+      //updateLeave({ id: editLeaveID, ...data });
       // update leaves
       const editleavedata = leaves.filter((r) => r.id === editLeaveID);
       editleavedata[0].from_date = data.from_date;
       editleavedata[0].to_date = data.to_date;
-      editleavedata[0].from_no_of_days = data.no_of_days;
+      editleavedata[0].no_of_days = data.no_of_days;
       editleavedata[0].reason = data.reason;
     } else {
      
-      addLeave({ ...data, empid: loginLevel.loginUserId });
+      //addLeave({ ...data, empid: loginLevel.loginUserId });
       leaves.push({ ...data, empid: loginLevel.loginUserId })
       
     }

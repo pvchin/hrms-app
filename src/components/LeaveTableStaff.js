@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import MaterialTable from "material-table";
-import { TextField, MenuItem } from "@material-ui/core";
+import MaterialTable, { MTableToolbar } from "material-table";
+import { TextField, MenuItem, Button, Icon } from "@material-ui/core";
+import { Alert} from "@material-ui/lab"
 import { makeStyles } from "@material-ui/core/styles";
 import { useRecoilState } from "recoil";
 import { loginLevelState } from "./data/atomdata";
@@ -86,21 +87,19 @@ export default function LeaveTableStaff() {
   const classes = useStyles();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [alertSuccess, setAlertSuccess] = useState(false);
   const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
   const [formdata, setFormdata] = useState(initial_form);
   const { editEmployeeID } = useEmployeesContext();
   const {
     leaves,
     editLeaveID,
-    leaves_loading,
+    updateLeave,
+    addLeave,
     deleteLeave,
-    loadEmpLeaves,
-    getSingleLeave,
-    isLeaveEditing,
     setEditLeaveID,
     setIsLeaveEditingOn,
     setIsLeaveEditingOff,
-    resetSingleLeave,
   } = useLeavesContext();
 
   // useEffect(() => {
@@ -124,6 +123,8 @@ export default function LeaveTableStaff() {
   const add_Leave = async (data) => {
     // const { id } = data;
     //setEditLeaveID("");
+    setFormdata(initial_form)
+    setFormdata(initial_form);
     setIsLeaveEditingOff();
     handleDialogOpen();
     //history.push("/singleleave");
@@ -143,9 +144,9 @@ export default function LeaveTableStaff() {
 
   const handleDialogClose = () => {
     setIsDialogOpen(false);
-    if (isLeaveEditing) {
-      loadEmpLeaves(editEmployeeID);
-    }
+    // if (isLeaveEditing) {
+    //   loadEmpLeaves(editEmployeeID);
+    // }
   };
 
   const handleAlertOpen = () => {
@@ -158,10 +159,31 @@ export default function LeaveTableStaff() {
 
   const handleOnDeleteConfirm = () => {
     const id = editLeaveID;
-    const index = leaves.findIndex((r) => r.id === id);
-    console.log("leave delete", index, leaves);
-    leaves.splice(index,1)
-    deleteLeave(id);
+    //const index = leaves.findIndex((r) => r.id === id);
+    // console.log("leave delete", index, leaves);
+    // leaves.splice(index, 1);
+    //deleteLeave(id);
+    const leavedata = leaves.filter((r) => r.id === editLeaveID);
+    leavedata[0].isdelete = true;
+    console.log(leaves);
+  };
+
+  const Save_Leavedata = (e) => {
+    e.preventDefault();
+
+    leaves.forEach((row) => {
+      if (row.isdelete) {
+        deleteLeave(row.id);
+      }
+      if (row.id) {
+        const { rec_id, ...fields } = row;
+        updateLeave({ id: editLeaveID, ...fields });
+      }
+      if (!row.id) {
+        addLeave({ ...row, empid: loginLevel.loginUserId });
+      }
+    });
+    setAlertSuccess(true)
   };
 
   // if (leaves_loading) {
@@ -179,7 +201,9 @@ export default function LeaveTableStaff() {
         <MaterialTable
           columns={columns}
           data={leaves
-            .filter((item) => item.empid === loginLevel.loginUserId)
+            .filter(
+              (item) => item.empid === loginLevel.loginUserId && !item.isdelete
+            )
             .map((row) => {
               return { ...row };
             })}
@@ -251,6 +275,29 @@ export default function LeaveTableStaff() {
               color: "primary",
             },
             showTitle: true,
+          }}
+          components={{
+            Toolbar: (props) => (
+              <div>
+                <MTableToolbar {...props} />
+                <div style={{ padding: "5px 10px" }}>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="secondary"
+                    className={classes.button}
+                    onClick={(e) => Save_Leavedata(e)}
+                  >
+                    Update <Icon className={classes.rightIcon}>send</Icon>
+                  </Button>
+                </div>
+                {alertSuccess && (
+                  <Alert severity="success" onClose={() => setAlertSuccess(false)}>
+                    Changes being saved!
+                  </Alert>
+                )}
+              </div>
+            ),
           }}
         />
         <CustomDialog

@@ -97,7 +97,6 @@ export default function DailyAllowsDetlsTableStaff() {
     singlebatch_dailyallowsdetl,
     singlebatch_dailyallowsdetl_loading,
   } = useDailyAllowancesContext();
-  console.log("allowsdelts", allows_empid, allows_period);
 
   // useEffect(() => {
   //   console.log("useeffect load detls")
@@ -202,18 +201,19 @@ export default function DailyAllowsDetlsTableStaff() {
   //   );
   // };
 
-  // if (singlebatch_dailyallowsdetl_loading) {
-  //   return (
-  //     <div>
-  //       <h2>Loading.... daily site allowances</h2>
-  //     </div>
-  //   );
-  // }
+  if (singlebatch_dailyallowsdetl_loading) {
+    return (
+      <div>
+        <h2>Loading.... daily site allowances</h2>
+      </div>
+    );
+  }
   return (
     <div className={classes.root}>
       {/* <h1>Expenses Claims Application</h1> */}
 
       <div style={{ maxWidth: "75%", paddingTop: "5px" }}>
+        <h2>Allows Detils Table</h2>
         <MaterialTable
           columns={columns}
           data={singlebatch_dailyallowsdetl}
@@ -238,17 +238,17 @@ export default function DailyAllowsDetlsTableStaff() {
                   resolve();
                 }, 1000);
               }),
-            // onRowDelete: (oldData) =>
-            //   new Promise((resolve, reject) => {
-            //     setTimeout(() => {
-            //       //const dataDelete = [...allowsDetlsTable];
-            //       const index = oldData.tableData.id;
-            //       //dataDelete.splice(index, 1);
-            //       //setAllowsDetlsTable([...dataDelete]);
+            onRowDelete: (oldData) =>
+              new Promise((resolve, reject) => {
+                setTimeout(() => {
+                  //const dataDelete = [...allowsDetlsTable];
+                  const index = oldData.tableData.id;
+                  //dataDelete.splice(index, 1);
+                  //setAllowsDetlsTable([...dataDelete]);
 
-            //       resolve();
-            //     }, 1000);
-            //   }),
+                  resolve();
+                }, 1000);
+              }),
           }}
           options={{
             filtering: true,

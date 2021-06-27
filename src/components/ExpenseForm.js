@@ -19,10 +19,11 @@ const initial_values = {
   amount: 0,
 };
 
-const ExpenseForm = ({ handleDialogClose }) => {
+const ExpenseForm = ({ formdata, setFormdata, handleDialogClose }) => {
   const classes = useStyles();
   const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
   const {
+    expenses,
     isExpenseEditing,
     single_expense,
     updateExpense,
@@ -47,9 +48,16 @@ const ExpenseForm = ({ handleDialogClose }) => {
   const onSubmit = (data, e) => {
     e.preventDefault();
     if (isExpenseEditing) {
-      updateExpense({ id: editExpenseID, ...data });
+      //updateExpense({ id: editExpenseID, ...data });
+      const editexpensedata = expenses.filter((r) => r.id === editExpenseID);
+      editexpensedata[0].date = data.date;
+      editexpensedata[0].purchased_from = data.purchased_from;
+      editexpensedata[0].description = data.description;
+      editexpensedata[0].amount = data.amount;
+      console.log("expense form",expenses)
     } else {
-      addExpense({ empid: loginLevel.loginUserId, ...data });
+      //addExpense({ empid: loginLevel.loginUserId, ...data });
+      expenses.push({ ...data, empid: loginLevel.loginUserId });
     }
 
     handleDialogClose();
@@ -104,19 +112,19 @@ const ExpenseForm = ({ handleDialogClose }) => {
           </div>
           <div>
             <Controller
-              name="from_date"
+              name="date"
               control={control}
-              defaultValue={from_date}
+              defaultValue={formdata.date}
               render={({
                 field: { onChange, value },
                 fieldState: { error },
               }) => {
                 return (
                   <TextField
-                    label="From Date"
+                    label="Date"
                     type="date"
                     id="margin-normal"
-                    name="from_date"
+                    name="formdata.date"
                     value={value}
                     className={classes.textField}
                     onChange={onChange}
@@ -131,40 +139,12 @@ const ExpenseForm = ({ handleDialogClose }) => {
               rules={{ required: "From Date is required" }}
             />
           </div>
-          <div>
-            <Controller
-              name="to_date"
-              control={control}
-              defaultValue={to_date}
-              render={({
-                field: { onChange, value },
-                fieldState: { error },
-              }) => {
-                return (
-                  <TextField
-                    label="To Date"
-                    id="margin-normal"
-                    type="date"
-                    name="to_date"
-                    defaultValue={to_date}
-                    className={classes.textField}
-                    onChange={onChange}
-                    error={!!error}
-                    helperText={error ? error.message : null}
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                  />
-                );
-              }}
-              rules={{ required: "Purchased Date is required" }}
-            />
-          </div>
+          
           <div>
             <Controller
               name="purchased_from"
               control={control}
-              defaultValue={purchased_from}
+              defaultValue={formdata.purchased_from}
               render={({
                 field: { onChange, value },
                 fieldState: { error },
@@ -174,7 +154,7 @@ const ExpenseForm = ({ handleDialogClose }) => {
                     label="Purchased From"
                     id="margin-normal"
                     name="purchased_from"
-                    defaultValue={purchased_from}
+                    defaultValue={formdata.purchased_from}
                     className={classes.textField}
                     onChange={onChange}
                     error={!!error}
@@ -189,7 +169,7 @@ const ExpenseForm = ({ handleDialogClose }) => {
             <Controller
               name="description"
               control={control}
-              defaultValue={description}
+              defaultValue={formdata.description}
               render={({
                 field: { onChange, value },
                 fieldState: { error },
@@ -199,7 +179,7 @@ const ExpenseForm = ({ handleDialogClose }) => {
                     label="Description"
                     id="margin-normal"
                     name="description"
-                    defaultValue={description}
+                    defaultValue={formdata.description}
                     className={classes.textField}
                     onChange={onChange}
                     error={!!error}
@@ -214,7 +194,7 @@ const ExpenseForm = ({ handleDialogClose }) => {
             <Controller
               name="amount"
               control={control}
-              defaultValue={amount}
+              defaultValue={formdata.amount}
               render={({
                 field: { onChange, value },
                 fieldState: { error },
@@ -225,7 +205,7 @@ const ExpenseForm = ({ handleDialogClose }) => {
                     type="number"
                     id="standard-number"
                     name="amount"
-                    defaultValue={amount}
+                    defaultValue={formdata.amount}
                     className={classes.textField}
                     //onChange={onChange}
                     onChange={(e) => {

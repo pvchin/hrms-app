@@ -25,6 +25,7 @@ module.exports = async (event) => {
   if (fv) {
     const dailyallowsdetls = await table
       .select({
+        view: "sortedview",
         // filterByFormula: 'AND(period="2021-02")',
         // filterByFormula: 'AND(empid="rec1rEYb2ZrHRgiTE",period="2021-02")',
         filterByFormula: `AND(empid="${fv}",period="${period}")`,
@@ -39,7 +40,9 @@ module.exports = async (event) => {
   }
 
   try {
-    const dailyallowsdetls = await table.select().firstPage();
+    const dailyallowsdetls = await table
+      .select({ view: "sortedview" })
+      .firstPage();
     const formattedDailyAllowsDetls = dailyallowsdetls.map(
       (dailyallowsdetl) => ({
         id: dailyallowsdetl.id,

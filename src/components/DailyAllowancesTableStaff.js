@@ -23,8 +23,6 @@ import { useDailyAllowancesContext } from "../context/dailyallowances_context";
 import DailyAllowancesAddPeriod from "./DailyAllowancesAddPeriod";
 import DailyAllowsDetlsTableStaff from "./DailyAllowsDetlsTableStaff";
 
-
-
 export default function DailyAllowancesTableStaff() {
   let history = useHistory();
   const classes = useStyles();
@@ -45,57 +43,57 @@ export default function DailyAllowancesTableStaff() {
     dailyallowances_loading,
     dailyallowances_error,
     updateDailyAllowance,
+    getSingleBatchDailyAllowsDetl,
   } = useDailyAllowancesContext();
 
   // useEffect(() => {
   //   loadEmpDailyAllowances(loginLevel.loginUserId);
   // }, [toLoad]);
 
-  const myCustomSortingAlgorithm = {
-  ascending: (a, b) => a.period.length - b.period.length,
-  descending: (a, b) => b.period.length - a.period.length,
-  };
-  
-const columns = [
-  {
-    title: "Name",
-    field: "name",
-    editable: "never",
-  },
-  {
-    title: "Period",
-    field: "period",
-    editable: "never",
-    customSort: myCustomSortingAlgorithm.ascending,
-  },
-  { title: "Location", field: "location", editable: "never" },
-  { title: "Manager Name", field: "manager_name", editable: "never" },
-  {
-    title: "No Of Days",
-    field: "no_of_days",
-    type: "numeric",
-    editable: "never",
-  },
-  { title: "Amount", field: "amount", type: "currency", editable: "never" },
-  {
-    title: "Status",
-    field: "status",
-    editComponent: (props) => (
-      <TextField
-        //defaultValue={props.value || null}
-        onChange={(e) => props.onChange(e.target.value)}
-        style={{ width: 100 }}
-        value={props.value}
-        select
-      >
-        <MenuItem value="Pending">Pending</MenuItem>
-        {/* <MenuItem value="Approve">Approve</MenuItem>
+  // const myCustomSortingAlgorithm = {
+  //   ascending: (a, b) => a.period.length - b.period.length,
+  //   descending: (a, b) => b.period.length - a.period.length,
+  // };
+
+  const columns = [
+    {
+      title: "Name",
+      field: "name",
+      editable: "never",
+    },
+    {
+      title: "Period",
+      field: "period",
+      editable: "never",
+    },
+    { title: "Location", field: "location", editable: "never" },
+    { title: "Manager Name", field: "manager_name", editable: "never" },
+    {
+      title: "No Of Days",
+      field: "no_of_days",
+      type: "numeric",
+      editable: "never",
+    },
+    { title: "Amount", field: "amount", type: "currency", editable: "never" },
+    {
+      title: "Status",
+      field: "status",
+      editComponent: (props) => (
+        <TextField
+          //defaultValue={props.value || null}
+          onChange={(e) => props.onChange(e.target.value)}
+          style={{ width: 100 }}
+          value={props.value}
+          select
+        >
+          <MenuItem value="Pending">Pending</MenuItem>
+          {/* <MenuItem value="Approve">Approve</MenuItem>
         <MenuItem value="Reject">Reject</MenuItem>
         <MenuItem value="Cancel">Cancel</MenuItem> */}
-      </TextField>
-    ),
-  },
-];
+        </TextField>
+      ),
+    },
+  ];
 
   const Save_DailyAllowancesData = () => {
     dailyallowances.forEach((data) => {
@@ -111,7 +109,8 @@ const columns = [
 
   const update_SiteAllowsDetl = (data) => {
     const { id, empid, period, no_of_days, amount } = data;
-    console.log(data);
+
+    getSingleBatchDailyAllowsDetl(empid, period);
     setAllows_period(period);
     setAllows_empid(empid);
     setAllowsdataId(id);
@@ -156,16 +155,12 @@ const columns = [
     loadEmpDailyAllowances(loginLevel.loginUserId);
   };
 
-  
-
   return (
     <div className={classes.root}>
       <div style={{ maxWidth: "100%", paddingTop: "5px" }}>
         <MaterialTable
           columns={columns}
-          data={dailyallowances
-            .sort(myCustomSortingAlgorithm.ascending)
-            .filter(
+          data={dailyallowances.filter(
             (item) => item.empid === loginLevel.loginUserId
           )}
           title={title}
@@ -201,13 +196,14 @@ const columns = [
                 add_SiteAllowsPeriod();
               },
             },
-            {
+            (rowData) => ({
+              disabled: rowData.status !== "Pending",
               icon: "edit",
               tooltip: "Edit Record",
               onClick: (event, rowData) => {
                 update_SiteAllowsDetl(rowData);
               },
-            },
+            }),
           ]}
           options={{
             filtering: true,

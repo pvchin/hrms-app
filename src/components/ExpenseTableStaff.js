@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import MaterialTable from "material-table";
-import { TextField, MenuItem } from "@material-ui/core";
+import MaterialTable, { MTableToolbar } from "material-table";
+import { TextField, MenuItem, Button, Icon } from "@material-ui/core";
+import { Alert } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core/styles";
 import { useRecoilState } from "recoil";
 import { loginLevelState } from "./data/atomdata";
@@ -16,22 +17,25 @@ import { useEmployeesContext } from "../context/employees_context";
 import { CustomDialog } from "../helpers/CustomDialog";
 import { AlertDialog } from "../helpers/AlertDialog";
 
+const initial_form = {
+  name: "",
+  date: "",
+  purchased_from: "",
+  description: "",
+  status: "Pending",
+  amount: 0,
+};
+
 const columns = [
   { title: "Name", field: "name", editable: "never" },
   {
-    title: "From Date",
-    field: "from_date",
+    title: "Date",
+    field: "date",
     type: "date",
     dateSetting: { locale: "en-GB" },
     editable: "never",
   },
-  {
-    title: "To Date",
-    field: "to_date",
-    type: "date",
-    dateSetting: { locale: "en-GB" },
-    editable: "never",
-  },
+
   {
     title: "Description",
     field: "description",
@@ -64,20 +68,19 @@ export default function ExpenseTable() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [expensesdata, setExpensesdata] = useState([]);
+  const [alertSuccess, setAlertSuccess] = useState(false);
+  const [formdata, setFormdata] = useState(initial_form);
   const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
-  const { loadEmployees } = useEmployeesContext();
+  const { editEmployeeID } = useEmployeesContext();
   const {
     expenses,
     editExpenseID,
     updateExpense,
-    expenses_loading,
+    addExpense,
     deleteExpense,
-    loadExpenses,
-    getSingleExpense,
     setEditExpenseID,
     setIsExpenseEditingOn,
     setIsExpenseEditingOff,
-    resetSingleExpense,
   } = useExpensesContext();
 
   // useEffect(() => {
@@ -100,25 +103,19 @@ export default function ExpenseTable() {
 
   const add_Expense = async (data) => {
     // const { id } = data;
-    resetSingleExpense();
-    setEditExpenseID("");
+    setFormdata(initial_form);
+    setFormdata(initial_form);
     setIsExpenseEditingOff();
     handleDialogOpen();
     // history.push("/singleexpense");
   };
 
-  const approve_Expense = async (data) => {
-    console.log("approve", data);
-    const { id, rec_id, ...fields } = data;
-    updateExpense({ id, ...fields });
-    // loadExpenses();
-  };
-
   const update_Expense = async (data) => {
     const { id } = data;
+    setFormdata({ ...data });
+    setFormdata({ ...data });
     setEditExpenseID(id);
     setIsExpenseEditingOn();
-    getSingleExpense(id);
     handleDialogOpen();
     // history.push("/singleexpense");
   };
@@ -132,13 +129,29 @@ export default function ExpenseTable() {
     // loadExpenses();
   };
 
+  const Save_Expensedata = (e) => {
+    e.preventDefault();
+    expenses.forEach((row) => {
+      if (row.isdelete) {
+        deleteExpense(row.id);
+      }
+      if (row.id) {
+        const { rec_id, ...fields } = row;
+        updateExpense({ id: editExpenseID, ...fields });
+      }
+      if (!row.id) {
+        addExpense({ ...row, empid: loginLevel.loginUserId });
+      }
+    });
+    setAlertSuccess(true);
+  };
+
   const handleDialogOpen = () => {
     setIsDialogOpen(true);
   };
 
   const handleDialogClose = () => {
     setIsDialogOpen(false);
-    loadExpenses();
   };
 
   const handleAlertOpen = () => {
@@ -150,9 +163,8 @@ export default function ExpenseTable() {
   };
 
   const handleOnDeleteConfirm = () => {
-    const id = editExpenseID;
-    deleteExpense(id);
-    loadExpenses();
+    const expensedata = expenses.filter((r) => r.id === editExpenseID);
+    expensedata[0].isdelete = true;
   };
 
   // if (expenses_loading) {
@@ -177,7 +189,9 @@ export default function ExpenseTable() {
         <MaterialTable
           columns={columns}
           data={expenses
-            .filter((item) => item.empid === loginLevel.loginUserId)
+            .filter(
+              (item) => item.empid === loginLevel.loginUserId && !item.isdelete
+            )
             .map((row) => {
               return { ...row };
             })}
@@ -206,20 +220,22 @@ export default function ExpenseTable() {
           //     }),
           // }}
           actions={[
-            {
+            (rowData) => ({
+              disabled: rowData.status !== "Pending",
               icon: "edit",
               tooltip: "Edit Record",
               onClick: (event, rowData) => {
                 update_Expense(rowData);
               },
-            },
-            {
+            }),
+            (rowData) => ({
+              disabled: rowData.status !== "Pending",
               icon: "delete",
               tooltip: "Delete Record",
               onClick: (event, rowData) => {
                 delete_Expense(rowData);
               },
-            },
+            }),
             {
               icon: "add",
               tooltip: "Add Record",
@@ -237,6 +253,32 @@ export default function ExpenseTable() {
             },
             showTitle: true,
           }}
+          components={{
+            Toolbar: (props) => (
+              <div>
+                <MTableToolbar {...props} />
+                <div style={{ padding: "5px 10px" }}>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="secondary"
+                    className={classes.button}
+                    onClick={(e) => Save_Expensedata(e)}
+                  >
+                    Update <Icon className={classes.rightIcon}>send</Icon>
+                  </Button>
+                </div>
+                {alertSuccess && (
+                  <Alert
+                    severity="success"
+                    onClose={() => setAlertSuccess(false)}
+                  >
+                    Changes being saved!
+                  </Alert>
+                )}
+              </div>
+            ),
+          }}
         />
         <CustomDialog
           isOpen={isDialogOpen}
@@ -246,7 +288,11 @@ export default function ExpenseTable() {
           isFullscree={false}
           isFullwidth={false}
         >
-          <ExpenseForm handleDialogClose={handleDialogClose} />
+          <ExpenseForm
+            formdata={formdata}
+            setFormdata={setFormdata}
+            handleDialogClose={handleDialogClose}
+          />
         </CustomDialog>
 
         <AlertDialog

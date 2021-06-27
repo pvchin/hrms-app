@@ -52,7 +52,7 @@ const SingleDailyAllowsDetlsStaff = ({ title }) => {
                 </Link>
                 <div>
                   {/* <ToolbarHeader title={title} /> */}
-                  
+                 
                   <DailyAllowsDetlsTableStaff />
                 </div>
               </Paper>

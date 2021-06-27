@@ -20,7 +20,7 @@ module.exports = async (event) => {
   }
   if (fv) {
     const expenses = await table
-      .select({ filterByFormula: `empid = '${fv}'` })
+      .select({ view: "sortedview",filterByFormula: `empid = '${fv}'` })
       .firstPage();
     const formattedExpenses = expenses.map((expense) => ({
       id: expense.id,
@@ -32,7 +32,7 @@ module.exports = async (event) => {
 
   if (fi) {
     const expenses = await table
-      .select({ filterByFormula: `status = '${fi}'` })
+      .select({ view: "sortedview",filterByFormula: `status = '${fi}'` })
       .firstPage();
     const formattedExpenses = expenses.map((expense) => ({
       id: expense.id,

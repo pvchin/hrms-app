@@ -15,6 +15,16 @@ import { AlertDialog } from "../helpers/AlertDialog";
 import { useLeavesContext } from "../context/leaves_context";
 import { useEmployeesContext } from "../context/employees_context";
 
+const initial_form = {
+  name: "",
+  to_date: "",
+  from_date: "",
+  reason: "",
+  status: "Pending",
+  no_of_days: 0,
+  leave_bal: 0,
+};
+
 const columns = [
   {
     title: "Name",
@@ -77,41 +87,43 @@ export default function LeaveTableStaff() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
-  const { loadEmployees } = useEmployeesContext();
+  const [formdata, setFormdata] = useState(initial_form);
+  const { editEmployeeID } = useEmployeesContext();
   const {
     leaves,
     editLeaveID,
     leaves_loading,
     deleteLeave,
-    loadLeaves,
+    loadEmpLeaves,
     getSingleLeave,
+    isLeaveEditing,
     setEditLeaveID,
     setIsLeaveEditingOn,
     setIsLeaveEditingOff,
     resetSingleLeave,
   } = useLeavesContext();
-  console.log("login",loginLevel)
-  useEffect(() => {
-    loadLeaves();
-  }, []);
 
-  useEffect(() => {
-    loadEmployees();
-  }, []);
+  // useEffect(() => {
+  //   loadLeaves();
+  // }, []);
+
+  // useEffect(() => {
+  //   loadEmployees();
+  // }, []);
 
   const update_Leave = async (data) => {
     const { id } = data;
+    setFormdata({ ...data });
+    setFormdata({ ...data });
     setEditLeaveID(id);
     setIsLeaveEditingOn();
-    getSingleLeave(id);
     handleDialogOpen();
     //history.push("/singleleave");
   };
 
   const add_Leave = async (data) => {
     // const { id } = data;
-    resetSingleLeave();
-    setEditLeaveID("");
+    //setEditLeaveID("");
     setIsLeaveEditingOff();
     handleDialogOpen();
     //history.push("/singleleave");
@@ -131,7 +143,9 @@ export default function LeaveTableStaff() {
 
   const handleDialogClose = () => {
     setIsDialogOpen(false);
-    loadLeaves();
+    if (isLeaveEditing) {
+      loadEmpLeaves(editEmployeeID);
+    }
   };
 
   const handleAlertOpen = () => {
@@ -144,17 +158,19 @@ export default function LeaveTableStaff() {
 
   const handleOnDeleteConfirm = () => {
     const id = editLeaveID;
+    const index = leaves.findIndex((r) => r.id === id);
+    console.log("leave delete", index, leaves);
+    leaves.splice(index,1)
     deleteLeave(id);
-    loadLeaves();
   };
 
-  if (leaves_loading) {
-    return (
-      <div>
-        <h2>Loading...Leaves</h2>
-      </div>
-    );
-  }
+  // if (leaves_loading) {
+  //   return (
+  //     <div>
+  //       <h2>Loading...Leaves</h2>
+  //     </div>
+  //   );
+  // }
   return (
     <div className={classes.root}>
       {/* <h1>Expenses Claims Application</h1> */}
@@ -177,21 +193,48 @@ export default function LeaveTableStaff() {
             Search: (props) => <SearchIcon />,
             ResetSearch: (props) => <DeleteIcon />,
           }}
+          // editable={{
+          //   isEditable: (rowData) => rowData.status === "Pending",
+          //   isDeletable: (rowData) => rowData.status === "Pending",
+          //   onRowAdd: (newData) =>
+          //     new Promise((resolve, reject) => {
+          //       setTimeout(() => {
+          //         add_Leave(newData);
+          //         resolve();
+          //       }, 1000);
+          //     }),
+          //   onRowUpdate: (newData, oldData) =>
+          //     new Promise((resolve, reject) => {
+          //       setTimeout(() => {
+          //         update_Leave(newData);
+          //         resolve();
+          //       }, 1000);
+          //     }),
+          //   onRowDelete: (oldData) =>
+          //     new Promise((resolve, reject) => {
+          //       setTimeout(() => {
+          //         delete_Leave(oldData);
+          //         resolve();
+          //       }, 1000);
+          //     }),
+          // }}
           actions={[
-            {
+            (rowData) => ({
+              disabled: rowData.status !== "Pending",
               icon: "edit",
               tooltip: "Edit Record",
               onClick: (event, rowData) => {
                 update_Leave(rowData);
               },
-            },
-            {
+            }),
+            (rowData) => ({
+              disabled: rowData.status !== "Pending",
               icon: "delete",
               tooltip: "Delete Record",
               onClick: (event, rowData) => {
                 delete_Leave(rowData);
               },
-            },
+            }),
             {
               icon: "add",
               tooltip: "Add Record",
@@ -217,7 +260,11 @@ export default function LeaveTableStaff() {
           showButton={true}
           isFullscree={false}
         >
-          <LeaveForm handleDialogClose={handleDialogClose} />
+          <LeaveForm
+            formdata={formdata}
+            setFormdata={setFormdata}
+            handleDialogClose={handleDialogClose}
+          />
         </CustomDialog>
 
         <AlertDialog

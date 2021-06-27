@@ -56,6 +56,8 @@ const columns = [
   },
 ];
 
+
+
 export default function LeaveTableView() {
   const classes = useStyles();
   const [isDialogOpen, setIsDialogOpen] = useState(false);

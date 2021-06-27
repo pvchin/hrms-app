@@ -6,7 +6,7 @@ import Container from "@material-ui/core/Container";
 import Grid from "@material-ui/core/Grid";
 import Paper from "@material-ui/core/Paper";
 
-import DailyAllowancesTable from "../components/DailyAllowancesTable";
+import DailyAllowancesTableStaff from "../components/DailyAllowancesTableStaff";
 
 const drawerWidth = 240;
 
@@ -25,7 +25,7 @@ const BatchDailyAllowances = () => {
             <Grid item xs={12}>
               <Paper className={fixedHeightPaper}>
                 <div>
-                  <DailyAllowancesTable title="Daily Allowance Claims" />
+                  <DailyAllowancesTableStaff title="Site Allowances Claims" />
                 </div>
               </Paper>
             </Grid>

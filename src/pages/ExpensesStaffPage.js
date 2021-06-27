@@ -15,22 +15,7 @@ const drawerWidth = 240;
 const ExpensesStaffPage = () => {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
-  const { loadExpenses, expenses_loading } = useExpensesContext();
-
-  useEffect(() => {
-    loadExpenses();
-  }, []);
-
-  if (expenses_loading) {
-    return (
-      <div>
-        <Paper className={fixedHeightPaper}>
-          
-        <h2>Loading...Expenses</h2>
-         </Paper>
-      </div>
-    );
-  }
+    
   return (
     <div>
       <CssBaseline />

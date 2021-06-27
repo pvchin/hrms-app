@@ -1,0 +1,33 @@
+Appsmitch
+
+- expenses claim
+  - date only
+
+site-allowances
+- remove district
+- reporting manager auto
+
+profile
+- add reporting manager
+
+admin
+- hide basic salarys
+- basic salarys 
+
+payroll
+- need verify before sending to manager
+
+expenses
+- once approved, can not changed
+
+leaves
+- 1st approve / reject
+- once approved , can be canceled with comments
+
+manager
+- payrun 
+
+hr manager
+- approve / rejects
+
+

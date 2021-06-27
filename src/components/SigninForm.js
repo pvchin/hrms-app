@@ -21,7 +21,7 @@ const SigninForm = () => {
   const [alert, setAlert] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
-  const { employees, loadEmployees, employees_loading, employees_error } = useEmployeesContext();
+  const { employees, loadEmployees, setEditEmployeeID,employees_loading, employees_error } = useEmployeesContext();
 
   useEffect(() => {
     loadEmployees();
@@ -66,7 +66,7 @@ const SigninForm = () => {
         siteallows_fee: emp[0].siteallows_fee,
         perdiem_fee: emp[0].perdiem_fee,
       });
-
+      setEditEmployeeID(emp[0].id);
       setPassword("");
     } else {
       setAlert(false);

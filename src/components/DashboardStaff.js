@@ -14,7 +14,7 @@ import SingleEmployeeStaff from "./SingleEmployeeStaff";
 import SingleLeave from "./SingleLeave";
 import SingleExpense from "./SingleExpense";
 import SingleDailyAllowance from "./SingleDailyAllowance";
-import SingleDailyAllowsDetls from "./SingleDailyAllowsDetls";
+import SingleDailyAllowsDetlsStaff from "./SingleDailyAllowsDetlsStaff";
 import BatchDailyAllowances from "./BatchDailyAllowances";
 import SinglePayslip from "./SinglePayslip";
 import Login from "./LoginForm";
@@ -110,7 +110,7 @@ export default function DashboardMain() {
               <DailyAllowancesStaff />
             </Route>
             <Route exact path="/singledailyallowsdetlstable">
-              <SingleDailyAllowsDetls />
+              <SingleDailyAllowsDetlsStaff />
             </Route>
             <Route exact path="/expenses">
               <ExpensesStaff />

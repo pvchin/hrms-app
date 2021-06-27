@@ -80,10 +80,10 @@ export default function ExpenseTable() {
     resetSingleExpense,
   } = useExpensesContext();
 
-  useEffect(() => {
-    setExpensesdata(expenses);
-    console.log(expensesdata);
-  }, []);
+  // useEffect(() => {
+  //   setExpensesdata(expenses);
+  //   console.log(expensesdata);
+  // }, []);
 
   // useEffect(() => {
   //   loadEmployees();
@@ -162,7 +162,7 @@ export default function ExpenseTable() {
   //     </div>
   //   );
   // }
-  if (!expensesdata) {
+  if (!expenses) {
     return (
       <div>
         <h2>Loading...Expenses</h2>
@@ -176,7 +176,7 @@ export default function ExpenseTable() {
       <div style={{ maxWidth: "100%", paddingTop: "5px" }}>
         <MaterialTable
           columns={columns}
-          data={expensesdata
+          data={expenses
             .filter((item) => item.empid === loginLevel.loginUserId)
             .map((row) => {
               return { ...row };

@@ -7,21 +7,14 @@ import CardLayout2 from "../helpers/CardLayout2";
 import CardLayout3 from "../helpers/CardLayout3";
 import Copyright from "./Copyright";
 import { CustomDialog } from "../helpers/CustomDialog";
-import {
-  RecoilRoot,
-  atom,
-  selector,
-  useRecoilState,
-  useRecoilValue,
-  useSetRecoilState,
-} from "recoil";
+import { useRecoilState } from "recoil";
 import { loginLevelState } from "./data/atomdata";
 
 import { useLeavesContext } from "../context/leaves_context";
 import { useExpensesContext } from "../context/expenses_context";
 import { usePayslipsContext } from "../context/payslips_context";
 import { useDailyAllowancesContext } from "../context/dailyallowances_context";
-import LeaveTableView from "./LeaveTableView";
+import LeaveTableViewStaff from "./LeaveTableViewStaff";
 import LeaveTableAdmin from "./LeaveTableAdmin";
 import ExpenseTableViewStaff from "./ExpenseTableViewStaff";
 import ExpenseTableAdmin from "./ExpenseTableAdmin";
@@ -121,14 +114,18 @@ const EmployeeView = () => {
           {/* Recent Deposits */}
           <Grid item xs={6} md={8} lg={6}>
             <CardLayout2 title="Leave Schedule">
-              <OnLeavesViewStaff />
+              <LeaveTableViewStaff />
             </CardLayout2>
           </Grid>
           <Grid item xs={6} md={8} lg={6}>
-            <CardLayout2 title="Work Permit Expiry within 90 Days">
-              <WPExpiryViewStaff />
+            <CardLayout2
+              title="Expenses History"
+              handleClick={handleExpenseDialogOpen}
+            >
+              <ExpenseTableViewStaff />
             </CardLayout2>
           </Grid>
+
           <Grid item xs={6} md={8} lg={6}>
             <CardLayout2
               title="Payroll History"
@@ -145,16 +142,12 @@ const EmployeeView = () => {
               <DailyAllowancesTableViewStaff />
             </CardLayout2>
           </Grid>
-          
-          {/* Recent Orders */}
           <Grid item xs={6} md={8} lg={6}>
-            <CardLayout2
-              title="Expenses History"
-              handleClick={handleExpenseDialogOpen}
-            >
-              <ExpenseTableViewStaff />
+            <CardLayout2 title="Work Permit Expiry within 90 Days">
+              <WPExpiryViewStaff />
             </CardLayout2>
           </Grid>
+          {/* Recent Orders */}
         </Grid>
         <Box pt={4}>
           <Copyright />

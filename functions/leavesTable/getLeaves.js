@@ -21,7 +21,7 @@ module.exports = async (event) => {
 
   if (fv) {
     const leaves = await table
-      .select({ filterByFormula: `empid = '${fv}'` })
+      .select({ view: "sortedview", filterByFormula: `empid = '${fv}'` })
       .firstPage();
     const formattedLeaves = leaves.map((leave) => ({
       id: leave.id,
@@ -33,7 +33,7 @@ module.exports = async (event) => {
 
   if (fi) {
     const leaves = await table
-      .select({ filterByFormula: `status = '${fi}'` })
+      .select({ view: "sortedview", filterByFormula: `status = '${fi}'` })
       .firstPage();
     const formattedLeaves = leaves.map((leave) => ({
       id: leave.id,
@@ -44,7 +44,7 @@ module.exports = async (event) => {
   }
 
   try {
-    const leaves = await table.select().firstPage();
+    const leaves = await table.select({ view: "sortedview" }).firstPage();
     const formattedLeaves = leaves.map((leave) => ({
       id: leave.id,
       ...leave.fields,

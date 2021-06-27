@@ -89,6 +89,18 @@ export const LeavesProvider = ({ children }) => {
     }
   };
 
+  const loadEmpLeaves = async (fv) => {
+    dispatch({ type: GET_LEAVES_BEGIN });
+    try {
+      const { data } = await axios.get(`${leaves_url}?fv=${fv}`);
+      const leaves = data;
+
+      dispatch({ type: GET_LEAVES_SUCCESS, payload: leaves });
+    } catch (error) {
+      dispatch({ type: GET_LEAVES_ERROR });
+    }
+  };
+
   const setIsLeaveEditingOn = () => {
     dispatch({ type: SET_ISLEAVEEDITING_ON });
   };
@@ -123,9 +135,12 @@ export const LeavesProvider = ({ children }) => {
   const getSingleBatchLeave = async (empid) => {
     dispatch({ type: GET_SINGLEBATCH_LEAVE_BEGIN });
     try {
-      const res = await fetch(`${leaves_url}?fv=${empid}`);
+      const { data } = await axios.get(`${leaves_url}?fv=${empid}`);
+      const singlebatchleave = data;
+
+      // const res = await fetch(`${leaves_url}?fv=${empid}`);
       //console.log(`${family_url}?fv=${linkid}`);
-      const singlebatchleave = await res.json();
+      // const singlebatchleave = await res.json();
 
       dispatch({
         type: GET_SINGLEBATCH_LEAVE_SUCCESS,
@@ -185,6 +200,7 @@ export const LeavesProvider = ({ children }) => {
         ...state,
         loadLeaves,
         loadPendingLeaves,
+        loadEmpLeaves,
         addLeave,
         updateLeave,
         deleteLeave,

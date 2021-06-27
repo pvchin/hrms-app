@@ -71,8 +71,6 @@ const MenuListItemsStaff = () => {
         </ListItem>
       </Link>
 
-      
-
       <Link to="/expenses">
         <ListItem button>
           <ListItemIcon className={classes.itemIcon}>
@@ -96,6 +94,7 @@ const MenuListItemsStaff = () => {
           />
         </ListItem>
       </Link>
+      
     </div>
   );
 };

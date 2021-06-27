@@ -11,6 +11,7 @@ import {
   allowsDataDetlsState,
   empidState,
   allowsPeriodState,
+  allowsDataIdState,
 } from "./data/atomdata";
 import { useDailyAllowancesContext } from "../context/dailyallowances_context";
 
@@ -67,11 +68,7 @@ const columns = [
   },
 ];
 
-export default function DailyAllowsDetlsTableStaff({
-  allowsdata,
-  allowsdataId,
-  handleDialogClose,
-}) {
+export default function DailyAllowsDetlsTableStaff() {
   let history = useHistory();
   const classes = useStyles();
   // const [allowsDetlsTable, setAllowsDetlsTable] =
@@ -83,6 +80,8 @@ export default function DailyAllowsDetlsTableStaff({
     useRecoilState(allowsDataDetlsState);
   const allows_period = useRecoilValue(allowsPeriodState);
   const allows_empid = useRecoilValue(empidState);
+  const [allowsdata, setAllowsdata] = useRecoilState(allowsDataState);
+  const [allowsdataId, setAllowsdataId] = useState(allowsDataIdState);
   const [totals, setTotals] = useState({
     totaldays: 0,
     totalamount: 0,
@@ -98,17 +97,19 @@ export default function DailyAllowsDetlsTableStaff({
     singlebatch_dailyallowsdetl,
     singlebatch_dailyallowsdetl_loading,
   } = useDailyAllowancesContext();
+  console.log("allowsdelts", allows_empid, allows_period);
 
-  useEffect(() => {
-    getSingleBatchDailyAllowsDetl(allows_empid, allows_period);
-  }, []);
+  // useEffect(() => {
+  //   console.log("useeffect load detls")
+  //   getSingleBatchDailyAllowsDetl(allows_empid, allows_period);
+  // }, [allows_period]);
 
-  useEffect(() => {
-    if (singlebatch_dailyallowsdetl.name) {
-      handle_calc();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [totals.totalamount]);
+  // useEffect(() => {
+  //   if (singlebatch_dailyallowsdetl.name) {
+  //     handle_calc();
+  //   }
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [totals.totalamount]);
 
   const update_AllowsDetls = (data, index) => {
     const recdata = singlebatch_dailyallowsdetl.filter(
@@ -156,6 +157,10 @@ export default function DailyAllowsDetlsTableStaff({
     getSingleBatchDailyAllowsDetl(allows_empid, allows_period);
   };
 
+  const handle_refresh = () => {
+    //  getSingleBatchDailyAllowsDetl(allows_empid, allows_period);
+  };
+
   const handle_calc = () => {
     const totbonus = singlebatch_dailyallowsdetl.reduce((acc, item) => {
       return acc + item.jobbonus;
@@ -197,13 +202,13 @@ export default function DailyAllowsDetlsTableStaff({
   //   );
   // };
 
-  if (singlebatch_dailyallowsdetl_loading) {
-    return (
-      <div>
-        <h2>Loading.... daily site allowances</h2>
-      </div>
-    );
-  }
+  // if (singlebatch_dailyallowsdetl_loading) {
+  //   return (
+  //     <div>
+  //       <h2>Loading.... daily site allowances</h2>
+  //     </div>
+  //   );
+  // }
   return (
     <div className={classes.root}>
       {/* <h1>Expenses Claims Application</h1> */}
@@ -267,6 +272,15 @@ export default function DailyAllowsDetlsTableStaff({
                     onClick={(e) => delete_AllowsDetls(e)}
                   >
                     delete
+                  </Button>
+                  <Button
+                    type="submit"
+                    variant="contained"
+                    color="secondary"
+                    className={classes.button}
+                    onClick={(e) => handle_refresh(e)}
+                  >
+                    re-fresh
                   </Button>
                   <Button
                     type="submit"

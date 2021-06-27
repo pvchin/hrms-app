@@ -9,6 +9,7 @@ import {
   allowsPeriodState,
   allowsDataState,
   allowsDataDetlsState,
+  allowsDataIdState,
   empidState,
   loginLevelState,
 } from "./data/atomdata";
@@ -22,13 +23,51 @@ import { useDailyAllowancesContext } from "../context/dailyallowances_context";
 import DailyAllowancesAddPeriod from "./DailyAllowancesAddPeriod";
 import DailyAllowsDetlsTableStaff from "./DailyAllowsDetlsTableStaff";
 
+
+
+export default function DailyAllowancesTableStaff() {
+  let history = useHistory();
+  const classes = useStyles();
+  const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
+  const [isAddPeriodDialogOpen, setIsAddPeriodDialogOpen] = useState(false);
+  const [tmpallowsdata, setTmpallowsdata] = useState([]);
+  const [allowsdata, setAllowsdata] = useRecoilState(allowsDataState);
+  const [allows_period, setAllows_period] = useRecoilState(allowsPeriodState);
+  const [allows_empid, setAllows_empid] = useRecoilState(empidState);
+  const [allowsdataId, setAllowsdataId] = useState(allowsDataIdState);
+  const [toLoad, settoLoad] = useState(true);
+  const [error, setError] = useState("");
+  const [isAllowsDetlDialogOpen, setIsAllowsDetlDialogOpen] = useState(false);
+  const title = `Site Allowances`;
+  const {
+    dailyallowances,
+    loadEmpDailyAllowances,
+    dailyallowances_loading,
+    dailyallowances_error,
+    updateDailyAllowance,
+  } = useDailyAllowancesContext();
+
+  // useEffect(() => {
+  //   loadEmpDailyAllowances(loginLevel.loginUserId);
+  // }, [toLoad]);
+
+  const myCustomSortingAlgorithm = {
+  ascending: (a, b) => a.period.length - b.period.length,
+  descending: (a, b) => b.period.length - a.period.length,
+  };
+  
 const columns = [
   {
     title: "Name",
     field: "name",
     editable: "never",
   },
-  { title: "Period", field: "period", editable: "never" },
+  {
+    title: "Period",
+    field: "period",
+    editable: "never",
+    customSort: myCustomSortingAlgorithm.ascending,
+  },
   { title: "Location", field: "location", editable: "never" },
   { title: "Manager Name", field: "manager_name", editable: "never" },
   {
@@ -58,32 +97,6 @@ const columns = [
   },
 ];
 
-export default function DailyAllowancesTableStaff() {
-  let history = useHistory();
-  const classes = useStyles();
-  const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
-  const [isAddPeriodDialogOpen, setIsAddPeriodDialogOpen] = useState(false);
-  const [tmpallowsdata, setTmpallowsdata] = useState([]);
-  const [allowsdata, setAllowsdata] = useRecoilState(allowsDataState);
-  const [allows_period, setAllows_period] = useRecoilState(allowsPeriodState);
-  const [allows_empid, setAllows_empid] = useRecoilState(empidState);
-  const [allowsdataId, setAllowsdataId] = useState("");
-  const [toLoad, settoLoad] = useState(true);
-  const [error, setError] = useState("");
-  const [isAllowsDetlDialogOpen, setIsAllowsDetlDialogOpen] = useState(false);
-  const title = `Site Allowances`;
-  const {
-    dailyallowances,
-    loadEmpDailyAllowances,
-    dailyallowances_loading,
-    dailyallowances_error,
-    updateDailyAllowance,
-  } = useDailyAllowancesContext();
-
-  useEffect(() => {
-    loadEmpDailyAllowances(loginLevel.loginUserId);
-  }, [toLoad]);
-
   const Save_DailyAllowancesData = () => {
     dailyallowances.forEach((data) => {
       const { id } = data;
@@ -99,6 +112,12 @@ export default function DailyAllowancesTableStaff() {
   const update_SiteAllowsDetl = (data) => {
     const { id, empid, period, no_of_days, amount } = data;
     console.log(data);
+    setAllows_period(period);
+    setAllows_empid(empid);
+    setAllowsdataId(id);
+    setAllows_period(period);
+    setAllows_empid(empid);
+    setAllowsdataId(id);
     setAllowsdata({
       ...allowsdata,
       id: id,
@@ -107,10 +126,9 @@ export default function DailyAllowancesTableStaff() {
       period: period,
       empid: empid,
     });
-    setAllows_period(period);
-    setAllows_empid(empid);
-    setAllowsdataId(id);
-    setIsAllowsDetlDialogOpen(true);
+
+    //setIsAllowsDetlDialogOpen(true);
+    history.push("/singledailyallowsdetlstable");
   };
 
   const add_SiteAllowsPeriod = () => {
@@ -138,27 +156,18 @@ export default function DailyAllowancesTableStaff() {
     loadEmpDailyAllowances(loginLevel.loginUserId);
   };
 
-  if (dailyallowances_loading) {
-    return (
-      <div>
-        <h2>Loading... site allowances</h2>
-      </div>
-    );
-  }
-  if (dailyallowances_error) {
-    return (
-      <div>
-        <h2>Internet connection problem!</h2>
-      </div>
-    );
-  }
+  
 
   return (
     <div className={classes.root}>
       <div style={{ maxWidth: "100%", paddingTop: "5px" }}>
         <MaterialTable
           columns={columns}
-          data={dailyallowances}
+          data={dailyallowances
+            .sort(myCustomSortingAlgorithm.ascending)
+            .filter(
+            (item) => item.empid === loginLevel.loginUserId
+          )}
           title={title}
           icons={{
             Add: (props) => <AddIcon />,
@@ -202,6 +211,7 @@ export default function DailyAllowancesTableStaff() {
           ]}
           options={{
             filtering: true,
+            sorting: true,
             headerStyle: {
               backgroundColor: "orange",
               color: "#FFF",
@@ -212,15 +222,7 @@ export default function DailyAllowancesTableStaff() {
             Toolbar: (props) => (
               <div>
                 <MTableToolbar {...props} />
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="secondary"
-                  className={classes.button}
-                  onClick={Refresh_SiteAllows}
-                >
-                  Refresh
-                </Button>
+
                 <div style={{ padding: "5px 10px" }}>
                   {error && (
                     <Alert severity="error" onClose={() => setError(false)}>

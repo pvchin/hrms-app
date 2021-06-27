@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {
   Button,
   Icon,
@@ -15,7 +15,7 @@ import { useEmployeesContext } from "../context/employees_context";
 import { useLeavesContext } from "../context/leaves_context";
 import { Controller, useForm } from "react-hook-form";
 
-const initial_values = {
+const initial_state = {
   name: "",
   to_date: "",
   from_date: "",
@@ -25,48 +25,42 @@ const initial_values = {
   leave_bal: 0,
 };
 
-const LeaveForm = ({ handleDialogClose }) => {
+const LeaveForm = ({ formdata, setFormdata, handleDialogClose }) => {
   const classes = useStyles();
+  const [state, setState] = useState(initial_state);
   const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
-  const {
-    isLeaveEditing,
-    single_leave,
-    updateLeave,
-    addLeave,
-    editLeaveID,
-    single_leave_loading,
-    single_leave_error,
-  } = useLeavesContext();
-  const { employees } = useEmployeesContext();
-  const { name, to_date, from_date, reason, status, no_of_days, leave_bal } =
-    single_leave || initial_values;
   const { handleSubmit, control } = useForm();
+  const initialValues = Object.values(initial_state).join("");
+  const { leaves, isLeaveEditing, editLeaveID, updateLeave, addLeave } =
+    useLeavesContext();
 
   const onSubmit = (data) => {
     if (isLeaveEditing) {
+     
       updateLeave({ id: editLeaveID, ...data });
+      // update leaves
+      const editleavedata = leaves.filter((r) => r.id === editLeaveID);
+      editleavedata[0].from_date = data.from_date;
+      editleavedata[0].to_date = data.to_date;
+      editleavedata[0].from_no_of_days = data.no_of_days;
+      editleavedata[0].reason = data.reason;
     } else {
+     
       addLeave({ ...data, empid: loginLevel.loginUserId });
+      leaves.push({ ...data, empid: loginLevel.loginUserId })
+      
     }
-    // loadLeaves();
+
     //history.push("/leave");
     handleDialogClose();
   };
 
-  if (single_leave_loading) {
-    return (
-      <div>
-        <h2>Loading...Leaves</h2>
-      </div>
-    );
-  }
-  if (single_leave_error) {
-    return (
-      <div>
-        <h2>Internet connection error!</h2>
-      </div>
-    );
-  }
+  // useEffect(() => {
+  //   setState(initial_state);
+  //   setState({ ...formdata });
+  //   setState({ ...formdata });
+  //   console.log("laeve form",state)
+  // }, [initialValues]);
 
   return (
     <div>
@@ -122,7 +116,7 @@ const LeaveForm = ({ handleDialogClose }) => {
             <Controller
               name="from_date"
               control={control}
-              defaultValue={from_date}
+              defaultValue={formdata.from_date}
               render={({
                 field: { onChange, value },
                 fieldState: { error },
@@ -133,7 +127,7 @@ const LeaveForm = ({ handleDialogClose }) => {
                     type="date"
                     id="margin-normal"
                     name="from_date"
-                    defaultValue={from_date}
+                    defaultValue={formdata.from_date}
                     className={classes.textField}
                     onChange={onChange}
                     error={!!error}
@@ -151,7 +145,7 @@ const LeaveForm = ({ handleDialogClose }) => {
             <Controller
               name="to_date"
               control={control}
-              defaultValue={to_date}
+              defaultValue={formdata.to_date}
               render={({
                 field: { onChange, value },
                 fieldState: { error },
@@ -162,7 +156,7 @@ const LeaveForm = ({ handleDialogClose }) => {
                     id="margin-normal"
                     type="date"
                     name="to_date"
-                    defaultValue={to_date}
+                    defaultValue={formdata.to_date}
                     className={classes.textField}
                     onChange={onChange}
                     error={!!error}
@@ -213,7 +207,7 @@ const LeaveForm = ({ handleDialogClose }) => {
             <Controller
               name="no_of_days"
               control={control}
-              defaultValue={no_of_days}
+              defaultValue={formdata.no_of_days}
               render={({
                 field: { onChange, value },
                 fieldState: { error },
@@ -224,7 +218,7 @@ const LeaveForm = ({ handleDialogClose }) => {
                     type="number"
                     id="standard-number"
                     name="no_of_days"
-                    defaultValue={no_of_days}
+                    defaultValue={formdata.no_of_days}
                     className={classes.textField}
                     //onChange={onChange}
                     onChange={(e) => {
@@ -242,7 +236,7 @@ const LeaveForm = ({ handleDialogClose }) => {
             <Controller
               name="reason"
               control={control}
-              defaultValue={reason}
+              defaultValue={formdata.reason}
               render={({
                 field: { onChange, value },
                 fieldState: { error },
@@ -252,7 +246,7 @@ const LeaveForm = ({ handleDialogClose }) => {
                     label="Reason"
                     id="margin-normal"
                     name="reason"
-                    defaultValue={reason}
+                    defaultValue={formdata.reason}
                     className={classes.textField}
                     onChange={onChange}
                     error={!!error}
@@ -267,7 +261,7 @@ const LeaveForm = ({ handleDialogClose }) => {
             <Controller
               name="status"
               control={control}
-              defaultValue="Pending"
+              defaultValue={formdata.status}
               render={({
                 field: { onChange, value },
                 fieldState: { error },
@@ -277,7 +271,7 @@ const LeaveForm = ({ handleDialogClose }) => {
                     label="Status"
                     id="margin-normal"
                     name="status"
-                    defaultValue="Pending"
+                    defaultValue={formdata.status}
                     className={classes.textField}
                     onChange={onChange}
                     error={!!error}

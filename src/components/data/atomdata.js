@@ -39,6 +39,11 @@ export const allowsDataState = atom({
   default: [],
 });
 
+export const allowsDataIdState = atom({
+  key: "allowsDataIdState",
+  default: [],
+});
+
 export const allowsDataDetlsState = atom({
   key: "allowsDataDetlsState",
   default: [],

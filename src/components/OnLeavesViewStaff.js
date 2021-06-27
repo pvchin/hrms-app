@@ -10,6 +10,7 @@ import { selector, useRecoilState } from "recoil";
 import { loginLevelState } from "./data/atomdata";
 import { leaves_url } from "../utils/constants";
 import { fetchDepartmentsSelector } from "./data/selectordata";
+import { useLeavesContext } from "../context/leaves_context";
 
 const drawerWidth = 240;
 
@@ -78,23 +79,40 @@ const OnLeavesViewStaff = () => {
   const [userdata, setUserdata] = useState([]);
   const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
 
+  const {
+    leaves,
+    editLeaveID,
+    leaves_loading,
+    deleteLeave,
+    loadLeaves,
+    getSingleLeave,
+    setEditLeaveID,
+    setIsLeaveEditingOn,
+    setIsLeaveEditingOff,
+    resetSingleLeave,
+    getSingleBatchLeave,
+    loadEmpLeaves,
+    singlebatch_leave_loading,
+    singlebatch_leave_error,
+    singlebatch_leave,
+  } = useLeavesContext();
+
+  useEffect(() => {
+    loadEmpLeaves(loginLevel.loginUserId);
+  }, []);
+
   //const [userdata, setUserdata] = useRecoilState(userdatastate);
   //const onLeavesDetails = useRecoilValueLoadable(fetchOnLeavesDetails);
-  const { data, error, isLoading } = useAsync({ promiseFn: loadUsers });
-  if (isLoading) return "Loading...";
-  if (error) return `Internet connections problem!`;
-  if (data) console.log("data", data);
-  return (
-    <List className={classes.roow}>
-      <Grid container direction="row">
-        {data
-          .filter((i) => i.empid === loginLevel.loginUserId)
-          .map((row) => {
+
+  if (singlebatch_leave_loading) return "Loading...";
+  if (singlebatch_leave_error) return `Internet connections problem!`;
+  if (singlebatch_leave)
+    return (
+      <List className={classes.roow}>
+        <Grid container direction="row">
+          {singlebatch_leave.map((row) => {
             return (
               <ListItem key={row.id}>
-                {/* <Grid item sm={4} align="center">
-                  <ListItemText>{row.name}</ListItemText>
-                </Grid> */}
                 <Grid item sm={4} align="center">
                   <ListItemText>{row.from_date}</ListItemText>
                 </Grid>
@@ -107,9 +125,9 @@ const OnLeavesViewStaff = () => {
               </ListItem>
             );
           })}
-      </Grid>
-    </List>
-  );
+        </Grid>
+      </List>
+    );
 };
 
 const useStyles = makeStyles((theme) => ({

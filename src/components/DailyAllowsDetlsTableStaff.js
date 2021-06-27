@@ -311,7 +311,7 @@ export default function DailyAllowsDetlsTableStaff() {
                       spacing={0}
                       direction="row"
                       alignItems="left"
-                      justify="left"
+                      //justify="left"
                       style={{ border: "1px solid white" }}
                     >
                       <div style={{ display: "flex", flexDirection: "row" }}>

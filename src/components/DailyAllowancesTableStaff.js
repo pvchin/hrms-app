@@ -40,6 +40,7 @@ export default function DailyAllowancesTableStaff() {
   const {
     dailyallowances,
     loadEmpDailyAllowances,
+    loadEmpDailyAllowsDetls,
     dailyallowances_loading,
     dailyallowances_error,
     updateDailyAllowance,
@@ -110,7 +111,7 @@ export default function DailyAllowancesTableStaff() {
   const update_SiteAllowsDetl = (data) => {
     const { id, empid, period, no_of_days, amount } = data;
 
-    getSingleBatchDailyAllowsDetl(empid, period);
+    loadEmpDailyAllowsDetls(empid, period);
     setAllows_period(period);
     setAllows_empid(empid);
     setAllowsdataId(id);

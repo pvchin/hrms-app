@@ -303,6 +303,23 @@ export const DailyAllowancesProvider = ({ children }) => {
     }
   };
 
+  const loadEmpDailyAllowsDetls = async (empid, period) => {
+    dispatch({ type: GET_DAILYALLOWSDETLS_BEGIN });
+    try {
+      const { data } = await axios.get(
+        `${dailyallowsdetls_url}?fv=${empid}&period=${period}`
+      );
+      const dailyallowsdetls = data;
+
+      dispatch({
+        type: GET_DAILYALLOWSDETLS_SUCCESS,
+        payload: dailyallowsdetls,
+      });
+    } catch (error) {
+      dispatch({ type: GET_DAILYALLOWSDETLS_ERROR });
+    }
+  };
+
   const setDailyAllowsDetlPeriod = async (name) => {
     try {
       dispatch({ type: SET_DAILYALLOWSDETL_PERIOD, payload: name });
@@ -414,6 +431,7 @@ export const DailyAllowancesProvider = ({ children }) => {
         resetSingleDailyAllowance,
 
         loadDailyAllowsDetls,
+        loadEmpDailyAllowsDetls,
         addDailyAllowsDetl,
         updateDailyAllowsDetl,
         deleteDailyAllowsDetl,

@@ -90,6 +90,7 @@ export default function DailyAllowsDetlsTableStaff() {
   });
   const [alert, setAlert] = useState(false);
   const {
+    dailyallowsdetls,
     updateDailyAllowance,
     updateDailyAllowsDetl,
     deleteDailyAllowsDetl,
@@ -216,7 +217,7 @@ export default function DailyAllowsDetlsTableStaff() {
         <h2>Allows Detils Table</h2>
         <MaterialTable
           columns={columns}
-          data={singlebatch_dailyallowsdetl}
+          data={dailyallowsdetls}
           title="Daily Allowances Details"
           editable={{
             onRowAdd: (newData) =>

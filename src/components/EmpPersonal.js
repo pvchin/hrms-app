@@ -13,6 +13,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import MenuItem from "@material-ui/core/MenuItem";
 import { useEmployeesContext } from "../context/employees_context";
 import { Controller, useForm } from "react-hook-form";
+import { useRecoilState } from "recoil";
+import { loginLevelState } from "./data/atomdata";
 
 const initial_values = {
   name: "",
@@ -34,12 +36,13 @@ const initial_values = {
   workpermitno: "",
   workpermit_expirydate: null,
   nationality: "",
-  marital_status:"",
+  marital_status: "",
   siteallows_fee: 0,
   perdiem_fee: 0,
+  reporting_to: "",
 };
 
-const Emp_Personal = () => {
+const Emp_Personal = ({ handleDialogClose }) => {
   const classes = useStyles();
   const {
     isEditing,
@@ -48,6 +51,7 @@ const Emp_Personal = () => {
     addEmployee,
     editEmployeeID,
     single_employee_loading,
+    getSingleEmployee,
   } = useEmployeesContext();
   const {
     name,
@@ -73,15 +77,27 @@ const Emp_Personal = () => {
     marital_status,
     siteallows_fee,
     perdiem_fee,
+    reporting_to,
   } = single_employee || initial_values;
   const { handleSubmit, control } = useForm();
-
+  const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
+  
   const onSubmit = (data) => {
     if (isEditing) {
       updateEmployee({ id: editEmployeeID, ...data });
     } else {
       addEmployee({ ...data });
     }
+    setLoginLevel({
+      ...loginLevel,
+      loginEmail: data.email,
+      leave_bal: data.leave_bal,
+      siteallows_fee: data.siteallows_fee,
+      perdiem_fee: data.perdiem_fee,
+      reporting_to: data.reporting_to,
+    });
+    getSingleEmployee(loginLevel.loginUserId);
+    handleDialogClose();
     //loadEmployees();
     // <Alert severity="success">
     //   <AlertTitle>Success</AlertTitle>
@@ -140,8 +156,7 @@ const Emp_Personal = () => {
                   }}
                   rules={{ required: "Name required" }}
                 />
-              </div>
-              <div>
+
                 <Controller
                   name="email"
                   control={control}
@@ -713,6 +728,31 @@ const Emp_Personal = () => {
                         id="margin-normal"
                         name="department"
                         defaultValue={department}
+                        className={classes.textField}
+                        onChange={onChange}
+                        error={!!error}
+                        helperText={error ? error.message : null}
+                      />
+                    );
+                  }}
+                  //rules={{ required: "Email is required" }}
+                />
+              </div>
+              <div>
+                <Controller
+                  name="reporting_to"
+                  control={control}
+                  defaultValue={reporting_to}
+                  render={({
+                    field: { onChange, value },
+                    fieldState: { error },
+                  }) => {
+                    return (
+                      <TextField
+                        label="Reporting To"
+                        id="margin-normal"
+                        name="reporting_to"
+                        defaultValue={reporting_to}
                         className={classes.textField}
                         onChange={onChange}
                         error={!!error}

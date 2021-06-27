@@ -11,6 +11,7 @@ export const loginLevelState = atom({
     leave_bal: 0,
     siteallows_fee: 0,
     perdiem_fee: 0,
+    reporting_to: "",
   },
 });
 
@@ -47,7 +48,6 @@ export const allowsDataIdState = atom({
 export const allowsDataDetlsState = atom({
   key: "allowsDataDetlsState",
   default: [],
-  dangerouslyAllowMutability: true,
 });
 
 export const allowsPeriodState = atom({
@@ -138,5 +138,6 @@ export const siteallowsState = atom({
     amount: 0,
     empid: "",
     name: "",
+    isdelete: false,
   },
 });

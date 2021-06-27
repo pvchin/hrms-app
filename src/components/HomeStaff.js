@@ -49,6 +49,8 @@ const EmployeeView = () => {
   const { payslips, loadPendingPayslips } = usePayslipsContext();
   const { dailyallowances, loadPendingDailyAllowances } =
     useDailyAllowancesContext();
+ 
+  
   const handleLeaveDialogOpen = () => {
     setLeavesdata([]);
     setLeavesdata([...leaves]);

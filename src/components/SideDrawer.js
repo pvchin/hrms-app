@@ -32,7 +32,7 @@ const SideDrawer = ({ HandleDrawerOpen, handleDrawerClose, open }) => {
   const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
 
   const SwitchCase = () => {
-    console.log(loginLevel);
+  
     switch (loginLevel.loginLevel) {
       case "Staff":
         return <MenuListItemsStaff />;

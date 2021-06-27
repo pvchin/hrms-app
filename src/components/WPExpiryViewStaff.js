@@ -59,7 +59,7 @@ const WPExpiryViewStaff = () => {
   const wpExpiryDetails = useRecoilValueLoadable(fetchWPExpiryDetails);
   const { state, contents } = wpExpiryDetails;
 
-  console.log(wpExpiryDetails);
+  
   if (wpExpiryDetails.state === "hasError") {
     return (
       <div>

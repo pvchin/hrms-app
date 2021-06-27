@@ -41,6 +41,7 @@ const initial_values = {
   workpermit_expirydate: null,
   siteallows_fee: 0,
   perdiem_fee: 0,
+  reporting_to: "",
 };
 
 const EmployeeForm = () => {
@@ -76,6 +77,7 @@ const EmployeeForm = () => {
     workpermit_expirydate,
     siteallows_fee,
     perdiem_fee,
+    reporting_to,
   } = single_employee || initial_values;
   const { handleSubmit, control } = useForm();
 
@@ -143,8 +145,7 @@ const EmployeeForm = () => {
                   }}
                   rules={{ required: "Name required" }}
                 />
-              </div>
-              <div>
+            
                 <Controller
                   name="email"
                   control={control}

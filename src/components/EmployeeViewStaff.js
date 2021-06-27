@@ -55,6 +55,7 @@ const EmployeeViewStaff = () => {
     single_employee,
     single_employee_loading,
     setEditEmployeeID,
+    setIsEditingOn,
   } = useEmployeesContext();
   const { singlebatch_training } = useTrainingsContext();
   const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
@@ -80,6 +81,7 @@ const EmployeeViewStaff = () => {
   
   const handlePersonalDialogOpen = () => {
     //setFamilydata([...singlebatchfamily]);
+    setIsEditingOn();
     setIsPersonalDialogOpen(true);
   };
 
@@ -196,6 +198,14 @@ if (single_employee_loading) {
                     label="Leave Balance"
                     name="leave_bal"
                     value={single_employee.leave_bal}
+                    InputProps={{
+                      readOnly: true,
+                    }}
+                  />
+                  <TextField
+                    label="Reporting To"
+                    name="reporting_to"
+                    value={single_employee.reporting_to}
                     InputProps={{
                       readOnly: true,
                     }}

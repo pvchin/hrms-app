@@ -38,35 +38,8 @@ const SingleEmployeeStaff = ({ title }) => {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
   const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
-  const {
-    singleemployee,
-    editEmployeeID,
-    single_employee_loading,
-    single_employee_error,
-    getSingleEmployee,
-    deleteEmployee,
-    loadEmployees,
-    setEditEmployeeID,
-    setIsEditingOn,
-    setIsEditingOff,
-    resetSingleEmployee,
-    resetEmployees,
-  } = useEmployeesContext();
-  const {
-    singlebatchfamily,
-    loadSingleBatchFamily,
-    singlebatch_family_loading,
-    singlebatch_family_error,
-    singlebatchexperience,
-    loadSingleBatchExperience,
-    singlebatch_experience_loading,
-    singlebatch_experience_error,
-    singlebatcheducation,
-    loadSingleBatchEducation,
-    singlebatch_education_loading,
-    singlebatch_education_error,
-  } = useTablesContext();
-
+  
+  
   // useEffect(() => {
   //   getSingleEmployee(loginLevel.loginUserId);
   //   loadSingleBatchFamily(loginLevel.loginUserId);

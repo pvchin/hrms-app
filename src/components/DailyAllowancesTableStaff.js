@@ -30,6 +30,8 @@ export default function DailyAllowancesTableStaff() {
   const [isAddPeriodDialogOpen, setIsAddPeriodDialogOpen] = useState(false);
   const [tmpallowsdata, setTmpallowsdata] = useState([]);
   const [allowsdata, setAllowsdata] = useRecoilState(allowsDataState);
+  const [allowsDetlsdata, setAllowsDetlsdata] =
+    useRecoilState(allowsDataDetlsState);
   const [allows_period, setAllows_period] = useRecoilState(allowsPeriodState);
   const [allows_empid, setAllows_empid] = useRecoilState(empidState);
   const [allowsdataId, setAllowsdataId] = useState(allowsDataIdState);
@@ -39,6 +41,7 @@ export default function DailyAllowancesTableStaff() {
   const title = `Site Allowances`;
   const {
     dailyallowances,
+    dailyallowsdetls,
     loadEmpDailyAllowances,
     loadEmpDailyAllowsDetls,
     dailyallowances_loading,
@@ -68,7 +71,7 @@ export default function DailyAllowancesTableStaff() {
       editable: "never",
     },
     { title: "Location", field: "location", editable: "never" },
-    { title: "Manager Name", field: "manager_name", editable: "never" },
+    { title: "Manager Name", field: "manager", editable: "never" },
     {
       title: "No Of Days",
       field: "no_of_days",
@@ -112,6 +115,7 @@ export default function DailyAllowancesTableStaff() {
     const { id, empid, period, no_of_days, amount } = data;
 
     loadEmpDailyAllowsDetls(empid, period);
+   
     setAllows_period(period);
     setAllows_empid(empid);
     setAllowsdataId(id);

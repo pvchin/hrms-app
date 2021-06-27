@@ -53,6 +53,8 @@ const DailyAllowancesAddPeriod = ({ handleDialogClose }) => {
       name: loginLevel.loginUser,
       jobbonus: loginLevel.siteallows_fee,
       perdiem: loginLevel.perdiem_fee,
+      manager: loginLevel.reporting_to,
+      clieng: "",
     });
   }, []);
 
@@ -73,23 +75,19 @@ const DailyAllowancesAddPeriod = ({ handleDialogClose }) => {
     }
 
     // build siteallowsbatch
-    addDailyAllowance({
-      period: period,
-      location: input.location,
-      manager: input.manager,
-      name: loginLevel.loginUser,
-      empid: loginLevel.loginUserId,
-      status: "Pending",
-    });
+
     const diffInDays = differenceInDays(
       new Date(input.todate),
       new Date(input.fromdate)
     );
 
+    let amount = 0;
     for (let i = 0; i <= diffInDays; i++) {
+      amount = amount + input.jobbonus + input.perdiem;
       const data = addDays(new Date(input.fromdate), i);
       addDailyAllowsDetl({
         empid: loginLevel.loginUserId,
+        name: loginLevel.loginUser,
         period: period,
         date: data,
         district: input.district,
@@ -103,7 +101,28 @@ const DailyAllowancesAddPeriod = ({ handleDialogClose }) => {
         status: "Pending",
       });
     }
+    //add daily allowances batch
+    addDailyAllowance({
+      period: period,
+      location: input.location,
+      manager: input.manager,
+      name: loginLevel.loginUser,
+      empid: loginLevel.loginUserId,
+      status: "Pending",
+      no_of_days: diffInDays,
+      amount: amount,
+    });
 
+    dailyallowances.push({
+      period: period,
+      location: input.location,
+      manager: input.manager,
+      name: loginLevel.loginUser,
+      empid: loginLevel.loginUserId,
+      status: "Pending",
+      no_of_days: diffInDays,
+      amount: amount,
+    });
     handleDialogClose();
   };
 
@@ -149,7 +168,6 @@ const DailyAllowancesAddPeriod = ({ handleDialogClose }) => {
               item
               sm={12}
               style={{ border: "1px solid white" }}
-              direction="column"
               align="left"
             >
               {/* <div style={{ display: "flex", flexDirection: "row" }}>

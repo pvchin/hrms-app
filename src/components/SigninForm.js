@@ -21,7 +21,13 @@ const SigninForm = () => {
   const [alert, setAlert] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
-  const { employees, loadEmployees, setEditEmployeeID,employees_loading, employees_error } = useEmployeesContext();
+  const {
+    employees,
+    loadEmployees,
+    setEditEmployeeID,
+    employees_loading,
+    employees_error,
+  } = useEmployeesContext();
 
   useEffect(() => {
     loadEmployees();
@@ -30,16 +36,16 @@ const SigninForm = () => {
   if (employees_loading) {
     <div>
       <h2>Loading...</h2>
-    </div>
+    </div>;
   }
-   if (employees_error) {
-     <div>
-       <h2>Internet connection problem!</h2>
-     </div>;
-   }
+  if (employees_error) {
+    <div>
+      <h2>Internet connection problem!</h2>
+    </div>;
+  }
   const handleSubmit = (e) => {
     e.preventDefault();
-    
+
     const emp = employees
       .filter((item) => item.email === email)
       .map((row) => {
@@ -51,6 +57,7 @@ const SigninForm = () => {
           leave_bal: row.leave_bal,
           siteallows_fee: row.siteallows_fee,
           perdiem_fee: row.perdiem_fee,
+          reporting_to: row.reporting_to,
         };
       });
 
@@ -65,6 +72,7 @@ const SigninForm = () => {
         leave_bal: emp[0].leave_bal,
         siteallows_fee: emp[0].siteallows_fee,
         perdiem_fee: emp[0].perdiem_fee,
+        reporting_to: emp[0].reporting_to,
       });
       setEditEmployeeID(emp[0].id);
       setPassword("");

@@ -1,8 +1,8 @@
 const formattedReturn = require("./formattedReturn");
-const getDailyAllowsDetls = require("./dailyallowsdetlsTable/getDailyAllowsDetls");
-const createDailyAllowsDetl = require("./dailyallowsdetlsTable/createDailyAllowsDetl");
-const deleteDailyAllowsDetl = require("./dailyallowsdetlsTable/deleteDailyAllowsDetl");
-const updateDailyAllowsDetl = require("./dailyallowsdetlsTable/updateDailyAllowsDetl");
+const getDailyAllowsDetls = require("./dailyallowancesTable/getDailyAllowsDetls");
+const createDailyAllowsDetl = require("./dailyallowancesTable/createDailyAllowsDetl");
+const deleteDailyAllowsDetl = require("./dailyallowancesTable/deleteDailyAllowsDetl");
+const updateDailyAllowsDetl = require("./dailyallowancesTable/updateDailyAllowsDetl");
 exports.handler = async (event) => {
   if (event.httpMethod === "GET") {
     return await getDailyAllowsDetls(event);

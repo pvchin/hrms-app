@@ -21,7 +21,7 @@ import PayslipTableAdmin from "./PayslipTableAdmin";
 import DailyAllowancesTableView from "./DailyAllowancesTableView";
 import DailyAllowancesTableAdmin from "./DailyAllowancesTableAdmin";
 import OnLeavesView from "./OnLeavesView";
-import WPExpiryView from "./WPExpiryView"
+import WPExpiryView from "./WPExpiryView";
 
 const drawerWidth = 240;
 
@@ -41,10 +41,11 @@ const EmployeeView = () => {
   const [isDailyAllowancesDialogOpen, setIsDailyAllowancesDialogOpen] =
     useState(false);
 
-  const { leaves, loadPendingLeaves } = useLeavesContext();
+  const { leaves, loadPendingLeaves, loadUnpaidExpenses, loadAppExpenses } =
+    useLeavesContext();
   const { expenses, loadPendingExpenses } = useExpensesContext();
-  const { payslips, loadPendingPayslips } = usePayslipsContext();
-  const { dailyallowances, loadPendingDailyAllowances } =
+  const { payslips, payrun, getPayrun } = usePayslipsContext();
+  const { dailyallowances, loadPendingDailyAllowances, loadUnpaidDailyAllows } =
     useDailyAllowancesContext();
   const handleLeaveDialogOpen = () => {
     setLeavesdata([]);
@@ -76,7 +77,7 @@ const EmployeeView = () => {
 
   const handlePayslipDialogClose = () => {
     setIsPayslipDialogOpen(false);
-    loadPendingPayslips(FILTERSTRING);
+    getPayrun();
   };
 
   const handleDailyAllowancesDialogOpen = () => {
@@ -90,6 +91,10 @@ const EmployeeView = () => {
     loadPendingDailyAllowances(FILTERSTRING);
   };
 
+  useEffect(() => {
+    loadUnpaidDailyAllows();
+  }, []);
+  
   return (
     <div>
       <div className={classes.appBarSpacer} />
@@ -109,7 +114,7 @@ const EmployeeView = () => {
             </CardLayout3> */}
           </Grid>
           {/* Recent Deposits */}
-          
+
           <Grid item xs={6} md={8} lg={6}>
             <CardLayout3
               title="Payroll pending for approval"
@@ -185,7 +190,7 @@ const EmployeeView = () => {
         >
           <PayslipTableAdmin
             setPayslipsdata={setPayslipsdata}
-            payslipsdata={payslipsdata}
+            payslipsdata={payrun}
             handleDialogClose={handlePayslipDialogClose}
           />
         </CustomDialog>

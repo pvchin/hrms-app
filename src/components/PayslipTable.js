@@ -12,6 +12,10 @@ import { useHistory, Link } from "react-router-dom";
 import { useSetRecoilState, useRecoilState } from "recoil";
 import { payrunState, payrunIdState } from "./data/atomdata";
 import { usePayslipsContext } from "../context/payslips_context";
+import { useDailyAllowancesContext } from "../context/dailyallowances_context";
+import { AlertDialog } from "../helpers/AlertDialog";
+
+const FILTERSTRING = "Pending";
 
 const columns = [
   { title: "Period", field: "period" },
@@ -39,7 +43,15 @@ export default function PayslipTable() {
   const classes = useStyles();
   const [input, setInput] = useRecoilState(payrunState);
   const [isLoadInput, setIsLoadInput] = useState(false);
+  const [isAlertOpen, setIsAlertOpen] = useState(false);
+  const [deletestate, setDeletestate] = useState({ id: "", payrun: "" });
   const [payrunId, setPayrunId] = useRecoilState(payrunIdState);
+  const {
+    loadPendingDailyAllowsDetls,
+    pending_dailyallowsdetl,
+    deleteDailyAllowsDetl,
+    deleteDailyAllowance,
+  } = useDailyAllowancesContext();
   const {
     payrun,
     getPayrun,
@@ -50,10 +62,15 @@ export default function PayslipTable() {
     setIsPayslipEditingOn,
     single_payslip,
     setPayslipPeriod,
+    deletePayrun,
+    deletePayslip,
+    pending_payslips,
+    loadPendingPayslips,
   } = usePayslipsContext();
 
   useEffect(() => {
     getPayrun();
+    loadPendingPayslips(FILTERSTRING);
   }, []);
 
   useEffect(() => {
@@ -61,6 +78,14 @@ export default function PayslipTable() {
       console.log("single_payslip", single_payslip);
     }
   }, [single_payslip]);
+
+  const handleAlertOpen = () => {
+    setIsAlertOpen(true);
+  };
+
+  const handleAlertClose = () => {
+    setIsAlertOpen(false);
+  };
 
   const update_Input = async (data) => {
     console.log("input", data);
@@ -92,12 +117,30 @@ export default function PayslipTable() {
     setEditPayslipID(id);
     setIsPayslipEditingOn();
     getSinglePayslip(id);
-    
+
     history.push("/payrunbatch");
-    
   };
 
-  
+  const delete_Payslip = (data) => {
+    const { id, payrun } = data;
+    setDeletestate({ id: id, payrun:payrun });
+    handleAlertOpen()
+  }
+
+  const handleOnDeleteConfirm = (data) => {
+    console.log("payslip delete", deletestate);
+    const { id, payrun } = deletestate;
+
+    //delete allows detls
+    pending_payslips.forEach((rec) => {
+      if (rec.payrun === payrun) {
+        deletePayslip(rec.id);
+      }
+    });
+    //delete allows batch
+    deletePayrun(id);
+    getPayrun();
+  };
 
   if (payrun_loading) {
     return (
@@ -139,13 +182,14 @@ export default function PayslipTable() {
                 update_Payslip(rowData);
               },
             },
-            // {
-            //   icon: "delete",
-            //   tooltip: "Delete Record",
-            //   onClick: (event, rowData) => {
-            //     delete_Payslip(rowData);
-            //   },
-            // },
+            {
+              icon: "delete",
+              tooltip: "Delete Record",
+              onClick: (event, rowData) => {
+                //delete_Payslip(rowData);
+                delete_Payslip(rowData);
+              },
+            },
             // {
             //   icon: "add",
             //   tooltip: "Add Record",
@@ -182,6 +226,14 @@ export default function PayslipTable() {
             ),
           }}
         />
+        <AlertDialog
+          handleClose={handleAlertClose}
+          onConfirm={handleOnDeleteConfirm}
+          isOpen={isAlertOpen}
+          title="Delete Expenses"
+        >
+          <h2>Are you sure you want to delete ?</h2>
+        </AlertDialog>
       </div>
     </div>
   );

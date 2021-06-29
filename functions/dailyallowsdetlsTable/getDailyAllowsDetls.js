@@ -2,7 +2,7 @@ const { table } = require("./airtable-dailyallowsdetls");
 const formattedReturn = require("../formattedReturn");
 
 module.exports = async (event) => {
-  const { id, fv, period } = event.queryStringParameters;
+  const { id, fi, fv, period } = event.queryStringParameters;
   // const { id, filterValue, filterField } = event.queryStringParameters;
   // console.log(filterValue, filterField);
 
@@ -18,6 +18,23 @@ module.exports = async (event) => {
         body: `No Daily Allowances Details with id: ${id}`,
       };
     }
+
+    return formattedReturn(200, formattedDailyAllowsDetls);
+  }
+
+  if (fi) {
+    const dailyallowsdetls = await table
+      .select({
+        view: "sortedview",
+        // filterByFormula: 'AND(period="2021-02")',
+        // filterByFormula: 'AND(empid="rec1rEYb2ZrHRgiTE",period="2021-02")',
+        filterByFormula: `period = '${fi}'`,
+      })
+      .firstPage();
+    const formattedDailyAllowsDetls = dailyallowsdetls.map((e) => ({
+      id: e.id,
+      ...e.fields,
+    }));
 
     return formattedReturn(200, formattedDailyAllowsDetls);
   }

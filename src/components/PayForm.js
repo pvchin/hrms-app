@@ -91,11 +91,8 @@ const PayForm = ({
   }, [loadFormdata]);
 
   // useEffect(() => {
-  //   if (formdata) {
-  //     handleCalc()
-  //     setIsCalc(false)
-  //   }
-  // },[isCalc])
+  //   handleCalc()
+  // },[state])
 
   const Update_Empdata = ({ name, value }) => {
     let data = singlebatchpayslip[rowindex];

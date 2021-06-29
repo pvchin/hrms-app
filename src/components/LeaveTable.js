@@ -34,7 +34,7 @@ const columns = [
     editable: "never",
   },
   { title: "Leave Balance", field: "leave_bal", type:"numeric",editable: "never" },
-  { title: "No of Days", field: "no_of_days", type: "mumeric",editable: "never" },
+  { title: "No of Days", field: "no_of_days", type: "numeric",editable: "never" },
   {
     title: "Reason",
     field: "reason",

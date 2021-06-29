@@ -55,7 +55,7 @@ const columns = [
   {
     title: "No of Days",
     field: "no_of_days",
-    type: "mumeric",
+    type: "numeric",
     editable: "never",
   },
   {

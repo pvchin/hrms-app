@@ -285,7 +285,7 @@ export default function ExpenseTable() {
           handleClose={handleDialogClose}
           title=""
           showButton={true}
-          isFullscree={false}
+          isFullscreen={false}
           isFullwidth={false}
         >
           <ExpenseForm

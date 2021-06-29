@@ -129,7 +129,7 @@ const SigninForm = () => {
         onChange={(e) => setPassword(e.target.value)}
       />
       <div style={{ textAlign: "center" }}>
-        <ButtonGroup>
+        {/* <ButtonGroup> */}
           <Button
             type="submit"
             variant="contained"
@@ -166,7 +166,7 @@ const SigninForm = () => {
           >
             Manager
           </Button>
-        </ButtonGroup>
+        {/* </ButtonGroup> */}
       </div>
       {!alert && <h3>Login Fail!</h3>}
     </form>

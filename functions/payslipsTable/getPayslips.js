@@ -20,7 +20,7 @@ module.exports = async (event) => {
   }
   if (fv) {
     const payslips = await table
-      .select({ filterByFormula: `payrun = '${fv}'` })
+      .select({ view: "sortedpayrunview", filterByFormula: `payrun = '${fv}'` })
       .firstPage();
     const formattedPayslips = payslips.map((payslip) => ({
       id: payslip.id,
@@ -32,7 +32,7 @@ module.exports = async (event) => {
 
   if (em) {
     const payslips = await table
-      .select({ filterByFormula: `empid = '${em}'` })
+      .select({  view: "sortedpayrunview",  filterByFormula: `empid = '${em}'` })
       .firstPage();
     const formattedPayslips = payslips.map((payslip) => ({
       id: payslip.id,
@@ -44,7 +44,7 @@ module.exports = async (event) => {
 
   if (fi) {
     const payslips = await table
-      .select({ filterByFormula: `status = '${fi}'` })
+      .select({  view: "sortedpayrunview", filterByFormula: `status = '${fi}'` })
       .firstPage();
     const formattedPayslips = payslips.map((payslip) => ({
       id: payslip.id,

@@ -35,6 +35,9 @@ import {
   GET_SINGLE_DAILYALLOWSDETL_BEGIN,
   GET_SINGLE_DAILYALLOWSDETL_SUCCESS,
   GET_SINGLE_DAILYALLOWSDETL_ERROR,
+  GET_PENDING_DAILYALLOWSDETL_BEGIN,
+  GET_PENDING_DAILYALLOWSDETL_SUCCESS,
+  GET_PENDING_DAILYALLOWSDETL_ERROR,
   GET_SINGLEBATCH_DAILYALLOWSDETL_BEGIN,
   GET_SINGLEBATCH_DAILYALLOWSDETL_SUCCESS,
   GET_SINGLEBATCH_DAILYALLOWSDETL_ERROR,
@@ -317,6 +320,29 @@ const dailyallowances_reducer = (state, action) => {
       ...state,
       single_dailyallowsdetl_loading: false,
       single_dailyallowsdetl_error: true,
+    };
+  }
+
+  //pending daily allowances details
+  if (action.type === GET_PENDING_DAILYALLOWSDETL_BEGIN) {
+    return {
+      ...state,
+      pending_dailyallowsdetl_loading: true,
+      pending_dailyallowsdetl_error: false,
+    };
+  }
+  if (action.type === GET_PENDING_DAILYALLOWSDETL_SUCCESS) {
+    return {
+      ...state,
+      pending_dailyallowsdetl_loading: false,
+      pending_dailyallowsdetl: action.payload,
+    };
+  }
+  if (action.type === GET_PENDING_DAILYALLOWSDETL_ERROR) {
+    return {
+      ...state,
+      pending_dailyallowsdetl_loading: false,
+      pending_dailyallowsdetl_error: true,
     };
   }
 

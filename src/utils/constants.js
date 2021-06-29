@@ -7,6 +7,7 @@ export const unpaidexpenses_url = "/api/unpaidexpenses";
 export const dailyallowances_url = "/api/dailyallowances";
 export const dailyallowsdetls_url = "/api/dailyallowsdetls";
 export const unpaiddailyallows_url = "/api/unpaiddailyallows";
+export const pendingdailyallowsdetls_url = "/api/pendingdailyallowsdetls";
 export const periods_url = "/api/periods";
 export const payslips_url = "/api/payslips";
 export const payslipitems_url = "/api/payslipitems";

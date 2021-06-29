@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useReducer } from "react";
 import axios from "axios";
 import reducer from "../reducers/expenses_reducer";
 import { expenses_url } from "../utils/constants";
-import { unpaidexpenses_url} from "../utils/constants"
+import { unpaidexpenses_url } from "../utils/constants";
 
 import {
   SET_EDITEXPENSEID,
@@ -48,7 +48,7 @@ const initialState = {
   add_expense_error: false,
   unpaid_expense_loading: false,
   unpaid_expense_error: false,
-  unpaidexpenses:[],
+  unpaidexpenses: [],
   // filterValue: "Female",
   // filterfield: "gender",
 };
@@ -104,10 +104,23 @@ export const ExpensesProvider = ({ children }) => {
   const loadUnpaidExpenses = async () => {
     dispatch({ type: GET_UNPAIDEXPENSES_BEGIN });
     try {
-      const { data } = await axios.get(`${unpaidexpenses_url}`);
-      const expenses = data;
+      // const { data } = await axios.get(`${unpaidexpenses_url}`);
+      // const unpaidexpenses = data;
+       const res = await fetch(unpaidexpenses_url);
+       const unpaidexpenses = await res.json();
+      dispatch({ type: GET_UNPAIDEXPENSES_SUCCESS, payload: unpaidexpenses });
+    } catch (error) {
+      dispatch({ type: GET_UNPAIDEXPENSES_ERROR });
+    }
+  };
 
-      dispatch({ type: GET_UNPAIDEXPENSES_SUCCESS, payload: expenses });
+  const loadAppExpenses = async () => {
+    dispatch({ type: GET_UNPAIDEXPENSES_BEGIN });
+    try {
+      const { data } = await axios.get(`${unpaidexpenses_url}`);
+      const unpaidexpenses = data;
+
+      dispatch({ type: GET_UNPAIDEXPENSES_SUCCESS, payload: unpaidexpenses });
     } catch (error) {
       dispatch({ type: GET_UNPAIDEXPENSES_ERROR });
     }
@@ -195,6 +208,7 @@ export const ExpensesProvider = ({ children }) => {
         loadPendingExpenses,
         loadEmpExpenses,
         loadUnpaidExpenses,
+        loadAppExpenses,
         addExpense,
         updateExpense,
         deleteExpense,

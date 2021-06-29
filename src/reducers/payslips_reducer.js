@@ -16,6 +16,9 @@ import {
   GET_SINGLE_PAYSLIP_BEGIN,
   GET_SINGLE_PAYSLIP_SUCCESS,
   GET_SINGLE_PAYSLIP_ERROR,
+  GET_PENDING_PAYSLIP_BEGIN,
+  GET_PENDING_PAYSLIP_SUCCESS,
+  GET_PENDING_PAYSLIP_ERROR,
   GET_SINGLEBATCH_PAYSLIP_BEGIN,
   GET_SINGLEBATCH_PAYSLIP_SUCCESS,
   GET_SINGLEBATCH_PAYSLIP_ERROR,
@@ -110,9 +113,9 @@ const payslips_reducer = (state, action) => {
   }
 
   if (action.type === UPDATE_PAYSLIPS_DATA) {
-    console.log("reducer", action.payload.name, action.payload.value)
+    console.log("reducer", action.payload.name, action.payload.value);
     //return { ...state, payslipsdata: { [action.payload.name]: action.payload.value } };
-    return null
+    return null;
   }
 
   if (action.type === SET_ISPAYSLIPEDITING_ON) {
@@ -133,6 +136,17 @@ const payslips_reducer = (state, action) => {
   }
   if (action.type === GET_PAYSLIPS_ERROR) {
     return { ...state, payslips_loading: false, payslips_error: true };
+  }
+
+  // get pending payslips
+  if (action.type === GET_PENDING_PAYSLIP_BEGIN) {
+    return { ...state, pending_payslips_loading: true };
+  }
+  if (action.type === GET_PENDING_PAYSLIP_SUCCESS) {
+    return { ...state, pending_payslips_loading: false, pending_payslips: action.payload };
+  }
+  if (action.type === GET_PENDING_PAYSLIP_ERROR) {
+    return { ...state, pending_payslips_loading: false, pending_payslips_error: true };
   }
 
   // add payslips

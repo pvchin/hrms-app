@@ -94,7 +94,7 @@ const ExpenseForm = ({ formdata, setFormdata, handleDialogClose }) => {
                 return (
                   <TextField
                     label="Name"
-                    id="margin-normal"
+                    id="margin-normal1"
                     name="name"
                     defaultValue={loginLevel.loginUser}
                     className={classes.textField}
@@ -123,7 +123,7 @@ const ExpenseForm = ({ formdata, setFormdata, handleDialogClose }) => {
                   <TextField
                     label="Date"
                     type="date"
-                    id="margin-normal"
+                    id="margin-normal2"
                     name="formdata.date"
                     value={value}
                     className={classes.textField}
@@ -152,7 +152,7 @@ const ExpenseForm = ({ formdata, setFormdata, handleDialogClose }) => {
                 return (
                   <TextField
                     label="Purchased From"
-                    id="margin-normal"
+                    id="margin-normal3"
                     name="purchased_from"
                     defaultValue={formdata.purchased_from}
                     className={classes.textField}
@@ -177,7 +177,7 @@ const ExpenseForm = ({ formdata, setFormdata, handleDialogClose }) => {
                 return (
                   <TextField
                     label="Description"
-                    id="margin-normal"
+                    id="margin-normal4"
                     name="description"
                     defaultValue={formdata.description}
                     className={classes.textField}
@@ -203,7 +203,7 @@ const ExpenseForm = ({ formdata, setFormdata, handleDialogClose }) => {
                   <TextField
                     label="Amount"
                     type="number"
-                    id="standard-number"
+                    id="standard-number1"
                     name="amount"
                     defaultValue={formdata.amount}
                     className={classes.textField}
@@ -231,7 +231,7 @@ const ExpenseForm = ({ formdata, setFormdata, handleDialogClose }) => {
                 return (
                   <TextField
                     label="Remark"
-                    id="margin-normal"
+                    id="margin-normal5"
                     name="remark"
                     defaultValue={remark}
                     className={classes.textField}
@@ -256,7 +256,7 @@ const ExpenseForm = ({ formdata, setFormdata, handleDialogClose }) => {
                 return (
                   <TextField
                     label="Status"
-                    id="margin-normal"
+                    id="margin-normal6"
                     name="status"
                     defaultValue="Pending"
                     className={classes.textField}

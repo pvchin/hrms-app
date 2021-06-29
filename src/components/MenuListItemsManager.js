@@ -1,10 +1,15 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import ListSubheader from "@material-ui/core/ListSubheader";
+import {
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  ListSubheader,
+  Collapse,
+} from "@material-ui/core";
+
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import FlightIcon from "@material-ui/icons/Flight";
 import PeopleIcon from "@material-ui/icons/People";
@@ -12,9 +17,8 @@ import LayersIcon from "@material-ui/icons/Layers";
 import MonetizationOnIcon from "@material-ui/icons/MonetizationOn";
 import ShoppingCartIcon from "@material-ui/icons/ShoppingCart";
 import MoneyIcon from "@material-ui/icons/Money";
-// import Collapse from "@material-ui/core/Collapse";
-// import ExpandLess from "@material-ui/icons/ExpandLess";
-// import ExpandMore from "@material-ui/icons/ExpandMore";
+import ExpandLess from "@material-ui/icons/ExpandLess";
+import ExpandMore from "@material-ui/icons/ExpandMore";
 
 const MenuListItems = () => {
   const classes = useStyles();
@@ -70,7 +74,7 @@ const MenuListItems = () => {
           />
         </ListItem>
       </Link>
-      <Link to="/payrun">
+      {/* <Link to="/payrun">
         <ListItem button>
           <ListItemIcon className={classes.itemIcon}>
             <MonetizationOnIcon />
@@ -80,20 +84,8 @@ const MenuListItems = () => {
             className={classes.categoryHeaderPrimary}
           />
         </ListItem>
-      </Link>
-      <Link to="/payslip">
-        <ListItem button>
-          <ListItemIcon className={classes.itemIcon}>
-            <MonetizationOnIcon />
-          </ListItemIcon>
-          <ListItemText
-            primary="Payroll"
-            className={classes.categoryHeaderPrimary}
-          />
-        </ListItem>
-      </Link>
-
-      {/* <ListItem button onClick={handleClickPay}>
+      </Link> */}
+      <ListItem button onClick={handleClickPay}>
         <ListItemIcon className={classes.itemIcon}>
           <LayersIcon />
         </ListItemIcon>
@@ -103,7 +95,7 @@ const MenuListItems = () => {
 
       <Collapse in={openPay} timeout="auto" unmountOnExit>
         <List component="div" disablePadding>
-          <Link to="/payroll">
+          <Link to="/payrun">
             <ListItem button className={classes.nested}>
               <ListItemIcon></ListItemIcon>
               <ListItemText primary="Payroll Run" className={classes.item} />
@@ -117,7 +109,7 @@ const MenuListItems = () => {
             </ListItem>
           </Link>
         </List>
-      </Collapse> */}
+      </Collapse>
 
       <Link to="/expenses">
         <ListItem button>
@@ -216,7 +208,7 @@ const useStyles = makeStyles((theme) => ({
   item: {
     paddingTop: 1,
     paddingBottom: 1,
-    color: "primary",
+    color: "orange",
     "&:hover,&:focus": {
       backgroundColor: "rgba(255, 255, 255, 0.08)",
     },

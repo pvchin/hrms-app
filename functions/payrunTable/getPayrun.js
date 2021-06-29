@@ -18,7 +18,7 @@ module.exports = async (event) => {
   }
 
   try {
-    const payrun = await table.select().firstPage();
+    const payrun = await table.select({ view: "sortedview" }).firstPage();
     const formattedPayrun = payrun.map((item) => ({
       id: item.id,
       ...item.fields,

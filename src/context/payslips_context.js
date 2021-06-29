@@ -49,6 +49,9 @@ import {
   GET_SINGLE_PAYSLIP_BEGIN,
   GET_SINGLE_PAYSLIP_SUCCESS,
   GET_SINGLE_PAYSLIP_ERROR,
+  GET_PENDING_PAYSLIP_BEGIN,
+  GET_PENDING_PAYSLIP_SUCCESS,
+  GET_PENDING_PAYSLIP_ERROR,
   GET_SINGLEBATCH_PAYSLIP_BEGIN,
   GET_SINGLEBATCH_PAYSLIP_SUCCESS,
   GET_SINGLEBATCH_PAYSLIP_ERROR,
@@ -127,7 +130,9 @@ const initialState = {
   payslipearnings_loading: false,
   payslipearnings_error: false,
   payslipearnings: [],
-
+  pending_payslips_loading: false,
+  pending_payslips_error: false,
+  pending_payslips: [],
   single_payslipearning_loading: false,
   single_payslipearning_error: false,
   single_payslipearning: {},
@@ -163,6 +168,7 @@ const initialState = {
   add_payslipitem_loading: false,
   add_payslipitem_error: false,
   single_payslipitem: {},
+
   payrun_loading: false,
   payrun_error: false,
   payrun: [],
@@ -198,7 +204,7 @@ export const PayslipsProvider = ({ children }) => {
   };
 
   const loadPendingPayslips = async (fi) => {
-    dispatch({ type: GET_PAYSLIPS_BEGIN });
+    dispatch({ type: GET_PENDING_PAYSLIP_BEGIN });
     try {
       // const res = await fetch(
       //   `${employees_url}?filterValue="${state.filterValue}"&filterField="${state.filterField}"`
@@ -206,10 +212,13 @@ export const PayslipsProvider = ({ children }) => {
       const res = await fetch(`${payslips_url}?fi=${fi}`);
       //const { data } = await axios.get(employees_url);
       //const employees = data;
-      const payslips = await res.json();
-      dispatch({ type: GET_PAYSLIPS_SUCCESS, payload: payslips });
+      const pending_payslips = await res.json();
+      dispatch({
+        type: GET_PENDING_PAYSLIP_SUCCESS,
+        payload: pending_payslips,
+      });
     } catch (error) {
-      dispatch({ type: GET_PAYSLIPS_ERROR });
+      dispatch({ type: GET_PENDING_PAYSLIP_ERROR });
     }
   };
 
@@ -234,7 +243,7 @@ export const PayslipsProvider = ({ children }) => {
     try {
       const res = await fetch(`${payslips_url}?fv=${payrun}`);
       const singlebatchpayslip = await res.json();
-      console.log("context",singlebatchpayslip)
+      console.log("context", singlebatchpayslip);
       dispatch({
         type: GET_SINGLEBATCH_PAYSLIP_SUCCESS,
         payload: singlebatchpayslip,

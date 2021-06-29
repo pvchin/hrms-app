@@ -5,6 +5,7 @@ import {
   dailyallowances_url,
   dailyallowsdetls_url,
   unpaiddailyallows_url,
+  pendingdailyallowsdetls_url,
 } from "../utils/constants";
 
 import {
@@ -44,6 +45,9 @@ import {
   GET_SINGLE_DAILYALLOWSDETL_BEGIN,
   GET_SINGLE_DAILYALLOWSDETL_SUCCESS,
   GET_SINGLE_DAILYALLOWSDETL_ERROR,
+  GET_PENDING_DAILYALLOWSDETL_BEGIN,
+  GET_PENDING_DAILYALLOWSDETL_SUCCESS,
+  GET_PENDING_DAILYALLOWSDETL_ERROR,
   GET_SINGLEBATCH_DAILYALLOWSDETL_BEGIN,
   GET_SINGLEBATCH_DAILYALLOWSDETL_SUCCESS,
   GET_SINGLEBATCH_DAILYALLOWSDETL_ERROR,
@@ -87,6 +91,9 @@ const initialState = {
   single_dailyallowsdetl_loading: false,
   single_dailyallowsdetl_error: false,
   single_dailyallowsdetl: {},
+  pending_dailyallowsdetl_loading: false,
+  pending_dailyallowsdetl_error: false,
+  pending_dailyallowsdetl: {},
   singlebatch_dailyallowsdetl: {},
   singlebatch_dailyallowsdetl_loading: false,
   singlebatch_dailyallowsdetl_error: false,
@@ -130,12 +137,7 @@ export const DailyAllowancesProvider = ({ children }) => {
   const loadUnpaidDailyAllows = async () => {
     dispatch({ type: GET_UNPAIDDAILYALLOWS_BEGIN });
     try {
-      // const res = await fetch(
-      //   `${employees_url}?filterValue="${state.filterValue}"&filterField="${state.filterField}"`
-      // );
       const res = await fetch(unpaiddailyallows_url);
-      //const { data } = await axios.get(employees_url);
-      //const employees = data;
       const dailyallowances = await res.json();
       dispatch({
         type: GET_UNPAIDDAILYALLOWS_SUCCESS,
@@ -320,6 +322,21 @@ export const DailyAllowancesProvider = ({ children }) => {
     }
   };
 
+  const loadPendingDailyAllowsDetls = async (empid, period) => {
+    dispatch({ type: GET_PENDING_DAILYALLOWSDETL_BEGIN });
+    try {
+      const { data } = await axios.get(`${pendingdailyallowsdetls_url}`);
+      const pending_dailyallowsdetls = data;
+
+      dispatch({
+        type: GET_PENDING_DAILYALLOWSDETL_SUCCESS,
+        payload: pending_dailyallowsdetls,
+      });
+    } catch (error) {
+      dispatch({ type: GET_PENDING_DAILYALLOWSDETL_ERROR });
+    }
+  };
+
   const setDailyAllowsDetlPeriod = async (name) => {
     try {
       dispatch({ type: SET_DAILYALLOWSDETL_PERIOD, payload: name });
@@ -432,6 +449,7 @@ export const DailyAllowancesProvider = ({ children }) => {
 
         loadDailyAllowsDetls,
         loadEmpDailyAllowsDetls,
+        loadPendingDailyAllowsDetls,
         addDailyAllowsDetl,
         updateDailyAllowsDetl,
         deleteDailyAllowsDetl,

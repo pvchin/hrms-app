@@ -54,10 +54,10 @@ const EmployeeView = () => {
     setIsLeaveDialogOpen(true);
   };
 
-  const handleLeaveDialogClose = () => {
-    setIsLeaveDialogOpen(false);
-    loadPendingLeaves(FILTERSTRING);
-  };
+  // const handleLeaveDialogClose = () => {
+  //   setIsLeaveDialogOpen(false);
+  //   loadPendingLeaves(FILTERSTRING);
+  // };
 
   const handleExpenseDialogOpen = () => {
     setExpensesdata([]);
@@ -65,10 +65,10 @@ const EmployeeView = () => {
     setIsExpenseDialogOpen(true);
   };
 
-  const handleExpenseDialogClose = () => {
-    setIsExpenseDialogOpen(false);
-    loadPendingExpenses(FILTERSTRING);
-  };
+  // const handleExpenseDialogClose = () => {
+  //   setIsExpenseDialogOpen(false);
+  //   loadPendingExpenses(FILTERSTRING);
+  // };
 
   const handlePayslipDialogOpen = () => {
     setPayslipsdata([]);
@@ -76,10 +76,10 @@ const EmployeeView = () => {
     setIsPayslipDialogOpen(true);
   };
 
-  const handlePayslipDialogClose = () => {
-    setIsPayslipDialogOpen(false);
-    getPayrun();
-  };
+  // const handlePayslipDialogClose = () => {
+  //   setIsPayslipDialogOpen(false);
+  //   getPayrun();
+  // };
 
   const handleDailyAllowancesDialogOpen = () => {
     setDailyAllowancesdata([]);
@@ -87,14 +87,14 @@ const EmployeeView = () => {
     setIsDailyAllowancesDialogOpen(true);
   };
 
-  const handleDailyAllowancesDialogClose = () => {
-    setIsDailyAllowancesDialogOpen(false);
-    loadPendingDailyAllowances(FILTERSTRING);
-  };
+  // const handleDailyAllowancesDialogClose = () => {
+  //   setIsDailyAllowancesDialogOpen(false);
+  //   loadPendingDailyAllowances(FILTERSTRING);
+  // };
 
-  useEffect(() => {
-    loadUnpaidDailyAllows();
-  }, []);
+  // useEffect(() => {
+  //   loadUnpaidDailyAllows();
+  // }, []);
 
   return (
     <div>
@@ -117,43 +117,43 @@ const EmployeeView = () => {
           {/* Recent Deposits */}
 
           <Grid item xs={6} md={8} lg={6}>
-            <CardLayout3
+            <CardLayout2
               title="Payroll pending for approval"
               handleClick={handlePayslipDialogOpen}
             >
               <PayslipTableView />
-            </CardLayout3>
+            </CardLayout2>
           </Grid>
           <Grid item xs={6} md={8} lg={6}>
-            <CardLayout3
+            <CardLayout2
               title="Site Allowances pending for approval"
               handleClick={handleDailyAllowancesDialogOpen}
             >
               <DailyAllowancesTableView />
-            </CardLayout3>
+            </CardLayout2>
           </Grid>
           <Grid item xs={6} md={8} lg={6}>
-            <CardLayout3
+            <CardLayout2
               title="Leaves pending for approval"
               handleClick={handleLeaveDialogOpen}
             >
               <LeaveTableView />
-            </CardLayout3>
+            </CardLayout2>
           </Grid>
           {/* Recent Orders */}
           <Grid item xs={6} md={8} lg={6}>
-            <CardLayout3
+            <CardLayout2
               title="Expenses pending for approval"
               handleClick={handleExpenseDialogOpen}
             >
               <ExpenseTableView />
-            </CardLayout3>
+            </CardLayout2>
           </Grid>
         </Grid>
         <Box pt={4}>
           <Copyright />
         </Box>
-        <CustomDialog
+        {/* <CustomDialog
           isOpen={isLeaveDialogOpen}
           handleClose={handleLeaveDialogClose}
           title=""
@@ -208,7 +208,7 @@ const EmployeeView = () => {
             dailyallowancesdata={dailyallowancesdata}
             handleDialogClose={handleDailyAllowancesDialogClose}
           />
-        </CustomDialog>
+        </CustomDialog> */}
       </Container>
     </div>
   );

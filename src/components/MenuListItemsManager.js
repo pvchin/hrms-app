@@ -63,7 +63,7 @@ const MenuListItems = () => {
         </ListItem>
       </Link>
 
-      <Link to="/leave">
+      {/* <Link to="/leave">
         <ListItem button>
           <ListItemIcon className={classes.itemIcon}>
             <FlightIcon />
@@ -73,7 +73,7 @@ const MenuListItems = () => {
             className={classes.categoryHeaderPrimary}
           />
         </ListItem>
-      </Link>
+      </Link> */}
       {/* <Link to="/payrun">
         <ListItem button>
           <ListItemIcon className={classes.itemIcon}>
@@ -111,7 +111,7 @@ const MenuListItems = () => {
         </List>
       </Collapse>
 
-      <Link to="/expenses">
+      {/* <Link to="/expenses">
         <ListItem button>
           <ListItemIcon className={classes.itemIcon}>
             <ShoppingCartIcon />
@@ -121,9 +121,9 @@ const MenuListItems = () => {
             className={classes.categoryHeaderPrimary}
           />
         </ListItem>
-      </Link>
+      </Link> */}
 
-      <Link to="/dailyallowances">
+      {/* <Link to="/dailyallowances">
         <ListItem button>
           <ListItemIcon className={classes.itemIcon}>
             <MoneyIcon />
@@ -133,8 +133,8 @@ const MenuListItems = () => {
             className={classes.categoryHeaderPrimary}
           />
         </ListItem>
-      </Link>
-      <Link to="/tables">
+      </Link> */}
+      {/* <Link to="/tables">
         <ListItem button>
           <ListItemIcon className={classes.itemIcon}>
             <LayersIcon />
@@ -144,7 +144,7 @@ const MenuListItems = () => {
             className={classes.categoryHeaderPrimary}
           />
         </ListItem>
-      </Link>
+      </Link> */}
 
       {/* <ListItem button onClick={handleClickTable}>
         <ListItemIcon className={classes.itemIcon}>

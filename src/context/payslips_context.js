@@ -438,7 +438,7 @@ export const PayslipsProvider = ({ children }) => {
   const getBatchPayrun = async (fi) => {
     dispatch({ type: GET_BATCHPAYRUN_BEGIN });
     try {
-      const { data } = await axios.get(`${payrun_url}?status=${fi}`);
+      const { data } = await axios.get(`${payrun_url}?fi=${fi}`);
       const payrun = data;
       dispatch({ type: GET_BATCHPAYRUN_SUCCESS, payload: payrun });
     } catch (error) {

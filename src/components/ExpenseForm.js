@@ -46,17 +46,18 @@ const ExpenseForm = ({ formdata, setFormdata, handleDialogClose }) => {
   const { handleSubmit, control } = useForm();
 
   const onSubmit = (data, e) => {
+   
     e.preventDefault();
     if (isExpenseEditing) {
-      //updateExpense({ id: editExpenseID, ...data });
+      updateExpense({ id: editExpenseID, ...data });
       const editexpensedata = expenses.filter((r) => r.id === editExpenseID);
       editexpensedata[0].date = data.date;
       editexpensedata[0].purchased_from = data.purchased_from;
       editexpensedata[0].description = data.description;
       editexpensedata[0].amount = data.amount;
-      console.log("expense form",expenses)
+      console.log("expense form", expenses);
     } else {
-      //addExpense({ empid: loginLevel.loginUserId, ...data });
+      addExpense({ empid: loginLevel.loginUserId, ...data });
       expenses.push({ ...data, empid: loginLevel.loginUserId });
     }
 
@@ -101,12 +102,11 @@ const ExpenseForm = ({ formdata, setFormdata, handleDialogClose }) => {
                     onChange={onChange}
                     error={!!error}
                     helperText={error ? error.message : null}
+                    InputProps={{
+                      readOnly: true,
+                    }}
                   ></TextField>
                 );
-              }}
-              // rules={{ required: "Name required" }}
-              InputProps={{
-                readOnly: true,
               }}
             />
           </div>
@@ -139,7 +139,7 @@ const ExpenseForm = ({ formdata, setFormdata, handleDialogClose }) => {
               rules={{ required: "From Date is required" }}
             />
           </div>
-          
+
           <div>
             <Controller
               name="purchased_from"

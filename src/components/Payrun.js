@@ -18,7 +18,8 @@ import { useRecoilState } from "recoil";
 import { useEmployeesContext } from "../context/employees_context";
 import { usePayslipsContext } from "../context/payslips_context";
 import { useExpensesContext } from "../context/expenses_context";
-import { payrunState } from "./data/atomdata";
+import { useDailyAllowancesContext } from "../context/dailyallowances_context";
+import { payrunState, payrunIdState } from "./data/atomdata";
 
 //const drawerWidth = 240;
 
@@ -58,7 +59,10 @@ const Payrun = () => {
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
   const [loadPaybatch, setLoadPaybatch] = useState(false);
   const { loadEmployees, employees } = useEmployeesContext();
-  const { loadUnpaidExpenses, expenses, updateExpenses } = useExpensesContext();
+  const { loadUnpaidExpenses, expenses, unpaidexpenses, updateExpense } =
+    useExpensesContext();
+  const { unpaiddailyallows, loadUnpaidDailyAllows, updateDailyAllowance } =
+    useDailyAllowancesContext();
   const {
     addPayrun,
     getPayrun,
@@ -66,15 +70,14 @@ const Payrun = () => {
     payrun_loading,
     addPayslip,
     resetPayslipsData,
-    dailyallowances,
-    updateDailyAllowance,
-    loadUnpaidDailyAllows,
     singlebatch_payslip_loading,
     setPayslipPeriod,
   } = usePayslipsContext();
   const [input, setInput] = useRecoilState(payrunState);
+  const [payrunId, setPayrunId] = useRecoilState(payrunIdState);
   const [alert, setAlert] = useState(false);
   const [error, setError] = useState(false);
+  const [errornoselect, setErrornoselect] = useState(false);
   const [isPayrunExist, setIsPayrunExist] = useState(false);
 
   useEffect(() => {
@@ -106,6 +109,22 @@ const Payrun = () => {
 
   const handlePayrunSubmit = (e) => {
     e.preventDefault();
+    setPayrunId("");
+    var count = employees.reduce((acc, r) => {
+      if (r.tableData.checked) {
+        return acc + 1;
+      } else {
+        return acc;
+      }
+    }, 0);
+    //console.log("count", count);
+    if (count === 0) {
+      setErrornoselect(true);
+      setTimeout(() => {
+        setErrornoselect(false);
+      }, 3000);
+      return null;
+    }
 
     const period =
       formatDate(input.fromdate) + " - " + formatDate(input.todate);
@@ -117,11 +136,11 @@ const Payrun = () => {
     const isExist = payrunExists(payrundata);
 
     if (isExist) {
-      console.log("exist");
+      //console.log("exist");
       setIsPayrunExist(true);
       setAlert(true);
     } else {
-      console.log("add");
+      //console.log("add");
       add_Payrun(period, payrundata);
       checkSelectedEmployees(period, payrundata);
       setIsPayrunExist(false);
@@ -131,18 +150,27 @@ const Payrun = () => {
   };
 
   const checkSelectedEmployees = (period, payrun) => {
+    //console.log("payrun", payrun, period);
     resetPayslipsData();
-
     employees &&
       employees.forEach((emp, index) => {
         if (emp.tableData.checked) {
           let exp = 0;
-          if (expenses) {
-            expenses
+          if (unpaidexpenses) {
+            unpaidexpenses
               .filter((r) => r.empid === emp.id)
               .map((i) => {
-                updateExpenses({ id: i.id, payrun: period });
+                updateExpense({ id: i.id, payrun: payrun });
                 return (exp = exp + i.amount);
+              });
+          }
+          let allows = 0;
+          if (unpaiddailyallows) {
+            unpaiddailyallows
+              .filter((r) => r.empid === emp.id)
+              .map((i) => {
+                updateDailyAllowance({ id: i.id, payrun: payrun });
+                return (allows = allows + i.amount);
               });
           }
 
@@ -155,25 +183,31 @@ const Payrun = () => {
             tap_acno,
             scp_acno,
           } = emp;
+          const tmptotalallows = allows + exp;
+          const tmptotalTAP = Math.ceil(basic_salary * 0.05);
+          const tmptotalSCP =
+            Math.round((basic_salary + Number.EPSILON) * 0.035 * 100) / 100;
+          const tmpnettpay =
+            basic_salary + tmptotalallows - tmptotalTAP - tmptotalSCP;
           const data = {
             name: name,
             period: period,
             pay_date: input.pay_date,
             payrun: payrun,
             wages: basic_salary,
-            nett_pay: 0,
+            nett_pay: tmpnettpay,
             bank_name: bank_name,
             bank_acno: bank_acno,
             tap_acno: tap_acno,
-            tap_amount: 0,
+            tap_amount: tmptotalTAP,
             scp_acno: scp_acno,
-            scp_amount: 0,
-            total_allowances: 0,
+            scp_amount: tmptotalSCP,
+            total_allowances: tmptotalallows,
             total_deductions: 0,
             empid: id,
             status: "Pending",
             allows_type1: "Site Allowances",
-            allows_type1amt: 0,
+            allows_type1amt: allows,
             allows_type2: "Expenses Claims",
             allows_type2amt: exp,
             allows_type3: " ",
@@ -231,7 +265,7 @@ const Payrun = () => {
   useEffect(() => {
     loadEmployees();
     loadUnpaidExpenses();
-    //loadUnpaidDailyAllows();
+    loadUnpaidDailyAllows();
     getPayrun();
   }, []);
 
@@ -425,6 +459,7 @@ const Payrun = () => {
                 </div>
                 <div>
                   {error && <h3>This Payrun period already existed!</h3>}
+                  {errornoselect && <h3>You must select employees!</h3>}
                 </div>
               </form>
             </article>

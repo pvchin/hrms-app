@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import ReactToPrint from "react-to-print";
 import MaterialTable from "material-table";
 import { Button, Icon, Grid, TextField } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useRecoilState } from "recoil";
-import { payrunState } from "./data/atomdata";
+import { payrunState, payrunStatusState } from "./data/atomdata";
 import { usePayslipsContext } from "../context/payslips_context";
 
 const columns = [
@@ -63,10 +64,55 @@ const initial_state = [
 
 const PaySummary = ({ singlebatchpayslip }) => {
   const classes = useStyles();
+  const componentRef = useRef();
   const [state, setState] = useState(initial_state);
   const [payrundata, setPayrundata] = useRecoilState(payrunState);
+  const [payrunstatus, setPayrunStatus] = useRecoilState(payrunStatusState);
   const [isCalc, setIsCalc] = useState(true);
   const { payrun, updatePayrun, payslip_period } = usePayslipsContext();
+
+  const ComponentToPrint = () => {
+    return (
+      <div>
+        <h2>Hello</h2>
+        <table>
+          <thead>
+            <div>Title 1</div>
+
+            <th>column 1</th>
+            <th>column 2</th>
+            <th>column 3</th>
+          </thead>
+          <tbody>
+            <tr>
+              <td>data 1</td>
+              <td>data 2</td>
+              <td>data 3</td>
+            </tr>
+            <tr>
+              <td>data 1</td>
+              <td>data 2</td>
+              <td>data 3</td>
+            </tr>
+            <tr>
+              <td>data 1</td>
+              <td>data 2</td>
+              <td>data 3</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    );
+  };
+
+  // const handlePrint = useReactToPrint({
+  //   content: () => componentRef.current,
+  // });
+
+  const handle_Print = (e) => {
+    e.preventDefault();
+    <Button>Print</Button>;
+  };
 
   const handleCalcTotals = () => {
     const data = singlebatchpayslip;
@@ -102,7 +148,8 @@ const PaySummary = ({ singlebatchpayslip }) => {
     const totaltap = Math.ceil(totalwages * 0.05);
     const totalscp =
       Math.round((totalwages + Number.EPSILON) * 0.035 * 100) / 100;
-    const totalpayroll = totalwages + totalallows - totaltap - totalscp - totaldeducts;
+    const totalpayroll =
+      totalwages + totalallows - totaltap - totalscp - totaldeducts;
     setPayrundata({
       ...payrundata,
       totalpayroll: totalpayroll,
@@ -149,11 +196,27 @@ const PaySummary = ({ singlebatchpayslip }) => {
   }, [isCalc]);
 
   return (
-    <form>
-      <Grid container direction="row" style={{ border: "1px solid white" }}>
-        <Grid item sm={12} align="center" style={{ border: "1px solid white" }}>
-          <div>
-            {/* <Button
+    <div>
+      {/* <div style={{ display: "none" }}> */}
+      {/* <div>
+        <div>
+          <ReactToPrint
+            trigger={() => <button>Print this out!</button>}
+            content={() => this.componentRef}
+          />
+          <ComponentToPrint ref={(el) => (this.componentRef = el)} />
+        </div>
+      </div> */}
+      <form>
+        <Grid container direction="row" style={{ border: "1px solid white" }}>
+          <Grid
+            item
+            sm={12}
+            align="center"
+            style={{ border: "1px solid white" }}
+          >
+            <div>
+              {/* <Button
               type="submit"
               variant="contained"
               color="primary"
@@ -163,216 +226,290 @@ const PaySummary = ({ singlebatchpayslip }) => {
             >
               Save <Icon className={classes.rightIcon}>send</Icon>
             </Button> */}
-            <h2>Summary</h2>
-          </div>
+              <h2>Summary</h2>
+              {/* <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                className={classes.button}
+                style={{ marginLeft: 5 }}
+                onClick={(e) => handle_Print(e)}
+              >
+                Print <Icon className={classes.rightIcon}>send</Icon>
+              </Button> */}
+              {/* <div>
+                <ReactToPrint
+                  trigger={(e) => {
+                    handle_Print(e);
+                  }}
+                  content={() => this.componentRef}
+                />
+                <ComponentToPrint ref={(el) => (this.componentRef = el)} />
+              </div> */}
+            </div>
+          </Grid>
         </Grid>
-      </Grid>
-      <Grid container direction="row" style={{ border: "1px solid white" }}>
-        <Grid item sm={3} align="center" style={{ border: "1px solid white" }}>
-          <div>
-            <TextField
-              label="Period"
-              name="period"
-              variant="filled"
-              type="text"
-              value={payrundata.period}
-              style={{ width: "100%" }}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-          </div>
+        <Grid container direction="row" style={{ border: "1px solid white" }}>
+          <Grid
+            item
+            sm={3}
+            align="center"
+            style={{ border: "1px solid white" }}
+          >
+            <div>
+              <TextField
+                label="Period"
+                name="period"
+                variant="filled"
+                type="text"
+                value={payrundata.period}
+                style={{ width: "100%" }}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            </div>
+          </Grid>
+          <Grid
+            item
+            sm={3}
+            align="center"
+            style={{ border: "1px solid white" }}
+          >
+            <div>
+              <TextField
+                label="Pay Run Batch"
+                name="payrun"
+                variant="filled"
+                type="text"
+                value={payrundata.payrun}
+                style={{ width: "100%" }}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            </div>
+          </Grid>
+          <Grid
+            item
+            sm={3}
+            align="center"
+            style={{ border: "1px solid white" }}
+          >
+            <div>
+              <TextField
+                label="Status"
+                name="status"
+                variant="filled"
+                value={payrunstatus}
+                style={{ width: "100%" }}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            </div>
+          </Grid>
+          <Grid
+            item
+            sm={3}
+            align="center"
+            style={{ border: "1px solid white" }}
+          >
+            <div>
+              <TextField
+                label="Payroll Total"
+                name="paytotal"
+                variant="filled"
+                type="number"
+                value={payrundata.totalpayroll}
+                style={{ width: "100%" }}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            </div>
+          </Grid>
         </Grid>
-        <Grid item sm={3} align="center" style={{ border: "1px solid white" }}>
-          <div>
-            <TextField
-              label="Pay Run Batch"
-              name="payrun"
-              variant="filled"
-              type="text"
-              value={payrundata.payrun}
-              style={{ width: "100%" }}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-          </div>
-        </Grid>
-        <Grid item sm={3} align="center" style={{ border: "1px solid white" }}>
-          <div>
-            <TextField
-              label="Pay Date"
-              name="pay_date"
-              variant="filled"
-              type="date"
-              value={payrundata.pay_date}
-              style={{ width: "100%" }}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-          </div>
-        </Grid>
-        <Grid item sm={3} align="center" style={{ border: "1px solid white" }}>
-          <div>
-            <TextField
-              label="Payroll Total"
-              name="paytotal"
-              variant="filled"
-              type="number"
-              value={payrundata.paytotal}
-              style={{ width: "100%" }}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-          </div>
-        </Grid>
-      </Grid>
 
-      <Grid container direction="row" style={{ border: "1px solid white" }}>
-        <Grid item sm={12} align="center" style={{ border: "1px solid white" }}>
-          <MaterialTable
-            columns={columns}
-            data={singlebatchpayslip}
-            title="Payroll"
-            options={{
-              filtering: false,
-              search: false,
-              toolbar: false,
+        <Grid container direction="row" style={{ border: "1px solid white" }}>
+          <Grid
+            item
+            sm={12}
+            align="center"
+            style={{ border: "1px solid white" }}
+          >
+            <MaterialTable
+              columns={columns}
+              data={singlebatchpayslip}
+              title="Payroll"
+              options={{
+                filtering: false,
+                search: false,
+                toolbar: false,
 
-              headerStyle: {
-                backgroundColor: "orange",
-                color: "primary",
-              },
-              showTitle: false,
-            }}
-          />
-        </Grid>
-      </Grid>
-      <Grid container direction="row" style={{ border: "1px solid white" }}>
-        <Grid item sm={2} align="center" style={{ border: "1px solid white" }}>
-          <div>
-            <TextField
-              label="Total Wages"
-              name="totalwages"
-              variant="filled"
-              type="currency"
-              value={payrundata.totalwages}
-              style={{ width: "100%" }}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              InputProps={{
-                readOnly: true,
+                headerStyle: {
+                  backgroundColor: "orange",
+                  color: "primary",
+                },
+                showTitle: false,
               }}
             />
-          </div>
+          </Grid>
         </Grid>
-        <Grid item sm={2} align="center" style={{ border: "1px solid white" }}>
-          <div>
-            <TextField
-              label="Total TAP"
-              name="totaltap"
-              variant="filled"
-              type="currency"
-              value={payrundata.totaltap}
-              style={{ width: "100%" }}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-          </div>
+        <Grid container direction="row" style={{ border: "1px solid white" }}>
+          <Grid
+            item
+            sm={2}
+            align="center"
+            style={{ border: "1px solid white" }}
+          >
+            <div>
+              <TextField
+                label="Total Wages"
+                name="totalwages"
+                variant="filled"
+                type="currency"
+                value={payrundata.totalwages}
+                style={{ width: "100%" }}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            </div>
+          </Grid>
+          <Grid
+            item
+            sm={2}
+            align="center"
+            style={{ border: "1px solid white" }}
+          >
+            <div>
+              <TextField
+                label="Total TAP"
+                name="totaltap"
+                variant="filled"
+                type="currency"
+                value={payrundata.totaltap}
+                style={{ width: "100%" }}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            </div>
+          </Grid>
+          <Grid
+            item
+            sm={2}
+            align="center"
+            style={{ border: "1px solid white" }}
+          >
+            <div>
+              <TextField
+                label="Total SCP"
+                name="totalscp"
+                variant="filled"
+                type="currency"
+                value={payrundata.totalscp}
+                style={{ width: "100%" }}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            </div>
+          </Grid>
+          <Grid
+            item
+            sm={2}
+            align="center"
+            style={{ border: "1px solid white" }}
+          >
+            <div>
+              <TextField
+                label="Total Allowances"
+                name="totalallows"
+                variant="filled"
+                type="currency"
+                value={payrundata.totalallows}
+                style={{ width: "100%" }}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            </div>
+          </Grid>
+          <Grid
+            item
+            sm={2}
+            align="center"
+            style={{ border: "1px solid white" }}
+          >
+            <div>
+              <TextField
+                label="Total Deductions"
+                name="totaldeducts"
+                variant="filled"
+                type="currency"
+                value={payrundata.totaldeducts}
+                style={{ width: "100%" }}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            </div>
+          </Grid>
+          <Grid
+            item
+            sm={2}
+            align="center"
+            style={{ border: "1px solid white" }}
+          >
+            <div>
+              <TextField
+                label="Total Payroll"
+                name="totalpayroll"
+                variant="filled"
+                type="currency"
+                value={payrundata.totalpayroll}
+                style={{ width: "100%" }}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                InputProps={{
+                  readOnly: true,
+                }}
+              />
+            </div>
+          </Grid>
         </Grid>
-        <Grid item sm={2} align="center" style={{ border: "1px solid white" }}>
-          <div>
-            <TextField
-              label="Total SCP"
-              name="totalscp"
-              variant="filled"
-              type="currency"
-              value={payrundata.totalscp}
-              style={{ width: "100%" }}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-          </div>
-        </Grid>
-        <Grid item sm={2} align="center" style={{ border: "1px solid white" }}>
-          <div>
-            <TextField
-              label="Total Allowances"
-              name="totalallows"
-              variant="filled"
-              type="currency"
-              value={payrundata.totalallows}
-              style={{ width: "100%" }}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-          </div>
-        </Grid>
-        <Grid item sm={2} align="center" style={{ border: "1px solid white" }}>
-          <div>
-            <TextField
-              label="Total Deductions"
-              name="totaldeducts"
-              variant="filled"
-              type="currency"
-              value={payrundata.totaldeducts}
-              style={{ width: "100%" }}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-          </div>
-        </Grid>
-        <Grid item sm={2} align="center" style={{ border: "1px solid white" }}>
-          <div>
-            <TextField
-              label="Total Payroll"
-              name="totalpayroll"
-              variant="filled"
-              type="currency"
-              value={payrundata.totalpayroll}
-              style={{ width: "100%" }}
-              InputLabelProps={{
-                shrink: true,
-              }}
-              InputProps={{
-                readOnly: true,
-              }}
-            />
-          </div>
-        </Grid>
-      </Grid>
-    </form>
+      </form>
+    </div>
   );
 };
 

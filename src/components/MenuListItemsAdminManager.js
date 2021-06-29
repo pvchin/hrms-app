@@ -35,7 +35,7 @@ const MenuListItems = () => {
   return (
     <div className={classes.content}>
       <ListSubheader inset className={classes.mainHeader}>
-        Admin
+        Admin Manager
       </ListSubheader>
 
       <Link to="/">
@@ -190,8 +190,10 @@ const MenuListItems = () => {
 
 const useStyles = makeStyles((theme) => ({
   mainHeader: {
-    fontSize: 24,
+    fontSize: 20,
     color: "primary",
+    //alignItems: "left",
+    //alignContent: "left",
   },
   categoryHeader: {
     paddingTop: theme.spacing(2),

@@ -15,6 +15,9 @@ import {
   GET_UNPAIDEXPENSES_BEGIN,
   GET_UNPAIDEXPENSES_SUCCESS,
   GET_UNPAIDEXPENSES_ERROR,
+  GET_PERIODEXPENSES_BEGIN,
+  GET_PERIODEXPENSES_SUCCESS,
+  GET_PERIODEXPENSES_ERROR,
   GET_SINGLE_EXPENSE_BEGIN,
   GET_SINGLE_EXPENSE_SUCCESS,
   GET_SINGLE_EXPENSE_ERROR,
@@ -49,6 +52,9 @@ const initialState = {
   unpaid_expense_loading: false,
   unpaid_expense_error: false,
   unpaidexpenses: [],
+  period_expense_loading: false,
+  period_expense_error: false,
+  periodexpenses: [],
   // filterValue: "Female",
   // filterfield: "gender",
 };
@@ -106,23 +112,23 @@ export const ExpensesProvider = ({ children }) => {
     try {
       // const { data } = await axios.get(`${unpaidexpenses_url}`);
       // const unpaidexpenses = data;
-       const res = await fetch(unpaidexpenses_url);
-       const unpaidexpenses = await res.json();
+      const res = await fetch(unpaidexpenses_url);
+      const unpaidexpenses = await res.json();
       dispatch({ type: GET_UNPAIDEXPENSES_SUCCESS, payload: unpaidexpenses });
     } catch (error) {
       dispatch({ type: GET_UNPAIDEXPENSES_ERROR });
     }
   };
 
-  const loadAppExpenses = async () => {
-    dispatch({ type: GET_UNPAIDEXPENSES_BEGIN });
+  const loadPeriodExpenses = async () => {
+    dispatch({ type: GET_PERIODEXPENSES_BEGIN });
     try {
       const { data } = await axios.get(`${unpaidexpenses_url}`);
-      const unpaidexpenses = data;
+      const periodexpenses = data;
 
-      dispatch({ type: GET_UNPAIDEXPENSES_SUCCESS, payload: unpaidexpenses });
+      dispatch({ type: GET_PERIODEXPENSES_SUCCESS, payload: periodexpenses });
     } catch (error) {
-      dispatch({ type: GET_UNPAIDEXPENSES_ERROR });
+      dispatch({ type: GET_PERIODEXPENSES_ERROR });
     }
   };
 
@@ -208,7 +214,7 @@ export const ExpensesProvider = ({ children }) => {
         loadPendingExpenses,
         loadEmpExpenses,
         loadUnpaidExpenses,
-        loadAppExpenses,
+        loadPeriodExpenses,
         addExpense,
         updateExpense,
         deleteExpense,

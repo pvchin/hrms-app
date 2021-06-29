@@ -7,63 +7,63 @@ import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import CheckIcon from "@material-ui/icons/Check";
 import SearchIcon from "@material-ui/icons/Search";
-import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import BuildOutlinedIcon from "@material-ui/icons/BuildOutlined";
 import { useHistory, Link } from "react-router-dom";
 import { useSetRecoilState, useRecoilValue } from "recoil";
-import {
-  payPeriodState,
-  payPeriodEndMonthState,
-  payPeriodEmpIdState,
-} from "./data/atomdata";
+import { payPeriodEmpIdState } from "./data/atomdata";
 import { usePayslipsContext } from "../context/payslips_context";
-import { useEmployeesContext } from "../context/employees_context";
+//import { useEmployeesContext } from "../context/employees_context";
 
 const columns = [
   {
-    title: "Name",
-    field: "name",
+    title: "Batch",
+    field: "payrun",
     editable: "never",
   },
   { title: "Period", field: "period", editable: "never" },
   {
-    title: "Date",
-    field: "date",
+    title: "Pay Date",
+    field: "pay_date",
     type: "date",
     dateSetting: { locale: "en-GB" },
     editable: "never",
   },
   {
-    title: "Basic Pay",
-    field: "basic_pay",
+    title: "Wages",
+    field: "totalwages",
     type: "currency",
     editable: "never",
   },
   {
     title: "TAP Amount",
-    field: "tap_amount",
+    field: "totaltap",
     type: "currency",
     editable: "never",
   },
   {
     title: "SCP Amount",
-    field: "scp_amount",
+    field: "totalscp",
     type: "currency",
     editable: "never",
   },
   {
     title: "Earnings",
-    field: "total_earnings",
+    field: "totalallows",
     type: "currency",
     editable: "never",
   },
   {
     title: "Deductions",
-    field: "total_deductions",
+    field: "totaldeducts",
     type: "currency",
     editable: "never",
   },
-  { title: "Nett Pay", field: "nett_pay", type: "currency", editable: "never" },
+  {
+    title: "Total Payroll",
+    field: "totalpayroll",
+    type: "currency",
+    editable: "never",
+  },
   // { title: "Bank Name", field: "bank_name" },
   // { title: "Bank AC No", field: "bank_accno" },
   {
@@ -93,21 +93,20 @@ const columns = [
 
 export default function PayslipTableAdmin({
   payslipsdata,
-  update_payslip_error,
   setPayslipsdata,
   handleDialogClose,
 }) {
   let history = useHistory();
   const classes = useStyles();
   const setPayPeriodEmpId = useSetRecoilState(payPeriodEmpIdState);
-  const { updatePayslip } = usePayslipsContext();
+  const { updatePayrun, batchpayrun, update_payrun_loading, update_payrun_error } = usePayslipsContext();
 
   const Save_PayslipData = () => {
     payslipsdata.forEach((data) => {
       const { id } = data;
       if (id) {
         const { id, rec_id, tableData, ...fields } = data;
-        updatePayslip({ id, ...fields });
+        updatePayrun({ id, ...fields });
       }
     });
 
@@ -115,33 +114,33 @@ export default function PayslipTableAdmin({
   };
 
   const Approve_PayslipData = () => {
-    payslipsdata.forEach((rec) => {
+    batchpayrun.forEach((rec) => {
       if (rec.tableData.checked) {
-        updatePayslip({ id: rec.id, status: "Approve" });
-        
-        if (!update_payslip_error) {
-          const recdata = payslipsdata.filter((r) => r.id === rec.id);
+        updatePayrun({ id: rec.id, status: "Approve" });
+
+        if (!update_payrun_error) {
+          const recdata = batchpayrun.filter((r) => r.id === rec.id);
           recdata[0].status = "Approve";
         }
       }
     });
-    payslipsdata.forEach((d) => {
+    batchpayrun.forEach((d) => {
       if (d.tableData) d.tableData.checked = false;
     });
   };
 
   const Reject_PayslipData = () => {
-    payslipsdata.forEach((rec) => {
+    batchpayrun.forEach((rec) => {
       if (rec.tableData.checked) {
-        updatePayslip({ id: rec.id, status: "Reject" });
+        updatePayrun({ id: rec.id, status: "Reject" });
         //update leavesdata
-        if (!update_payslip_error) {
-          const recdata = payslipsdata.filter((r) => r.id === rec.id);
+        if (!update_payrun_error) {
+          const recdata = batchpayrun.filter((r) => r.id === rec.id);
           recdata[0].status = "Reject";
         }
       }
     });
-    payslipsdata.forEach((d) => {
+    batchpayrun.forEach((d) => {
       if (d.tableData) d.tableData.checked = false;
     });
   };
@@ -151,7 +150,7 @@ export default function PayslipTableAdmin({
       <div style={{ maxWidth: "100%", paddingTop: "5px" }}>
         <MaterialTable
           columns={columns}
-          data={payslipsdata}
+          data={batchpayrun}
           title="Payslips"
           icons={{
             Add: (props) => <AddIcon />,

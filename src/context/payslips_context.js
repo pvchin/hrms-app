@@ -37,6 +37,9 @@ import {
   GET_PAYRUN_BEGIN,
   GET_PAYRUN_SUCCESS,
   GET_PAYRUN_ERROR,
+  GET_BATCHPAYRUN_BEGIN,
+  GET_BATCHPAYRUN_SUCCESS,
+  GET_BATCHPAYRUN_ERROR,
   ADD_PAYRUN_BEGIN,
   ADD_PAYRUN_SUCCESS,
   ADD_PAYRUN_ERROR,
@@ -172,6 +175,9 @@ const initialState = {
   payrun_loading: false,
   payrun_error: false,
   payrun: [],
+  batchpayrun_loading: false,
+  batchpayrun_error: false,
+  batchpayrun: [],
   delete_payrun_loading: false,
   delete_payrun_error: false,
   update_payrun_loading: false,
@@ -428,6 +434,18 @@ export const PayslipsProvider = ({ children }) => {
     }
   };
 
+  //.... payrun
+  const getBatchPayrun = async (fi) => {
+    dispatch({ type: GET_BATCHPAYRUN_BEGIN });
+    try {
+      const { data } = await axios.get(`${payrun_url}?status=${fi}`);
+      const payrun = data;
+      dispatch({ type: GET_BATCHPAYRUN_SUCCESS, payload: payrun });
+    } catch (error) {
+      dispatch({ type: GET_BATCHPAYRUN_ERROR });
+    }
+  };
+
   const addPayrun = async (data) => {
     //const { id, name, empid, period, payitem, paytype, amount } = data;
     //
@@ -668,6 +686,7 @@ export const PayslipsProvider = ({ children }) => {
         updatePayslipitem,
         addPayslipitem,
         getPayrun,
+        getBatchPayrun,
         deletePayrun,
         updatePayrun,
         addPayrun,

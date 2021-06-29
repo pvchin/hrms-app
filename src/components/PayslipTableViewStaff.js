@@ -60,7 +60,7 @@ export default function PayslipTableVIewStaff() {
     <div className={classes.root}>
       <Grid container direction="row">
         {payslips
-          .filter((i) => i.empid === loginLevel.loginUserId)
+          .filter((i) => i.empid === loginLevel.loginUserId && i.status === "Approve")
           .map((row) => {
             return (
               <ListItem key={row.id}>

@@ -208,7 +208,7 @@ const DailyAllowancesAddPeriod = ({ handleDialogClose }) => {
               </div> */}
               <div style={{ display: "flex", flexDirection: "row" }}>
                 <TextField
-                  label="From Data"
+                  label="From Date"
                   variant="filled"
                   required
                   style={{ width: "100%" }}
@@ -222,7 +222,7 @@ const DailyAllowancesAddPeriod = ({ handleDialogClose }) => {
                   }}
                 ></TextField>
                 <TextField
-                  label="To Data"
+                  label="To Date"
                   variant="filled"
                   required
                   style={{ width: "100%" }}
@@ -251,7 +251,7 @@ const DailyAllowancesAddPeriod = ({ handleDialogClose }) => {
                 <TextField
                   label="Manager"
                   variant="filled"
-                  required
+                  //required
                   style={{ width: "100%" }}
                   name="manager"
                   value={input.manager}
@@ -263,7 +263,7 @@ const DailyAllowancesAddPeriod = ({ handleDialogClose }) => {
                 <TextField
                   label="District"
                   variant="filled"
-                  required
+                  //required
                   value={input.district}
                   style={{ width: "100%" }}
                   name="district"
@@ -273,7 +273,7 @@ const DailyAllowancesAddPeriod = ({ handleDialogClose }) => {
                 <TextField
                   label="Location/Rig"
                   variant="filled"
-                  required
+                  //required
                   value={input.location}
                   style={{ width: "100%" }}
                   name="location"
@@ -285,7 +285,7 @@ const DailyAllowancesAddPeriod = ({ handleDialogClose }) => {
                 <TextField
                   label="Operation Type"
                   variant="filled"
-                  required
+                  //required
                   value={input.typeoperation}
                   style={{ width: "100%" }}
                   name="typeoperation"
@@ -295,7 +295,7 @@ const DailyAllowancesAddPeriod = ({ handleDialogClose }) => {
                 <TextField
                   label="Client"
                   variant="filled"
-                  required
+                  //required
                   value={input.client}
                   style={{ width: "100%" }}
                   name="client"
@@ -307,7 +307,7 @@ const DailyAllowancesAddPeriod = ({ handleDialogClose }) => {
                 <TextField
                   label="Ticket No/Job No"
                   variant="filled"
-                  required
+                  //required
                   value={input.jobno}
                   style={{ width: "100%" }}
                   name="jobno"
@@ -317,7 +317,7 @@ const DailyAllowancesAddPeriod = ({ handleDialogClose }) => {
                 <TextField
                   label="Crew Operation"
                   variant="filled"
-                  required
+                  //required
                   value={input.creqoperation}
                   style={{ width: "100%" }}
                   name="crewoperation"

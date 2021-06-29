@@ -9,6 +9,9 @@ import {
   GET_UNPAIDEXPENSES_BEGIN,
   GET_UNPAIDEXPENSES_SUCCESS,
   GET_UNPAIDEXPENSES_ERROR,
+  GET_PERIODEXPENSES_BEGIN,
+  GET_PERIODEXPENSES_SUCCESS,
+  GET_PERIODEXPENSES_ERROR,
   GET_SINGLE_EXPENSE_BEGIN,
   GET_SINGLE_EXPENSE_SUCCESS,
   GET_SINGLE_EXPENSE_ERROR,
@@ -66,6 +69,25 @@ const expenses_reducer = (state, action) => {
       ...state,
       unpaid_expenses_loading: false,
       unpaid_expenses_error: true,
+    };
+  }
+
+  // get period expenses
+  if (action.type === GET_PERIODEXPENSES_BEGIN) {
+    return { ...state, period_expenses_loading: true };
+  }
+  if (action.type === GET_PERIODEXPENSES_SUCCESS) {
+    return {
+      ...state,
+      period_expenses_loading: false,
+      periodexpenses: action.payload,
+    };
+  }
+  if (action.type === GET_PERIODEXPENSES_ERROR) {
+    return {
+      ...state,
+      period_expenses_loading: false,
+      period_expenses_error: true,
     };
   }
 

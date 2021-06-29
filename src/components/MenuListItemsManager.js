@@ -36,7 +36,7 @@ const MenuListItems = () => {
   return (
     <div className={classes.content}>
       <ListSubheader inset className={classes.mainHeader}>
-        Admin
+        Manager
       </ListSubheader>
 
       <Link to="/">

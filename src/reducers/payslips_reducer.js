@@ -37,6 +37,9 @@ import {
   GET_PAYRUN_BEGIN,
   GET_PAYRUN_SUCCESS,
   GET_PAYRUN_ERROR,
+  GET_BATCHPAYRUN_BEGIN,
+  GET_BATCHPAYRUN_SUCCESS,
+  GET_BATCHPAYRUN_ERROR,
   ADD_PAYRUN_BEGIN,
   ADD_PAYRUN_SUCCESS,
   ADD_PAYRUN_ERROR,
@@ -143,10 +146,18 @@ const payslips_reducer = (state, action) => {
     return { ...state, pending_payslips_loading: true };
   }
   if (action.type === GET_PENDING_PAYSLIP_SUCCESS) {
-    return { ...state, pending_payslips_loading: false, pending_payslips: action.payload };
+    return {
+      ...state,
+      pending_payslips_loading: false,
+      pending_payslips: action.payload,
+    };
   }
   if (action.type === GET_PENDING_PAYSLIP_ERROR) {
-    return { ...state, pending_payslips_loading: false, pending_payslips_error: true };
+    return {
+      ...state,
+      pending_payslips_loading: false,
+      pending_payslips_error: true,
+    };
   }
 
   // add payslips
@@ -558,6 +569,25 @@ const payslips_reducer = (state, action) => {
       ...state,
       payrun_loading: false,
       payrun_error: true,
+    };
+  }
+
+  // get batch payrun
+  if (action.type === GET_BATCHPAYRUN_BEGIN) {
+    return { ...state, batchpayrun_loading: true };
+  }
+  if (action.type === GET_BATCHPAYRUN_SUCCESS) {
+    return {
+      ...state,
+      batchpayrun_loading: false,
+      batchpayrun: action.payload,
+    };
+  }
+  if (action.type === GET_BATCHPAYRUN_ERROR) {
+    return {
+      ...state,
+      batchpayrun_loading: false,
+      batchpayrun_error: true,
     };
   }
 

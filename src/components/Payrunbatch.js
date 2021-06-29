@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { useReactToPrint } from "react-to-print";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import { useHistory } from "react-router-dom";
@@ -15,7 +16,13 @@ import PayForm from "./PayForm";
 import PaySummary from "./PaySummary";
 import { usePayslipsContext } from "../context/payslips_context";
 import { useTablesContext } from "../context/tables_context";
-import { payrunState, paydataState } from "./data/atomdata";
+import { useSetRecoilState, useRecoilState } from "recoil";
+import {
+  payrunState,
+  paydataState,
+  payrunIdState,
+  payrunStatusState,
+} from "./data/atomdata";
 import { useRecoilValue } from "recoil";
 
 const drawerWidth = 240;
@@ -23,7 +30,9 @@ const drawerWidth = 240;
 const Payrunbatch = () => {
   let history = useHistory();
   const classes = useStyles();
+  const componentRef = useRef();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+
   //const { register, handleSubmit, control, setValue, reset, watch } = useForm();
 
   const {
@@ -38,12 +47,15 @@ const Payrunbatch = () => {
   } = usePayslipsContext();
   const { loadPayitems, payitems } = useTablesContext();
   const payrundata = useRecoilValue(payrunState);
+  const [payrunId, setPayrunId] = useRecoilState(payrunIdState);
+  const [payrunstatus, setPayrunStatus] = useRecoilState(payrunStatusState);
   const [loadFormdata, setLoadFormdata] = useState(false);
   const [loadUpdatedata, setLoadUpdatedata] = useState(false);
   const [formdata, setFormdata] = useState([]);
   const [rowindex, setRowIndex] = useState(0);
   const [showSumm, setShowSumm] = useState(false);
   const [showSaveAlert, setShowSaveAlert] = useState(false);
+  const [showVerifyAlert, setShowVerifyAlert] = useState(false);
   const [isCalc, setIsCalc] = useState(false);
 
   useEffect(() => {
@@ -60,6 +72,10 @@ const Payrunbatch = () => {
     setShowSumm(!showSumm);
   };
 
+  const handlePrintSummary = (e) => {
+    e.preventDefault();
+  };
+
   const handleSavePayslips = (e) => {
     e.preventDefault();
     // eslint-disable-next-line no-lone-blocks
@@ -72,6 +88,9 @@ const Payrunbatch = () => {
     //update payrun
     handleSavePayrun();
     setShowSaveAlert(true);
+    setTimeout(() => {
+      setShowSaveAlert(false);
+    }, 3000);
   };
 
   const handleSavePayrun = () => {
@@ -92,6 +111,16 @@ const Payrunbatch = () => {
           });
         });
     }
+  };
+
+  const handleVerifyPayslips = (e) => {
+    e.preventDefault();
+    setPayrunStatus("Verified");
+    updatePayrun({ id: payrunId, status: "Verified" });
+    setShowVerifyAlert(true);
+    setTimeout(() => {
+      setShowVerifyAlert(false);
+    }, 3000);
   };
 
   const handleEmpButtonClick = (index) => {
@@ -142,10 +171,22 @@ const Payrunbatch = () => {
                 flexDirection: "row",
               }}
             >
-              <h2>Payroll Details</h2>
+              <div
+                style={{
+                  marginLeft: 14,
+                  display: "inline-flex",
+                  flexDirection: "row",
+                }}
+              >
+                <h2>Payroll Details</h2>
+              </div>
+
               <div style={{ marginTop: 10, marginLeft: 20 }}>
                 {showSaveAlert && (
                   <Alert severity="success">Changes have been saved!</Alert>
+                )}
+                {showVerifyAlert && (
+                  <Alert severity="success">Payslips has been verified!</Alert>
                 )}
               </div>
             </div>
@@ -232,6 +273,28 @@ const Payrunbatch = () => {
                     >
                       Save <Icon className={classes.rightIcon}>send</Icon>
                     </Button>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      color="primary"
+                      className={classes.button}
+                      style={{ marginLeft: 5 }}
+                      onClick={(e) => handlePrintSummary(e)}
+                    >
+                      Print <Icon className={classes.rightIcon}>send</Icon>
+                    </Button>
+                    {payrunId && (
+                      <Button
+                        type="submit"
+                        variant="contained"
+                        color="primary"
+                        className={classes.button}
+                        style={{ marginLeft: 5 }}
+                        onClick={(e) => handleVerifyPayslips(e)}
+                      >
+                        Verify <Icon className={classes.rightIcon}>send</Icon>
+                      </Button>
+                    )}
                   </ButtonGroup>
                 </div>
               </Grid>

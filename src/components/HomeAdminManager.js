@@ -7,7 +7,8 @@ import CardLayout2 from "../helpers/CardLayout2";
 import CardLayout3 from "../helpers/CardLayout3";
 import Copyright from "./Copyright";
 import { CustomDialog } from "../helpers/CustomDialog";
-
+import { useRecoilState } from "recoil";
+import { loginLevelState } from "./data/atomdata";
 import { useLeavesContext } from "../context/leaves_context";
 import { useExpensesContext } from "../context/expenses_context";
 import { usePayslipsContext } from "../context/payslips_context";
@@ -30,7 +31,7 @@ const FILTERSTRING = "Pending";
 const EmployeeView = () => {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
-
+  const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
   const [leavesdata, setLeavesdata] = useState([]);
   const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false);
   const [expensesdata, setExpensesdata] = useState([]);
@@ -94,12 +95,12 @@ const EmployeeView = () => {
   useEffect(() => {
     loadUnpaidDailyAllows();
   }, []);
-  
+
   return (
     <div>
       <div className={classes.appBarSpacer} />
       <div style={{ paddingLeft: 50 }}>
-        <h2>Welcome Admin!</h2>
+        <h2>Welcome {loginLevel.loginUser}!</h2>
         <h3>Dashboard</h3>
       </div>
       <Container maxWidth="lg" className={classes.container}>

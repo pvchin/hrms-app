@@ -25,6 +25,11 @@ export const payrunIdState = atom({
   default: "",
 });
 
+export const payrunStatusState = atom({
+  key: "payRunStatusState",
+  default: "",
+});
+
 export const payPeriodEndMonthState = atom({
   key: "payPeriodEndMonthState",
   default: "",
@@ -83,6 +88,7 @@ export const payPeriodIdState = atom({
 export const payrunState = atom({
   key: "payrunState",
   default: {
+    id: "",
     copyfrom: "",
     selectmonth: "",
     payfreq: "",
@@ -97,6 +103,7 @@ export const payrunState = atom({
     totalallows: 0,
     totaldeducts: 0,
     totalpayroll: 0,
+    status: "",
   },
 });
 

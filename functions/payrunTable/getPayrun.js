@@ -2,7 +2,7 @@ const { table } = require("./airtable-payrun");
 const formattedReturn = require("../formattedReturn");
 
 module.exports = async (event) => {
-  const { id } = event.queryStringParameters;
+  const { id, fi } = event.queryStringParameters;
 
   if (id) {
     const payrun = await table.find(id);
@@ -13,6 +13,18 @@ module.exports = async (event) => {
         body: `No Payrun batch with id: ${id}`,
       };
     }
+
+    return formattedReturn(200, formattedPayrun);
+  }
+
+  if (fi) {
+    const payrun = await table
+      .select({ view: "sortedview", filterByFormula: `status = '${fi}'` })
+      .firstPage();
+    const formattedPayrun = payrun.map((item) => ({
+      id: item.id,
+      ...item.fields,
+    }));
 
     return formattedReturn(200, formattedPayrun);
   }

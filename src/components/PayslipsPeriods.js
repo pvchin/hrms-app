@@ -7,7 +7,7 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Typography from "@material-ui/core/Typography";
 import { useHistory } from "react-router-dom";
 import { useSetRecoilState } from "recoil";
-import { payPeriodState, payPeriodEndMonthState } from "./data/atomdata";
+import { payrunIdState,payPeriodState, payPeriodEndMonthState } from "./data/atomdata";
 import { usePayslipsContext } from "../context/payslips_context";
 import { useTablesContext } from "../context/tables_context";
 import { useEmployeesContext } from "../context/employees_context";

@@ -60,13 +60,16 @@ export default function PayslipTableVIewStaff() {
     <div className={classes.root}>
       <Grid container direction="row">
         {payslips
-          .filter((i) => i.empid === loginLevel.loginUserId && i.status === "Approve")
+          // .filter((i) => i.empid === loginLevel.loginUserId && i.status === "Approve")
           .map((row) => {
             return (
               <ListItem key={row.id}>
                 {/* <Grid item sm={2} align="center">
                   <ListItemText>{row.name}</ListItemText>
                 </Grid> */}
+                <Grid item sm={2} align="center">
+                  <ListItemText>{row.payrun}</ListItemText>
+                </Grid>
                 <Grid item sm={2} align="center">
                   <ListItemText>{row.pay_date}</ListItemText>
                 </Grid>
@@ -76,9 +79,9 @@ export default function PayslipTableVIewStaff() {
                 <Grid item sm={2} align="center">
                   <ListItemText>{row.nett_pay}</ListItemText>
                 </Grid>
-                <Grid item sm={3} align="center">
+                {/* <Grid item sm={3} align="center">
                   <ListItemText>{row.status}</ListItemText>
-                </Grid>
+                </Grid> */}
               </ListItem>
             );
           })}

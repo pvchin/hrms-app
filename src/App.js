@@ -27,13 +27,24 @@ const App = () => {
       },
     },
   });
+  const lightTheme = createMuiTheme({
+    palette: {
+      type: palletType,
+      primary: {
+        main: "#4dabf5",
+      },
+      secondary: {
+        main: "#f73378",
+      },
+    },
+  });
 
   const handleThemeChange = () => {
     setDarkState(!darkState);
   };
 
   return (
-    <ThemeProvider theme={darkTheme}>
+    <ThemeProvider theme={lightTheme}>
       <CssBaseline />
       <div>
         <React.Suspense fallback={<h1>Loading profile...</h1>}>

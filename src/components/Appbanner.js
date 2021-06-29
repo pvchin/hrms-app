@@ -1,6 +1,7 @@
 import React from "react";
 import clsx from "clsx";
 import { makeStyles } from "@material-ui/core/styles";
+import { useHistory, Link } from "react-router-dom";
 import Toolbar from "@material-ui/core/Toolbar";
 import Tooltip from "@material-ui/core/Tooltip";
 import AppBar from "@material-ui/core/AppBar";
@@ -16,8 +17,15 @@ import { loginLevelState } from "./data/atomdata";
 const drawerWidth = 255;
 
 const Appbanner = ({ handleDrawerOpen, handleDrawerClose, open, title }) => {
+  let history = useHistory();
   const classes = useStyles();
   const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
+
+  const handleExit = (e) => {
+    e.preventDefault();
+    setLoginLevel({ ...loginLevel, login: false });
+    history.push("/");
+  };
 
   return (
     <AppBar
@@ -52,10 +60,7 @@ const Appbanner = ({ handleDrawerOpen, handleDrawerClose, open, title }) => {
           </Badge>
         </IconButton> */}
         <Tooltip title="Logout">
-          <IconButton
-            color="inherit"
-            onClick={() => setLoginLevel({ ...loginLevel, login: false })}
-          >
+          <IconButton color="inherit" onClick={(e) => handleExit(e)}>
             <ExitToApplication />
           </IconButton>
         </Tooltip>

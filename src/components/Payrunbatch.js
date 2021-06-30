@@ -273,7 +273,7 @@ const Payrunbatch = () => {
                     >
                       Save <Icon className={classes.rightIcon}>send</Icon>
                     </Button>
-                    <Button
+                    {/* <Button
                       type="submit"
                       variant="contained"
                       color="primary"
@@ -282,7 +282,7 @@ const Payrunbatch = () => {
                       onClick={(e) => handlePrintSummary(e)}
                     >
                       Print <Icon className={classes.rightIcon}>send</Icon>
-                    </Button>
+                    </Button> */}
                     {payrunId && (
                       <Button
                         type="submit"

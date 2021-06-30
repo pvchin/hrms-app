@@ -36,7 +36,7 @@ const columns = [
   },
   { title: "Period", field: "period", editable: "never" },
   { title: "Location", field: "location", editable: "never" },
-  { title: "Manager Name", field: "manager_name", editable: "never" },
+  { title: "Manager Name", field: "manager", editable: "never" },
   {
     title: "No Of Days",
     field: "no_of_days",

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { useTable, usePagination} from 'react-table'
+import { useTable, usePagination } from "react-table";
 import clsx from "clsx";
 import axios from "axios";
 import { useAsync } from "react-async";
@@ -29,15 +29,15 @@ const Example = () => {
   const [value, setValue] = useState(0);
   const { data, error, isLoading } = useAsync({ promiseFn: loadEmp });
 
-  const handleClick = () => {
-    
-  }
+  const handleClick = () => {};
 
   const handleButtonClick = (index) => {
-    const newData = data[index]
-    const { id, name } = data[index]
-    setPaydata(()=>{return [...paydata,newData.map((item)=>item.name)]})
-    console.log("paydata", paydata, name, newData)
+    const newData = data[index];
+    const { id, name } = data[index];
+    setPaydata(() => {
+      return [...paydata, newData.map((item) => item.name)];
+    });
+    console.log("paydata", paydata, name, newData);
   };
 
   if (isLoading) return "Loading...";
@@ -46,13 +46,20 @@ const Example = () => {
     // const empdata = data.map((r) => {
     //   return { ...r };
     // });
-    setPaydata(()=>{return [...paydata,data.map((item)=>{return {...item}})]})
-    console.log("Data", data, paydata);
-    const { name, basic_salary } = paydata[value];
+    // setPaydata(() => {
+    //   return [
+    //     ...paydata,
+    //     data.map((item) => {
+    //       return { ...item };
+    //     }),
+    //   ];
+    // });
+    // console.log("Data", data, paydata);
+    // const { name, basic_salary } = paydata[value];
     return (
-      <Paper className={fixedHeightPaper} style={{ backgroundColor: "black" }}>
+      <Paper className={fixedHeightPaper} style={{ backgroundColor: "yellow" }}>
         <section className={classes.section}>
-          <Grid
+          {/* <Grid
             direction="row"
             container
             spacing={1}
@@ -105,8 +112,21 @@ const Example = () => {
                 </form>
               </article>
             </Grid>
-          </Grid>
+          </Grid> */}
         </section>
+        <div className="col-md-6 col-sm-6 col-lg-6 col-xl-3">
+          <div className="card_dash_widget">
+            <div className="card_body">
+              <span className="dash_widget_icon">
+                <i className="fa fa-folder-open-o" />
+              </span>
+              <div className="dash_widget_info">
+                <h3>44</h3>
+                <span>Projects</span>
+              </div>
+            </div>
+          </div>
+        </div>
       </Paper>
     );
   }
@@ -146,6 +166,10 @@ const useStyles = makeStyles((theme) => ({
   card: {
     backgroundColor: "black",
   },
+  card_body: {
+    padding: "0",
+  },
+
   section: {
     width: "70vw",
     margin: "5rem auto",
@@ -199,6 +223,23 @@ const useStyles = makeStyles((theme) => ({
   },
   jobinfo: {
     fontWeight: "400",
+  },
+
+  dash_widget_icon: {
+    backgroundColor: "white",
+    borderRadius: "100%",
+    color: "#ff9b44",
+    display: "inline-block",
+    float: "left",
+    fontSize: "30px",
+    height: "60px",
+    lineHeight: "60px",
+    marginRight: "10px",
+    textAlign: "center",
+    width: "60px",
+  },
+  dash_widget_info: {
+    textAlign: "right",
   },
 }));
 

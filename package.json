@@ -21,6 +21,7 @@
     "lodash": "^4.17.21",
     "material-table": "^1.69.3",
     "moment": "^2.29.1",
+    "pdfmake": "^0.1.71",
     "prop-types": "^15.7.2",
     "react": "^17.0.2",
     "react-apollo": "^3.1.5",

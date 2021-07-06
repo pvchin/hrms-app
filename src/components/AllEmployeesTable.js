@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import MaterialTable from "material-table";
+import { useHistory } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import AddIcon from "@material-ui/icons/Add";
 import EditIcon from "@material-ui/icons/Edit";
@@ -24,6 +25,7 @@ const columns = [
 ];
 
 export default function AllEmployeesTable() {
+  let history = useHistory();
   const classes = useStyles();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
@@ -39,6 +41,7 @@ export default function AllEmployeesTable() {
     setIsEditingOff,
     resetSingleEmployee,
     resetEmployees,
+    getSingleEmployee,
   } = useEmployeesContext();
 
   const { resetTables } = useTablesContext();
@@ -52,20 +55,20 @@ export default function AllEmployeesTable() {
     const { id } = data;
     resetTables();
     resetSingleEmployee();
-    //resetEmployees();
+    resetEmployees();
     setEditEmployeeID(id);
     setIsEditingOn();
-    //getSingleEmployee(id);
-    handleDialogOpen();
-    //history.push("/singleemployee");
+    getSingleEmployee(id);
+    //handleDialogOpen();
+    history.push("/singleemployee");
   };
 
   const add_Employee = async (data) => {
     resetSingleEmployee();
     setEditEmployeeID("");
     setIsEditingOff();
-    handleDialogOpen();
-    //history.push("/singleemployee");
+    //handleDialogOpen();
+    history.push("/singleemployee");
   };
 
   const delete_Employee = (data) => {

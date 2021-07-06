@@ -8,7 +8,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 // import Orders from "./Orders";
 
 import Appbanner from "./Appbanner";
-import Example from "./Example7";
+import Example from "./Example8";
 import SideDrawer from "./SideDrawer";
 import SingleEmployeeStaff from "./SingleEmployeeStaff";
 import SingleLeave from "./SingleLeave";
@@ -129,10 +129,10 @@ export default function DashboardMain() {
             </Route>
             <Route exact path="/clients">
               <Clients />
-            </Route>
+            </Route> */}
             <Route exact path="/example">
               <Example />
-            </Route> */}
+            </Route>
             <Route exact path="/singleemployee">
               <SingleEmployeeStaff />
             </Route>

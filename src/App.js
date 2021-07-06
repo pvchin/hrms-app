@@ -12,7 +12,7 @@ import DashboardMain from "./components/DashboardMain";
 import Main from "./components/Main"
 
 const App = () => {
-  const [darkState, setDarkState] = useState(true);
+  const [darkState, setDarkState] = useState(false);
   const palletType = darkState ? "dark" : "light";
   const mainPrimaryColor = darkState ? orange[500] : lightBlue[500];
   const mainSecondaryColor = darkState ? deepOrange[900] : deepPurple[500];

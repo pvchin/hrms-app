@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import ReactToPrint from "react-to-print";
+import ReactToPrint, { useReactToPrint } from "react-to-print";
+import PrintPDFTest from "./PrintPDFTest"
 import MaterialTable from "material-table";
 import { Button, Icon, Grid, TextField } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
@@ -71,48 +72,12 @@ const PaySummary = ({ singlebatchpayslip }) => {
   const [isCalc, setIsCalc] = useState(true);
   const { payrun, updatePayrun, payslip_period } = usePayslipsContext();
 
-  const ComponentToPrint = () => {
-    return (
-      <div>
-        <h2>Hello</h2>
-        <table>
-          <thead>
-            <div>Title 1</div>
-
-            <th>column 1</th>
-            <th>column 2</th>
-            <th>column 3</th>
-          </thead>
-          <tbody>
-            <tr>
-              <td>data 1</td>
-              <td>data 2</td>
-              <td>data 3</td>
-            </tr>
-            <tr>
-              <td>data 1</td>
-              <td>data 2</td>
-              <td>data 3</td>
-            </tr>
-            <tr>
-              <td>data 1</td>
-              <td>data 2</td>
-              <td>data 3</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    );
+  const exportPdfTable = () => {
+    // change this number to generate more or less rows of data
+    PrintPDFTest();
   };
 
-  // const handlePrint = useReactToPrint({
-  //   content: () => componentRef.current,
-  // });
-
-  const handle_Print = (e) => {
-    e.preventDefault();
-    <Button>Print</Button>;
-  };
+  
 
   const handleCalcTotals = () => {
     const data = singlebatchpayslip;
@@ -198,15 +163,17 @@ const PaySummary = ({ singlebatchpayslip }) => {
   return (
     <div>
       {/* <div style={{ display: "none" }}> */}
-      {/* <div>
+      <div>
         <div>
-          <ReactToPrint
+         
+          <button onClick={() => exportPdfTable()}>Print this out!</button>
+          {/* <ReactToPrint
             trigger={() => <button>Print this out!</button>}
-            content={() => this.componentRef}
+            content={() => componentRef}
           />
-          <ComponentToPrint ref={(el) => (this.componentRef = el)} />
+          <ComponentToPrint ref={(el) => (componentRef = el)} /> */}
         </div>
-      </div> */}
+      </div>
       <form>
         <Grid container direction="row" style={{ border: "1px solid white" }}>
           <Grid

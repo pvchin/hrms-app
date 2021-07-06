@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Button,
   Icon,
@@ -8,15 +8,19 @@ import {
   Grid,
   Divider,
 } from "@material-ui/core";
-//import { Alert, AlertTitle } from "@material-ui/lab";
+
+import { Alert, AlertTitle } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core/styles";
 import MenuItem from "@material-ui/core/MenuItem";
 import { useEmployeesContext } from "../context/employees_context";
 import { Controller, useForm } from "react-hook-form";
+import { useRecoilState } from "recoil";
+import { loginLevelState } from "./data/atomdata";
 
 import EmpFamily from "./EmpFamily";
 import EmpEducations from "./EmpEducations";
 import EmpExperiences from "./EmpExperiences";
+import EmpTrainings from "./EmpTrainings";
 
 const initial_values = {
   name: "",
@@ -39,6 +43,7 @@ const initial_values = {
   workpermit_expirydate: null,
   siteallows_fee: 0,
   perdiem_fee: 0,
+  empno:"",
 };
 
 const EmployeeForm = () => {
@@ -72,8 +77,11 @@ const EmployeeForm = () => {
     workpermit_expirydate,
     siteallows_fee,
     perdiem_fee,
+    empno,
   } = single_employee || initial_values;
+  const [alert, setAlert] = useState(false);
   const { handleSubmit, control } = useForm();
+  const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
 
   const onSubmit = (data) => {
     if (isEditing) {
@@ -81,6 +89,10 @@ const EmployeeForm = () => {
     } else {
       addEmployee({ ...data });
     }
+    setAlert(true);
+    setTimeout(() => {
+      setAlert(false);
+    }, 3000);
     //loadEmployees();
     // <Alert severity="success">
     //   <AlertTitle>Success</AlertTitle>
@@ -110,6 +122,9 @@ const EmployeeForm = () => {
               >
                 Submit <Icon className={classes.rightIcon}>send</Icon>
               </Button>
+              {alert && (
+                <Alert severity="success">Changes have been saved!</Alert>
+              )}
             </div>
           </Grid>
           <Divider className={classes.divider} />
@@ -138,6 +153,29 @@ const EmployeeForm = () => {
                     );
                   }}
                   rules={{ required: "Name required" }}
+                />
+                <Controller
+                  name="empno"
+                  control={control}
+                  defaultValue={empno}
+                  render={({
+                    field: { onChange, value },
+                    fieldState: { error },
+                  }) => {
+                    return (
+                      <TextField
+                        label="Emp No"
+                        id="margin-normal"
+                        name="empno"
+                        defaultValue={empno}
+                        className={classes.textField}
+                        onChange={onChange}
+                        error={!!error}
+                        helperText={error ? error.message : null}
+                      />
+                    );
+                  }}
+                  //rules={{ required: "Name required" }}
                 />
               </div>
               <div>
@@ -302,89 +340,95 @@ const EmployeeForm = () => {
             <Divider className={classes.divider} />
             <div>
               <div>
-                <Controller
-                  name="basic_salary"
-                  control={control}
-                  defaultValue={basic_salary}
-                  render={({
-                    field: { onChange, value },
-                    fieldState: { error },
-                  }) => {
-                    return (
-                      <TextField
-                        label="Basic Salary"
-                        type="number"
-                        id="standard-number"
-                        name="basic_pay"
-                        defaultValue={basic_salary}
-                        className={classes.textField}
-                        //onChange={onChange}
-                        onChange={(e) => {
-                          onChange(parseInt(e.target.value, 10));
-                        }}
-                        error={!!error}
-                        helperText={error ? error.message : null}
-                      />
-                    );
-                  }}
-                  //rules={{ required: "IC No required" }}
-                />
+                {loginLevel.loginLevel !== "Admin" && (
+                  <Controller
+                    name="basic_salary"
+                    control={control}
+                    defaultValue={basic_salary}
+                    render={({
+                      field: { onChange, value },
+                      fieldState: { error },
+                    }) => {
+                      return (
+                        <TextField
+                          label="Basic Salary"
+                          type="number"
+                          id="standard-number"
+                          name="basic_pay"
+                          defaultValue={basic_salary}
+                          className={classes.textField}
+                          //onChange={onChange}
+                          onChange={(e) => {
+                            onChange(parseInt(e.target.value, 10));
+                          }}
+                          error={!!error}
+                          helperText={error ? error.message : null}
+                        />
+                      );
+                    }}
+                    //rules={{ required: "IC No required" }}
+                  />
+                )}
               </div>
               <div>
-                <Controller
-                  name="siteallows_fee"
-                  control={control}
-                  defaultValue={siteallows_fee}
-                  render={({
-                    field: { onChange, value },
-                    fieldState: { error },
-                  }) => {
-                    return (
-                      <TextField
-                        label="Site Allowances Fee"
-                        type="number"
-                        id="standard-number"
-                        name="siteallows_fee"
-                        defaultValue={siteallows_fee}
-                        className={classes.textField}
-                        //onChange={onChange}
-                        onChange={(e) => {
-                          onChange(parseInt(e.target.value, 10));
-                        }}
-                        error={!!error}
-                        helperText={error ? error.message : null}
-                      />
-                    );
-                  }}
-                  //rules={{ required: "IC No required" }}
-                />
-                <Controller
-                  name="perdiem_fee"
-                  control={control}
-                  defaultValue={perdiem_fee}
-                  render={({
-                    field: { onChange, value },
-                    fieldState: { error },
-                  }) => {
-                    return (
-                      <TextField
-                        label="Perdiem Fee"
-                        type="number"
-                        id="standard-number"
-                        name="perdiem_fee"
-                        defaultValue={perdiem_fee}
-                        className={classes.textField}
-                        //onChange={onChange}
-                        onChange={(e) => {
-                          onChange(parseInt(e.target.value, 10));
-                        }}
-                        error={!!error}
-                        helperText={error ? error.message : null}
-                      />
-                    );
-                  }}
-                  //rules={{ required: "IC No required" }}
-                />
+                {loginLevel.loginLevel !== "Admin" && (
+                  <Controller
+                    name="siteallows_fee"
+                    control={control}
+                    defaultValue={siteallows_fee}
+                    render={({
+                      field: { onChange, value },
+                      fieldState: { error },
+                    }) => {
+                      return (
+                        <TextField
+                          label="Site Allowances Fee"
+                          type="number"
+                          id="standard-number"
+                          name="siteallows_fee"
+                          defaultValue={siteallows_fee}
+                          className={classes.textField}
+                          //onChange={onChange}
+                          onChange={(e) => {
+                            onChange(parseInt(e.target.value, 10));
+                          }}
+                          error={!!error}
+                          helperText={error ? error.message : null}
+                        />
+                      );
+                    }}
+                    //rules={{ required: "IC No required" }}
+                  />
+                )}
+                {loginLevel.loginLevel !== "Admin" && (
+                  <Controller
+                    name="perdiem_fee"
+                    control={control}
+                    defaultValue={perdiem_fee}
+                    render={({
+                      field: { onChange, value },
+                      fieldState: { error },
+                    }) => {
+                      return (
+                        <TextField
+                          label="Perdiem Fee"
+                          type="number"
+                          id="standard-number"
+                          name="perdiem_fee"
+                          defaultValue={perdiem_fee}
+                          className={classes.textField}
+                          //onChange={onChange}
+                          onChange={(e) => {
+                            onChange(parseInt(e.target.value, 10));
+                          }}
+                          error={!!error}
+                          helperText={error ? error.message : null}
+                        />
+                      );
+                    }}
+                    //rules={{ required: "IC No required" }}
+                  />
+                )}
               </div>
               <div>
                 <Controller
@@ -648,15 +692,20 @@ const EmployeeForm = () => {
         </Paper>
       </form>
 
-      <Grid xs={12}>
-        <EmpFamily />
-      </Grid>
-      <Grid xs={12}>
-        <EmpEducations />
-      </Grid>
-      <Grid xs={12}>
-        <EmpExperiences />
-      </Grid>
+      <div>
+        <Grid xs={12}>
+          <EmpFamily />
+        </Grid>
+        <Grid xs={12}>
+          <EmpEducations />
+        </Grid>
+        <Grid xs={12}>
+          <EmpExperiences />
+        </Grid>
+        <Grid xs={12}>
+          <EmpTrainings />
+        </Grid>
+      </div>
     </div>
   );
 };

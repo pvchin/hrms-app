@@ -50,15 +50,9 @@ const columns = [
   { title: "Age", field: "age", type: "numeric" },
 ];
 
-
-
-export default function Emp_Family({
-  familydata,
-  setFamilydata,
-  handleDialogClose,
-}) {
+export default function Emp_Family() {
   const classes = useStyles();
-
+  const [familydata, setFamilydata] = useState([]);
   const { editEmployeeID } = useEmployeesContext();
   const {
     singlebatchfamily,
@@ -66,9 +60,14 @@ export default function Emp_Family({
     deleteFamily,
     updateFamily,
     singlebatch_family_loading,
+    singlebatch_family_error,
+    loadSingleBatchFamily,
   } = useTablesContext();
 
-  useEffect(() => {}, [familydata]);
+  //useEffect(() => {}, [familydata]);
+  useEffect(() => {
+    loadSingleBatchFamily(editEmployeeID);
+  }, []);
 
   const Save_FamilyData = () => {
     // delete unwanted data
@@ -98,28 +97,37 @@ export default function Emp_Family({
       }
     });
 
-    handleDialogClose();
+    //handleDialogClose();
   };
 
-  // const update_Family = (data) => {
-  //   const { id, rec_id, tableData, ...fields } = data;
-  //   setTimeout(() => {}, 1000);
+  const update_Family = (data) => {
+    const { id, rec_id, tableData, ...fields } = data;
+    setTimeout(() => {}, 1000);
 
-  //   updateFamily({ id, ...fields });
-  //   //loadSingleBatchFamily(editEmployeeID);
-  //   //loadSingleBatchFamily(editEmployeeID);
-  // };
+    updateFamily({ id, ...fields });
+    const rec = singlebatchfamily.filter((i) => i.id === id);
+    rec[0].name = data.name;
+    rec[0].birth_date = data.birth_date;
+     rec[0].relationship = data.relationship;
+    rec[0].age = data.age;
+    rec[0].phone = data.phone;
+    //loadSingleBatchFamily(editEmployeeID);
+    //loadSingleBatchFamily(editEmployeeID);
+  };
 
-  // const add_Family = (data) => {
-  //   addFamily({ ...data, empid: editEmployeeID });
-  //   //loadSingleBatchFamily(editEmployeeID);
-  // };
+  const add_Family = (data) => {
+    addFamily({ ...data, empid: editEmployeeID });
+    loadSingleBatchFamily(editEmployeeID);
+  };
 
-  // const delete_Family = (data) => {
-  //   const { id } = data;
-  //   deleteFamily(id);
-  //   //loadSingleBatchFamily(editEmployeeID);
-  // };
+  const delete_Family = (data) => {
+    const { id } = data;
+    deleteFamily(id);
+    // const index = data.tableData.id;
+    // const rec = singlebatchfamily
+    // rec.splice(index, 1);
+    loadSingleBatchFamily(editEmployeeID);
+  };
 
   if (singlebatch_family_loading) {
     return (
@@ -128,79 +136,84 @@ export default function Emp_Family({
       </div>
     );
   }
-  return (
-    <div className={classes.root}>
-      <div style={{ maxWidth: "100%", paddingTop: "5px" }}>
-        <MaterialTable
-          columns={columns}
-          data={familydata}
-          title="Family"
-          editable={{
-            onRowAdd: (newData) =>
-              new Promise((resolve, reject) => {
-                setTimeout(() => {
-                  setFamilydata([...familydata, newData]);
-                  resolve();
-                }, 1000);
-              }),
-            onRowUpdate: (newData, oldData) =>
-              new Promise((resolve, reject) => {
-                setTimeout(() => {
-                  const dataUpdate = [...familydata];
-                  const index = oldData.tableData.id;
-                  dataUpdate[index] = newData;
-                  setFamilydata([...dataUpdate]);
+  if (!singlebatch_family_loading) {
+    //setFamilydata([...singlebatchfamily]);
+    return (
+      <div className={classes.root}>
+        <div style={{ maxWidth: "100%", paddingTop: "5px" }}>
+          <MaterialTable
+            columns={columns}
+            data={singlebatchfamily}
+            title="Family"
+            editable={{
+              onRowAdd: (newData) =>
+                new Promise((resolve, reject) => {
+                  setTimeout(() => {
+                    // setFamilydata([...familydata, newData]);
+                    add_Family(newData)
+                    resolve();
+                  }, 1000);
+                }),
+              onRowUpdate: (newData, oldData) =>
+                new Promise((resolve, reject) => {
+                  setTimeout(() => {
+                    // const dataUpdate = [...familydata];
+                    // const index = oldData.tableData.id;
+                    // dataUpdate[index] = newData;
+                    // setFamilydata([...dataUpdate]);
+                    update_Family(newData);
 
-                  resolve();
-                }, 1000);
-              }),
-            onRowDelete: (oldData) =>
-              new Promise((resolve, reject) => {
-                setTimeout(() => {
-                  const dataDelete = [...familydata];
-                  const index = oldData.tableData.id;
-                  dataDelete.splice(index, 1);
-                  setFamilydata([...dataDelete]);
-
-                  resolve();
-                }, 1000);
-              }),
-          }}
-          options={{
-            filtering: true,
-            headerStyle: {
-              backgroundColor: "orange",
-              color: "primary",
-            },
-            showTitle: true,
-          }}
-          components={{
-            Toolbar: (props) => (
-              <div>
-                <MTableToolbar {...props} />
-                <div style={{ padding: "5px 10px" }}>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    color="secondary"
-                    className={classes.button}
-                    onClick={Save_FamilyData}
-                  >
-                    Update <Icon className={classes.rightIcon}>send</Icon>
-                  </Button>
+                    resolve();
+                  }, 1000);
+                }),
+              onRowDelete: (oldData) =>
+                new Promise((resolve, reject) => {
+                  setTimeout(() => {
+                    //const dataDelete = [...familydata];
+                    //const index = oldData.tableData.id;
+                    // dataDelete.splice(index, 1);
+                    // setFamilydata([...dataDelete]);
+                    delete_Family(oldData)
+                    resolve();
+                  }, 1000);
+                }),
+            }}
+            options={{
+              filtering: true,
+              headerStyle: {
+                backgroundColor: "orange",
+                color: "primary",
+              },
+              showTitle: true,
+            }}
+            components={{
+              Toolbar: (props) => (
+                <div>
+                  <MTableToolbar {...props} />
+                  {/* <div style={{ padding: "5px 10px" }}>
+                    <Button
+                      type="submit"
+                      variant="contained"
+                      color="secondary"
+                      className={classes.button}
+                      onClick={Save_FamilyData}
+                    >
+                      Update <Icon className={classes.rightIcon}>send</Icon>
+                    </Button>
+                  </div> */}
                 </div>
-              </div>
-            ),
-          }}
-          // localization={{
-          //   body: {
-          //     dateTimePickerLocalization: enGB,
-          //   },
-          // }}
-        />
+              ),
+            }}
+            // localization={{
+            //   body: {
+            //     dateTimePickerLocalization: enGB,
+            //   },
+            // }}
+          />
+        </div>
       </div>
-    </div>
-  );
+    );
+  }
 }
 
 const useStyles = makeStyles((theme) => ({

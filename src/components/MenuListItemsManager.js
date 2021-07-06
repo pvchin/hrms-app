@@ -198,7 +198,7 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: theme.spacing(2),
   },
   categoryHeaderPrimary: {
-    color: "white",
+    color: "primary",
   },
   content: {
     flexGrow: 1,
@@ -208,7 +208,7 @@ const useStyles = makeStyles((theme) => ({
   item: {
     paddingTop: 1,
     paddingBottom: 1,
-    color: "orange",
+    color: "primary",
     "&:hover,&:focus": {
       backgroundColor: "rgba(255, 255, 255, 0.08)",
     },

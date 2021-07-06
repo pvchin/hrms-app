@@ -72,7 +72,9 @@ export default function Emp_Training({
     singlebatch_training_loading,
   } = useTrainingsContext();
 
-  useEffect(() => {}, [trainingdata]);
+  useEffect(() => {
+    getSingleBatchTraining(editEmployeeID);
+  }, []);
 
   const Save_TrainingData = () => {
     //console.log(trainingdata);
@@ -108,6 +110,34 @@ export default function Emp_Training({
     handleDialogClose();
   };
 
+  const add_Training = (data) => {
+    addTraining({ ...data, empid: editEmployeeID });
+    getSingleBatchTraining(editEmployeeID);
+  };
+
+  const delete_Training = (data) => {
+    const { id } = data;
+    deleteTraining(id);
+    // const index = data.tableData.id;
+    // const rec = singlebatchfamily
+    // rec.splice(index, 1);
+    getSingleBatchTraining(editEmployeeID);
+  };
+
+  const update_Training = (data) => {
+    const { id, rec_id, tableData, ...fields } = data;
+    setTimeout(() => {}, 1000);
+
+    updateTraining({ id, ...fields });
+    const rec = singlebatch_training.filter((i) => i.id === id);
+    rec[0].institute = data.institute;
+    rec[0].course = data.course;
+    rec[0].from_date = data.from_date;
+    rec[0].to_date = data.to_date;
+    rec[0].expiry_date = data.expiry_date;
+    //loadSingleBatchFamily(editEmployeeID);
+    //loadSingleBatchFamily(editEmployeeID);
+  };
   if (singlebatch_training_loading) {
     return (
       <div>
@@ -120,35 +150,36 @@ export default function Emp_Training({
       <div style={{ maxWidth: "100%", paddingTop: "5px" }}>
         <MaterialTable
           columns={columns}
-          data={trainingdata}
+          data={singlebatch_training}
           title="Training"
           editable={{
             onRowAdd: (newData) =>
               new Promise((resolve, reject) => {
                 setTimeout(() => {
-                  setTrainingdata([...trainingdata, newData]);
+                  // setTrainingdata([...trainingdata, newData]);
+                  add_Training(newData);
                   resolve();
                 }, 1000);
               }),
             onRowUpdate: (newData, oldData) =>
               new Promise((resolve, reject) => {
                 setTimeout(() => {
-                  const dataUpdate = [...trainingdata];
-                  const index = oldData.tableData.id;
-                  dataUpdate[index] = newData;
-                  setTrainingdata([...dataUpdate]);
-
+                  // const dataUpdate = [...trainingdata];
+                  // const index = oldData.tableData.id;
+                  // dataUpdate[index] = newData;
+                  // setTrainingdata([...dataUpdate]);
+                  update_Training(newData)
                   resolve();
                 }, 1000);
               }),
             onRowDelete: (oldData) =>
               new Promise((resolve, reject) => {
                 setTimeout(() => {
-                  const dataDelete = [...trainingdata];
-                  const index = oldData.tableData.id;
-                  dataDelete.splice(index, 1);
-                  setTrainingdata([...dataDelete]);
-
+                  // const dataDelete = [...trainingdata];
+                  // const index = oldData.tableData.id;
+                  // dataDelete.splice(index, 1);
+                  // setTrainingdata([...dataDelete]);
+                  delete_Training(oldData)
                   resolve();
                 }, 1000);
               }),
@@ -165,7 +196,7 @@ export default function Emp_Training({
             Toolbar: (props) => (
               <div>
                 <MTableToolbar {...props} />
-                <div style={{ padding: "5px 10px" }}>
+                {/* <div style={{ padding: "5px 10px" }}>
                   <Button
                     type="submit"
                     variant="contained"
@@ -175,7 +206,7 @@ export default function Emp_Training({
                   >
                     Update <Icon className={classes.rightIcon}>send</Icon>
                   </Button>
-                </div>
+                </div> */}
               </div>
             ),
           }}

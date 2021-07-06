@@ -148,7 +148,7 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: theme.spacing(2),
   },
   categoryHeaderPrimary: {
-    color: "white",
+    color: "primary",
   },
   content: {
     flexGrow: 1,

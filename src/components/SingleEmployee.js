@@ -10,6 +10,8 @@ import Typography from "@material-ui/core/Typography";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { Link } from "react-router-dom";
 import EmployeeForm from "./EmployeeForm";
+import EmployeeFormNew from "./EmployeeFormNew";
+import { useEmployeesContext } from "../context/employees_context";
 
 const drawerWidth = 240;
 
@@ -35,33 +37,65 @@ const ToolbarHeader = ({ title }) => {
 const SingleEmployee = ({ title }) => {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
-  return (
-    <div>
-      <CssBaseline />
+  const { isEditing } = useEmployeesContext();
+  if (isEditing) {
+    return (
+      <div>
+        <CssBaseline />
 
-      <div className={classes.appBarSpacer}>
-        <Container maxWidth="lg" className={classes.container}>
-          <Grid container spacing={3}>
-            {/* <Grid item xs={12} md={8} lg={9}> */}
-            <Grid item xs={12}>
-              <Paper className={fixedHeightPaper}>
-                <Link to="/allemployees">
+        <div className={classes.appBarSpacer}>
+          <Container maxWidth="lg" className={classes.container}>
+            <Grid container spacing={3}>
+              {/* <Grid item xs={12} md={8} lg={9}> */}
+              <Grid item xs={12}>
+                <Paper className={fixedHeightPaper}>
+                  <Link to="/allemployees">
+                    <div>
+                      <ArrowBackIcon fontSize="large" color="primary" />
+                    </div>
+                  </Link>
                   <div>
-                    <ArrowBackIcon fontSize="large" color="primary" />
-                  </div>
-                </Link>
-                <div>
-                  {/* <ToolbarHeader title={title} /> */}
+                    {/* <ToolbarHeader title={title} /> */}
 
-                  <EmployeeForm />
-                </div>
-              </Paper>
+                    <EmployeeForm />
+                  </div>
+                </Paper>
+              </Grid>
             </Grid>
-          </Grid>
-        </Container>
+          </Container>
+        </div>
       </div>
+    );
+  } else {
+return (
+  <div>
+    <CssBaseline />
+
+    <div className={classes.appBarSpacer}>
+      <Container maxWidth="lg" className={classes.container}>
+        <Grid container spacing={3}>
+          {/* <Grid item xs={12} md={8} lg={9}> */}
+          <Grid item xs={12}>
+            <Paper className={fixedHeightPaper}>
+              <Link to="/allemployees">
+                <div>
+                  <ArrowBackIcon fontSize="large" color="primary" />
+                </div>
+              </Link>
+              <div>
+                {/* <ToolbarHeader title={title} /> */}
+
+                <EmployeeFormNew />
+              </div>
+            </Paper>
+          </Grid>
+        </Grid>
+      </Container>
     </div>
-  );
+  </div>
+);
+  }
+  
 };
 
 const useStyles = makeStyles((theme) => ({

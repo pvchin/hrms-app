@@ -61,7 +61,9 @@ export default function Emp_Experiences({
     singlebatch_experience_loading,
   } = useTablesContext();
 
-  useEffect(() => {}, [experiencedata]);
+  useEffect(() => {
+    loadSingleBatchExperience(editEmployeeID);
+  }, []);
 
   const Save_ExperienceData = () => {
     //console.log(experiencedata);
@@ -98,22 +100,31 @@ export default function Emp_Experiences({
     handleDialogClose();
   };
 
-  // const update_Experience = (data) => {
-  //   const { id, rec_id, ...fields } = data;
-  //   updateExperience({ id, ...fields });
-  //   loadSingleBatchExperience(editEmployeeID);
-  // };
+  const update_Experience = (data) => {
+    const { id, rec_id, tableData, ...fields } = data;
+    setTimeout(() => {}, 1000);
 
-  // const add_Experience = (data) => {
-  //   addExperience({ ...data, empid: editEmployeeID });
-  //   loadSingleBatchExperience(editEmployeeID);
-  // };
+    updateExperience({ id, ...fields });
+    const rec = singlebatchexperience.filter((i) => i.id === id);
+    rec[0].company = data.company;
+    rec[0].location = data.location;
+    rec[0].position = data.position;
+    rec[0].from_date = data.from_date;
+    rec[0].to_date = data.to_date;
+     rec[0].remark = data.remark;
+    //loadSingleBatchExperience(editEmployeeID);
+  };
 
-  // const delete_Experience = (data) => {
-  //   const { id } = data;
-  //   deleteExperience(id);
-  //   loadSingleBatchExperience(editEmployeeID);
-  // };
+  const add_Experience = (data) => {
+    addExperience({ ...data, empid: editEmployeeID });
+    loadSingleBatchExperience(editEmployeeID);
+  };
+
+  const delete_Experience = (data) => {
+    const { id } = data;
+    deleteExperience(id);
+    loadSingleBatchExperience(editEmployeeID);
+  };
 
   if (singlebatch_experience_loading) {
     return (
@@ -127,35 +138,35 @@ export default function Emp_Experiences({
       <div style={{ maxWidth: "100%", paddingTop: "5px" }}>
         <MaterialTable
           columns={columns}
-          data={experiencedata}
+          data={singlebatchexperience}
           title="Experience"
           editable={{
             onRowAdd: (newData) =>
               new Promise((resolve, reject) => {
                 setTimeout(() => {
-                  setExperiencedata([...experiencedata, newData]);
+                  add_Experience(newData)
                   resolve();
                 }, 1000);
               }),
             onRowUpdate: (newData, oldData) =>
               new Promise((resolve, reject) => {
                 setTimeout(() => {
-                  const dataUpdate = [...experiencedata];
-                  const index = oldData.tableData.id;
-                  dataUpdate[index] = newData;
-                  setExperiencedata([...dataUpdate]);
-
+                  // const dataUpdate = [...experiencedata];
+                  // const index = oldData.tableData.id;
+                  // dataUpdate[index] = newData;
+                  // setExperiencedata([...dataUpdate]);
+                  update_Experience(newData)
                   resolve();
                 }, 1000);
               }),
             onRowDelete: (oldData) =>
               new Promise((resolve, reject) => {
                 setTimeout(() => {
-                  const dataDelete = [...experiencedata];
-                  const index = oldData.tableData.id;
-                  dataDelete.splice(index, 1);
-                  setExperiencedata([...dataDelete]);
-
+                  // const dataDelete = [...experiencedata];
+                  // const index = oldData.tableData.id;
+                  // dataDelete.splice(index, 1);
+                  // setExperiencedata([...dataDelete]);
+                  delete_Experience(oldData)
                   resolve();
                 }, 1000);
               }),
@@ -172,7 +183,7 @@ export default function Emp_Experiences({
             Toolbar: (props) => (
               <div>
                 <MTableToolbar {...props} />
-                <div style={{ padding: "5px 10px" }}>
+                {/* <div style={{ padding: "5px 10px" }}>
                   <Button
                     type="submit"
                     variant="contained"
@@ -182,7 +193,7 @@ export default function Emp_Experiences({
                   >
                     Update <Icon className={classes.rightIcon}>send</Icon>
                   </Button>
-                </div>
+                </div> */}
               </div>
             ),
           }}

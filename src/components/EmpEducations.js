@@ -62,9 +62,13 @@ export default function Emp_Educations({
     deleteEducation,
     updateEducation,
     singlebatch_education_loading,
+    singlebatch_education_error,
+    loadSingleBatchEducation,
   } = useTablesContext();
 
-  //useEffect(() => {}, [educationdata]);
+  useEffect(() => {
+    loadSingleBatchEducation(editEmployeeID);
+  }, []);
 
   const Save_EducationData = () => {
     //console.log(educationdata);
@@ -101,21 +105,32 @@ export default function Emp_Educations({
     handleDialogClose();
   };
 
-  // const update_Education = (data) => {
-  //   updateEducation({ id: data.id, ...data });
-  //   loadSingleBatchEducation(editEmployeeID);
-  // };
+  const update_Education = (data) => {
+    const { id, rec_id, tableData, ...fields } = data;
+    setTimeout(() => {
+      updateEducation({ id, ...fields });
+    }, 1000);
+    //loadSingleBatchEducation(editEmployeeID);
+    const rec = singlebatcheducation.filter((i) => i.id === data.id);
+    rec[0].institution = data.institution;
+    rec[0].course = data.course;
+    rec[0].from_date = data.from_date;
+    rec[0].to_date = data.to_date;
+    rec[0].achievement = data.achievement;
+    rec[0].grade = data.grade;
+    rec[0].remark = data.remark;
+  };
 
-  // const add_Education = (data) => {
-  //   addEducation({ ...data, empid: editEmployeeID });
-  //   loadSingleBatchEducation(editEmployeeID);
-  // };
+  const add_Education = (data) => {
+    addEducation({ ...data, empid: editEmployeeID });
+    loadSingleBatchEducation(editEmployeeID);
+  };
 
-  // const delete_Education = (data) => {
-  //   const { id } = data;
-  //   deleteEducation(id);
-  //   loadSingleBatchEducation(editEmployeeID);
-  // };
+  const delete_Education = (data) => {
+    const { id } = data;
+    deleteEducation(id);
+    loadSingleBatchEducation(editEmployeeID);
+  };
 
   if (singlebatch_education_loading) {
     return (
@@ -129,34 +144,35 @@ export default function Emp_Educations({
       <div style={{ maxWidth: "100%", paddingTop: "5px" }}>
         <MaterialTable
           columns={columns}
-          data={educationdata}
+          data={singlebatcheducation}
           title="Education"
           editable={{
             onRowAdd: (newData) =>
               new Promise((resolve, reject) => {
                 setTimeout(() => {
-                  setEducationdata([...educationdata, newData]);
+                  //setEducationdata([...educationdata, newData]);
+                  add_Education(newData);
                   resolve();
                 }, 1000);
               }),
             onRowUpdate: (newData, oldData) =>
               new Promise((resolve, reject) => {
                 setTimeout(() => {
-                  const dataUpdate = [...educationdata];
-                  const index = oldData.tableData.id;
-                  dataUpdate[index] = newData;
-                  setEducationdata([...dataUpdate]);
-
+                  // const dataUpdate = [...educationdata];
+                  // const index = oldData.tableData.id;
+                  // dataUpdate[index] = newData;
+                  // setEducationdata([...dataUpdate]);
+                  update_Education(newData);
                   resolve();
                 }, 1000);
               }),
             onRowDelete: (oldData) =>
               new Promise((resolve, reject) => {
                 setTimeout(() => {
-                  const dataDelete = [...educationdata];
-                  const index = oldData.tableData.id;
-                  dataDelete.splice(index, 1);
-                  setEducationdata([...dataDelete]);
+                  // const dataDelete = [...educationdata];
+                  // const index = oldData.tableData.id;
+                  // dataDelete.splice(index, 1);
+                  delete_Education(oldData);
 
                   resolve();
                 }, 1000);
@@ -174,7 +190,7 @@ export default function Emp_Educations({
             Toolbar: (props) => (
               <div>
                 <MTableToolbar {...props} />
-                <div style={{ padding: "5px 10px" }}>
+                {/* <div style={{ padding: "5px 10px" }}>
                   <Button
                     type="submit"
                     variant="contained"
@@ -184,7 +200,7 @@ export default function Emp_Educations({
                   >
                     Update <Icon className={classes.rightIcon}>send</Icon>
                   </Button>
-                </div>
+                </div> */}
               </div>
             ),
           }}

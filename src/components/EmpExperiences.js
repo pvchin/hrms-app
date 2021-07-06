@@ -126,6 +126,9 @@ export default function Emp_Experiences({
     loadSingleBatchExperience(editEmployeeID);
   };
 
+   const Refresh_Data = () => {
+     loadSingleBatchExperience(editEmployeeID);
+   };
   if (singlebatch_experience_loading) {
     return (
       <div>
@@ -183,17 +186,17 @@ export default function Emp_Experiences({
             Toolbar: (props) => (
               <div>
                 <MTableToolbar {...props} />
-                {/* <div style={{ padding: "5px 10px" }}>
+                <div style={{ padding: "5px 10px" }}>
                   <Button
                     type="submit"
                     variant="contained"
                     color="secondary"
                     className={classes.button}
-                    onClick={Save_ExperienceData}
+                    onClick={Refresh_Data}
                   >
-                    Update <Icon className={classes.rightIcon}>send</Icon>
+                    Refresh <Icon className={classes.rightIcon}>send</Icon>
                   </Button>
-                </div> */}
+                </div>
               </div>
             ),
           }}

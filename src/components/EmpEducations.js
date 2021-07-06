@@ -132,6 +132,10 @@ export default function Emp_Educations({
     loadSingleBatchEducation(editEmployeeID);
   };
 
+   const Refresh_Data = () => {
+     loadSingleBatchEducation(editEmployeeID);
+  };
+  
   if (singlebatch_education_loading) {
     return (
       <div>
@@ -190,17 +194,17 @@ export default function Emp_Educations({
             Toolbar: (props) => (
               <div>
                 <MTableToolbar {...props} />
-                {/* <div style={{ padding: "5px 10px" }}>
+                <div style={{ padding: "5px 10px" }}>
                   <Button
                     type="submit"
                     variant="contained"
                     color="secondary"
                     className={classes.button}
-                    onClick={Save_EducationData}
+                    onClick={Refresh_Data}
                   >
-                    Update <Icon className={classes.rightIcon}>send</Icon>
+                    Refresh <Icon className={classes.rightIcon}>send</Icon>
                   </Button>
-                </div> */}
+                </div>
               </div>
             ),
           }}

@@ -123,7 +123,10 @@ export default function Emp_Training({
     // rec.splice(index, 1);
     getSingleBatchTraining(editEmployeeID);
   };
-
+  const Refresh_Data = () => {
+     getSingleBatchTraining(editEmployeeID);
+  };
+  
   const update_Training = (data) => {
     const { id, rec_id, tableData, ...fields } = data;
     setTimeout(() => {}, 1000);
@@ -196,17 +199,17 @@ export default function Emp_Training({
             Toolbar: (props) => (
               <div>
                 <MTableToolbar {...props} />
-                {/* <div style={{ padding: "5px 10px" }}>
+                <div style={{ padding: "5px 10px" }}>
                   <Button
                     type="submit"
                     variant="contained"
                     color="secondary"
                     className={classes.button}
-                    onClick={Save_TrainingData}
+                    onClick={Refresh_Data}
                   >
                     Update <Icon className={classes.rightIcon}>send</Icon>
                   </Button>
-                </div> */}
+                </div>
               </div>
             ),
           }}

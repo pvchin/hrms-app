@@ -64,7 +64,7 @@ export default function Emp_Family() {
     loadSingleBatchFamily,
   } = useTablesContext();
 
-  //useEffect(() => {}, [familydata]);
+  useEffect(() => {}, [familydata]);
   useEffect(() => {
     loadSingleBatchFamily(editEmployeeID);
   }, []);
@@ -103,12 +103,12 @@ export default function Emp_Family() {
   const update_Family = (data) => {
     const { id, rec_id, tableData, ...fields } = data;
     setTimeout(() => {}, 1000);
-
+   
     updateFamily({ id, ...fields });
     const rec = singlebatchfamily.filter((i) => i.id === id);
     rec[0].name = data.name;
     rec[0].birth_date = data.birth_date;
-     rec[0].relationship = data.relationship;
+    rec[0].relationship = data.relationship;
     rec[0].age = data.age;
     rec[0].phone = data.phone;
     //loadSingleBatchFamily(editEmployeeID);
@@ -116,6 +116,9 @@ export default function Emp_Family() {
   };
 
   const add_Family = (data) => {
+    // const { name, relationship } = data;
+    // const rec = singlebatchfamily;
+    // rec.push({ ...data });
     addFamily({ ...data, empid: editEmployeeID });
     loadSingleBatchFamily(editEmployeeID);
   };
@@ -129,6 +132,10 @@ export default function Emp_Family() {
     loadSingleBatchFamily(editEmployeeID);
   };
 
+  const Refresh_Data = () => {
+    loadSingleBatchFamily(editEmployeeID)
+  }
+
   if (singlebatch_family_loading) {
     return (
       <div>
@@ -137,7 +144,8 @@ export default function Emp_Family() {
     );
   }
   if (!singlebatch_family_loading) {
-    //setFamilydata([...singlebatchfamily]);
+    //const familydata = singlebatchfamily.map((r) => { return { ...r } })
+
     return (
       <div className={classes.root}>
         <div style={{ maxWidth: "100%", paddingTop: "5px" }}>
@@ -150,7 +158,7 @@ export default function Emp_Family() {
                 new Promise((resolve, reject) => {
                   setTimeout(() => {
                     // setFamilydata([...familydata, newData]);
-                    add_Family(newData)
+                    add_Family(newData);
                     resolve();
                   }, 1000);
                 }),
@@ -173,7 +181,7 @@ export default function Emp_Family() {
                     //const index = oldData.tableData.id;
                     // dataDelete.splice(index, 1);
                     // setFamilydata([...dataDelete]);
-                    delete_Family(oldData)
+                    delete_Family(oldData);
                     resolve();
                   }, 1000);
                 }),
@@ -190,17 +198,17 @@ export default function Emp_Family() {
               Toolbar: (props) => (
                 <div>
                   <MTableToolbar {...props} />
-                  {/* <div style={{ padding: "5px 10px" }}>
+                  <div style={{ padding: "5px 10px" }}>
                     <Button
                       type="submit"
                       variant="contained"
                       color="secondary"
                       className={classes.button}
-                      onClick={Save_FamilyData}
+                      onClick={Refresh_Data}
                     >
-                      Update <Icon className={classes.rightIcon}>send</Icon>
+                      Refresh <Icon className={classes.rightIcon}>send</Icon>
                     </Button>
-                  </div> */}
+                  </div>
                 </div>
               ),
             }}

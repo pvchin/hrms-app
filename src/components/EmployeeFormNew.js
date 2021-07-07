@@ -13,6 +13,7 @@ import { Alert } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core/styles";
 import MenuItem from "@material-ui/core/MenuItem";
 import { useEmployeesContext } from "../context/employees_context";
+import { useTablesContext } from "../context/tables_context";
 import { Controller, useForm } from "react-hook-form";
 import { useRecoilState } from "recoil";
 import { loginLevelState } from "./data/atomdata";
@@ -80,6 +81,7 @@ const EmployeeFormNew = () => {
     siteallows_fee,
     perdiem_fee,
   } = single_employee || initial_values;
+  const { departments, designations } = useTablesContext();
   const [alert, setAlert] = useState(false);
   const { handleSubmit, control } = useForm();
   const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
@@ -375,8 +377,9 @@ const EmployeeFormNew = () => {
                         />
                       );
                     }}
-                  //rules={{ required: "IC No required" }}
-                  />)}
+                    //rules={{ required: "IC No required" }}
+                  />
+                )}
                 {loginLevel.loginLevel !== "Admin" && (
                   <Controller
                     name="perdiem_fee"
@@ -403,8 +406,9 @@ const EmployeeFormNew = () => {
                         />
                       );
                     }}
-                  //rules={{ required: "IC No required" }}
-                  />)}
+                    //rules={{ required: "IC No required" }}
+                  />
+                )}
               </div>
               <div>
                 <Controller
@@ -632,7 +636,12 @@ const EmployeeFormNew = () => {
                         onChange={onChange}
                         error={!!error}
                         helperText={error ? error.message : null}
-                      />
+                        select
+                      >
+                        {designations && designations.map((r) => {
+                          return <MenuItem value={r.name}>{r.name}</MenuItem>;
+                        })}
+                      </TextField>
                     );
                   }}
                   //rules={{ required: "Email is required" }}
@@ -655,7 +664,12 @@ const EmployeeFormNew = () => {
                         onChange={onChange}
                         error={!!error}
                         helperText={error ? error.message : null}
-                      />
+                        select
+                      >
+                        {departments && departments.map((r) => {
+                          return <MenuItem value={r.name}>{r.name}</MenuItem>;
+                        })}
+                      </TextField>
                     );
                   }}
                   //rules={{ required: "Email is required" }}

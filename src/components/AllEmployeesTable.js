@@ -44,12 +44,26 @@ export default function AllEmployeesTable() {
     getSingleEmployee,
   } = useEmployeesContext();
 
-  const { resetTables } = useTablesContext();
+  const {
+    departments,
+    designations,
+    loadDepartments,
+    loadDesignations,
+    resetTables,
+  } = useTablesContext();
 
   useEffect(() => {
     resetEmployees();
     loadEmployees();
   }, []);
+
+  useEffect(() => {
+    loadDepartments();
+  }, []);
+
+   useEffect(() => {
+     loadDesignations();
+   }, []);
 
   const update_Employee = async (data) => {
     const { id } = data;

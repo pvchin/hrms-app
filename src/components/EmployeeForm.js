@@ -13,6 +13,7 @@ import { Alert, AlertTitle } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core/styles";
 import MenuItem from "@material-ui/core/MenuItem";
 import { useEmployeesContext } from "../context/employees_context";
+import { useTablesContext } from "../context/tables_context";
 import { Controller, useForm } from "react-hook-form";
 import { useRecoilState } from "recoil";
 import { loginLevelState } from "./data/atomdata";
@@ -79,6 +80,7 @@ const EmployeeForm = () => {
     perdiem_fee,
     empno,
   } = single_employee || initial_values;
+  const { departments, designations } = useTablesContext();
   const [alert, setAlert] = useState(false);
   const { handleSubmit, control } = useForm();
   const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
@@ -656,7 +658,12 @@ const EmployeeForm = () => {
                         onChange={onChange}
                         error={!!error}
                         helperText={error ? error.message : null}
-                      />
+                        select
+                      >
+                        {designations && designations.map((r) => {
+                          return <MenuItem value={r.name}>{r.name}</MenuItem>;
+                        })}
+                      </TextField>
                     );
                   }}
                   //rules={{ required: "Email is required" }}
@@ -679,7 +686,12 @@ const EmployeeForm = () => {
                         onChange={onChange}
                         error={!!error}
                         helperText={error ? error.message : null}
-                      />
+                        select
+                      >
+                        {departments && departments.map((r) => {
+                          return <MenuItem value={r.name}>{r.name}</MenuItem>;
+                        })}
+                      </TextField>
                     );
                   }}
                   //rules={{ required: "Email is required" }}

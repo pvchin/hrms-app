@@ -44,7 +44,7 @@ const initial_values = {
   workpermit_expirydate: null,
   siteallows_fee: 0,
   perdiem_fee: 0,
-  role: "Staff",
+  role: 1,
   password: "abc123*",
   empno: "",
 };
@@ -638,9 +638,10 @@ const EmployeeFormNew = () => {
                         helperText={error ? error.message : null}
                         select
                       >
-                        {designations && designations.map((r) => {
-                          return <MenuItem value={r.name}>{r.name}</MenuItem>;
-                        })}
+                        {designations &&
+                          designations.map((r) => {
+                            return <MenuItem value={r.name}>{r.name}</MenuItem>;
+                          })}
                       </TextField>
                     );
                   }}
@@ -666,9 +667,10 @@ const EmployeeFormNew = () => {
                         helperText={error ? error.message : null}
                         select
                       >
-                        {departments && departments.map((r) => {
-                          return <MenuItem value={r.name}>{r.name}</MenuItem>;
-                        })}
+                        {departments &&
+                          departments.map((r) => {
+                            return <MenuItem value={r.name}>{r.name}</MenuItem>;
+                          })}
                       </TextField>
                     );
                   }}

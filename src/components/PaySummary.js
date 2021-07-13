@@ -1,12 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import ReactToPrint, { useReactToPrint } from "react-to-print";
-import PrintPDFTest from "./PrintPDFTest"
+import PrintPaySummary from "./PrintPaySummary";
+import { Heading, Text } from "@chakra-ui/react";
 import MaterialTable from "material-table";
 import { Button, Icon, Grid, TextField } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useRecoilState } from "recoil";
 import { payrunState, payrunStatusState } from "./data/atomdata";
 import { usePayslipsContext } from "../context/payslips_context";
+import { ComponentToPrint } from "./ComponentToPrint";
 
 const columns = [
   {
@@ -72,12 +74,13 @@ const PaySummary = ({ singlebatchpayslip }) => {
   const [isCalc, setIsCalc] = useState(true);
   const { payrun, updatePayrun, payslip_period } = usePayslipsContext();
 
-  const exportPdfTable = () => {
-    // change this number to generate more or less rows of data
-    PrintPDFTest();
-  };
+  const handlePrint = useReactToPrint({
+    content: () => componentRef.current,
+  });
 
-  
+  const exportPdfTable = () => {
+    PrintPaySummary((singlebatchpayslip = { singlebatchpayslip }));
+  };
 
   const handleCalcTotals = () => {
     const data = singlebatchpayslip;
@@ -165,22 +168,22 @@ const PaySummary = ({ singlebatchpayslip }) => {
       {/* <div style={{ display: "none" }}> */}
       <div>
         <div>
-         
-          <button onClick={() => exportPdfTable()}>Print this out!</button>
-          {/* <ReactToPrint
-            trigger={() => <button>Print this out!</button>}
-            content={() => componentRef}
-          />
-          <ComponentToPrint ref={(el) => (componentRef = el)} /> */}
+          <button onClick={() => exportPdfTable()}>Print PDF this out!</button>
         </div>
+        {/* <div>
+          <div style={{ display: "none" }}>
+            <ComponentToPrint ref={componentRef} />
+          </div>
+          <button onClick={handlePrint}>Print this out!</button>
+        </div> */}
       </div>
       <form>
-        <Grid container direction="row" style={{ border: "1px solid white" }}>
+        <Grid container direction="row" style={{ border: "1px solid black" }}>
           <Grid
             item
             sm={12}
             align="center"
-            style={{ border: "1px solid white" }}
+            style={{ border: "1px solid black" }}
           >
             <div>
               {/* <Button
@@ -327,7 +330,7 @@ const PaySummary = ({ singlebatchpayslip }) => {
                 toolbar: false,
 
                 headerStyle: {
-                  backgroundColor: "orange",
+                  backgroundColor: "lightblue",
                   color: "primary",
                 },
                 showTitle: false,

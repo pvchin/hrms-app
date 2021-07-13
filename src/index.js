@@ -1,6 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import DevTools from "react-async-devtools"
+import { QueryClient, QueryClientProvider } from "react-query";
+import { ReactQueryDevtools } from "react-query/devtools";
+import { Loading } from "./components/app/Loading"
 import { RecoilRoot } from "recoil";
 import { ApolloProvider } from "react-apollo";
 import { ApolloClient } from "apollo-client";
@@ -24,28 +26,34 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
+const queryClient = new QueryClient();
+
 ReactDOM.render(
   <React.StrictMode>
-    <RecoilRoot>
-      <ApolloProvider client={client}>
-        <EmployeesProvider>
-          <PayslipsProvider>
-            <LeavesProvider>
-              <ExpensesProvider>
-                <DailyAllowancesProvider>
-                  <TrainingsProvider>
-                    <TablesProvider>
-                      {/* <DevTools /> */}
-                      <App />
-                    </TablesProvider>
-                  </TrainingsProvider>
-                </DailyAllowancesProvider>
-              </ExpensesProvider>
-            </LeavesProvider>
-          </PayslipsProvider>
-        </EmployeesProvider>
-      </ApolloProvider>
-    </RecoilRoot>
+    <QueryClientProvider client={queryClient}>
+      <RecoilRoot>
+        <ApolloProvider client={client}>
+          <EmployeesProvider>
+            <PayslipsProvider>
+              <LeavesProvider>
+                <ExpensesProvider>
+                  <DailyAllowancesProvider>
+                    <TrainingsProvider>
+                      <TablesProvider>
+                        {/* <Loading /> */}
+                        {/* <DevTools /> */}
+                        <App />
+                      </TablesProvider>
+                    </TrainingsProvider>
+                  </DailyAllowancesProvider>
+                </ExpensesProvider>
+              </LeavesProvider>
+            </PayslipsProvider>
+          </EmployeesProvider>
+        </ApolloProvider>
+      </RecoilRoot>
+      <ReactQueryDevtools />
+    </QueryClientProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );

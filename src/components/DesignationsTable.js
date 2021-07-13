@@ -1,8 +1,11 @@
-import React, { useEffect } from "react";
+import React from "react";
 import MaterialTable from "material-table";
 import { makeStyles } from "@material-ui/core/styles";
 
-import { useTablesContext } from "../context/tables_context";
+import { useDesignations } from "./designations/useDesignations";
+import { useUpdateDesignations } from "./designations/useUpdateDesignations";
+import { useDeleteDesignations } from "./designations/useDeleteDesignations";
+import { useAddDesignations } from "./designations/useAddDesignations";
 
 const columns = [
   {
@@ -12,44 +15,26 @@ const columns = [
 ];
 
 export default function UpdateDesignations() {
- 
   const classes = useStyles();
-  const {
-    loadDesignations,
-    designations,
-    designations_loading,
-    addDesignation,
-    deleteDesignation,
-    updateDesignation,
-  } = useTablesContext();
-
-  useEffect(() => {
-    loadDesignations();
-  }, []);
+  const { designations } = useDesignations();
+  const updateDesignations = useUpdateDesignations();
+  const deleteDesignations = useDeleteDesignations();
+  const addDesignations = useAddDesignations();
 
   const update_Designation = (data) => {
-    updateDesignation({ id: data.id, ...data });
-    loadDesignations();
+    const { id, rec_id, ...fields } = data;
+    updateDesignations({ id, ...fields });
   };
 
   const add_Designation = (data) => {
-    addDesignation(data);
-    loadDesignations();
+    addDesignations(data);
   };
 
   const delete_Designation = (data) => {
     const { id } = data;
-    deleteDesignation(id);
-    loadDesignations();
+    deleteDesignations(id);
   };
 
-  if (designations_loading) {
-    return (
-      <div>
-        <h2>Loading.....Designations</h2>
-      </div>
-    );
-  }
   return (
     <div className={classes.root}>
       <div style={{ maxWidth: "100%", paddingTop: "5px" }}>

@@ -17,7 +17,7 @@ import LeaveTableView from "./LeaveTableView";
 import LeaveTableAdmin from "./LeaveTableAdmin";
 import ExpenseTableView from "./ExpenseTableView";
 import ExpenseTableAdmin from "./ExpenseTableAdmin";
-import PayslipTableView from "./PayslipTableView";
+import PayslipTableViewAdmin from "./PayslipTableViewAdmin";
 import PayslipTableAdmin from "./PayslipTableAdmin";
 import DailyAllowancesTableView from "./DailyAllowancesTableView";
 import DailyAllowancesTableAdmin from "./DailyAllowancesTableAdmin";
@@ -100,8 +100,8 @@ const EmployeeView = () => {
     <div>
       <div className={classes.appBarSpacer} />
       <div style={{ paddingLeft: 50 }}>
-        <h2>Welcome {loginLevel.loginUser}!</h2>
-        <h3>Dashboard</h3>
+        {/* <h2>Welcome {loginLevel.loginUser}!</h2>
+        <h3>Dashboard</h3> */}
       </div>
       <Container maxWidth="lg" className={classes.container}>
         <Grid container spacing={3}>
@@ -116,15 +116,15 @@ const EmployeeView = () => {
           </Grid>
           {/* Recent Deposits */}
 
-          <Grid item xs={6} md={8} lg={6}>
+          <Grid item xs={12} md={8} lg={12}>
             <CardLayout2
               title="Payroll pending for approval"
               handleClick={handlePayslipDialogOpen}
             >
-              <PayslipTableView />
+              <PayslipTableViewAdmin />
             </CardLayout2>
           </Grid>
-          <Grid item xs={6} md={8} lg={6}>
+          <Grid item xs={12} md={8} lg={12}>
             <CardLayout2
               title="Site Allowances pending for approval"
               handleClick={handleDailyAllowancesDialogOpen}
@@ -132,7 +132,7 @@ const EmployeeView = () => {
               <DailyAllowancesTableView />
             </CardLayout2>
           </Grid>
-          <Grid item xs={6} md={8} lg={6}>
+          <Grid item xs={12} md={8} lg={12}>
             <CardLayout2
               title="Leaves pending for approval"
               handleClick={handleLeaveDialogOpen}
@@ -141,7 +141,7 @@ const EmployeeView = () => {
             </CardLayout2>
           </Grid>
           {/* Recent Orders */}
-          <Grid item xs={6} md={8} lg={6}>
+          <Grid item xs={12} md={8} lg={12}>
             <CardLayout2
               title="Expenses pending for approval"
               handleClick={handleExpenseDialogOpen}

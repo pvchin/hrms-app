@@ -111,6 +111,18 @@ const MenuListItems = () => {
         </List>
       </Collapse>
 
+      <Link to="/useraccess">
+        <ListItem button>
+          <ListItemIcon className={classes.itemIcon}>
+            <PeopleIcon />
+          </ListItemIcon>
+          <ListItemText
+            primary="User Access Settings"
+            className={classes.categoryHeaderPrimary}
+          />
+        </ListItem>
+      </Link>
+
       {/* <Link to="/expenses">
         <ListItem button>
           <ListItemIcon className={classes.itemIcon}>

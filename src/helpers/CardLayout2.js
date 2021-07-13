@@ -17,7 +17,7 @@ const CardLayout2 = ({ title, children, handleClick }) => {
 
   return (
     <Card className={classes.card}>
-      <CardHeader title={title} />
+      {title && <CardHeader title={title} />}
       <CardContent>{children}</CardContent>
     </Card>
   );

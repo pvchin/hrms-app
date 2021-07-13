@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useReactToPrint } from "react-to-print";
+import { Heading, Text} from "@chakra-ui/react"
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import { useHistory } from "react-router-dom";
@@ -152,18 +153,23 @@ const Payrunbatch = () => {
   }
 
   return (
-    <Paper className={fixedHeightPaper} style={{ backgroundColor: "black" }}>
+    <Paper
+      className={fixedHeightPaper}
+      style={{ backgroundColor: "lightcyan" }}
+    >
       <section className={classes.section}>
-        <Grid container direction="row" style={{ border: "1px solid white" }}>
+        <Grid container direction="row" style={{ border: "1px solid black" }}>
           <Grid
             item
             sm={2}
             align="center"
-            style={{ border: "1px solid white" }}
+            style={{ border: "1px solid black" }}
           >
-            <h2>Employees</h2>
+            <Heading as="h4" size="md">
+              Employees
+            </Heading>
           </Grid>
-          <Grid item sm={10} style={{ border: "1px solid white" }}>
+          <Grid item sm={10} style={{ border: "1px solid black" }}>
             <div
               style={{
                 marginLeft: 14,
@@ -178,7 +184,9 @@ const Payrunbatch = () => {
                   flexDirection: "row",
                 }}
               >
-                <h2>Payroll Details</h2>
+                <Heading as="h4" size="md">
+                  Payroll Details
+                </Heading>
               </div>
 
               <div style={{ marginTop: 10, marginLeft: 20 }}>
@@ -195,7 +203,7 @@ const Payrunbatch = () => {
             item
             sm={2}
             align="center"
-            style={{ border: "1px solid white" }}
+            style={{ border: "1px solid black" }}
           >
             <div>
               {singlebatchpayslip &&
@@ -225,18 +233,18 @@ const Payrunbatch = () => {
             item
             sm={10}
             align="center"
-            style={{ border: "1px solid white" }}
+            style={{ border: "1px solid black" }}
           >
             <Grid
               container
               direction="row"
-              style={{ border: "1px solid white" }}
+              style={{ border: "1px solid black" }}
             >
               <Grid
                 item
                 sm={12}
                 align="left"
-                style={{ border: "1px solid white" }}
+                style={{ border: "1px solid black" }}
               >
                 <div style={{ padding: 5 }}>
                   <ButtonGroup
@@ -349,7 +357,7 @@ const useStyles = makeStyles((theme) => ({
     height: 800,
   },
   paper: {
-    padding: theme.spacing(10),
+    paddingTop: theme.spacing(10),
     // display: "flex",
     display: "flex",
     overflow: "auto",
@@ -357,10 +365,10 @@ const useStyles = makeStyles((theme) => ({
     border: "1px solid",
     width: "100%",
     color: "primary",
-    bcakgroundColor: "black",
+    bcakgroundColor: "white",
   },
   card: {
-    backgroundColor: "black",
+    backgroundColor: "white",
   },
   section: {
     width: "80vw",

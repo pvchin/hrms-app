@@ -22,10 +22,19 @@ import { CustomDialog } from "../helpers/CustomDialog";
 import { useDailyAllowancesContext } from "../context/dailyallowances_context";
 import DailyAllowancesAddPeriod from "./DailyAllowancesAddPeriod";
 import DailyAllowsDetlsTableStaff from "./DailyAllowsDetlsTableStaff";
+import { useDailyAllows } from "./dailyallows/useDailyAllows"
+import { useAddDailyAllows } from "./dailyallows/useAddDailyAllows";
+import { useUpdateDailyAllows } from "./dailyallows/useUpdateDailyAllows";
+import { useDeleteDailyAllows } from "./dailyallows/useDeleteDailyAllows";
+
 
 export default function DailyAllowancesTableStaff() {
   let history = useHistory();
   const classes = useStyles();
+  const { dailyallows, setFilter } = useDailyAllows()
+  const addDailyAllows = useAddDailyAllows();
+  const updateDailyAllows = useUpdateDailyAllows();
+  const deleteDailyAllows = useDeleteDailyAllows();
   const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
   const [isAddPeriodDialogOpen, setIsAddPeriodDialogOpen] = useState(false);
   const [tmpallowsdata, setTmpallowsdata] = useState([]);
@@ -79,24 +88,24 @@ export default function DailyAllowancesTableStaff() {
       editable: "never",
     },
     { title: "Amount", field: "amount", type: "currency", editable: "never" },
-    {
-      title: "Status",
-      field: "status",
-      editComponent: (props) => (
-        <TextField
-          //defaultValue={props.value || null}
-          onChange={(e) => props.onChange(e.target.value)}
-          style={{ width: 100 }}
-          value={props.value}
-          select
-        >
-          <MenuItem value="Pending">Pending</MenuItem>
-          {/* <MenuItem value="Approve">Approve</MenuItem>
-        <MenuItem value="Reject">Reject</MenuItem>
-        <MenuItem value="Cancel">Cancel</MenuItem> */}
-        </TextField>
-      ),
-    },
+    // {
+    //   title: "Status",
+    //   field: "status",
+    //   editComponent: (props) => (
+    //     <TextField
+    //       //defaultValue={props.value || null}
+    //       onChange={(e) => props.onChange(e.target.value)}
+    //       style={{ width: 100 }}
+    //       value={props.value}
+    //       select
+    //     >
+    //       <MenuItem value="Pending">Pending</MenuItem>
+    //       {/* <MenuItem value="Approve">Approve</MenuItem>
+    //     <MenuItem value="Reject">Reject</MenuItem>
+    //     <MenuItem value="Cancel">Cancel</MenuItem> */}
+    //     </TextField>
+    //   ),
+    // },
   ];
 
   const Save_DailyAllowancesData = () => {
@@ -156,18 +165,17 @@ export default function DailyAllowancesTableStaff() {
     setIsAllowsDetlDialogOpen(false);
   };
 
-  const Refresh_SiteAllows = () => {
-    loadEmpDailyAllowances(loginLevel.loginUserId);
-  };
+  
+  useEffect(() => {
+    setFilter(loginLevel.loginUserId);
+  }, []);
 
   return (
     <div className={classes.root}>
       <div style={{ maxWidth: "100%", paddingTop: "5px" }}>
         <MaterialTable
           columns={columns}
-          data={dailyallowances.filter(
-            (item) => item.empid === loginLevel.loginUserId
-          )}
+          data={dailyallows}
           title={title}
           icons={{
             Add: (props) => <AddIcon />,

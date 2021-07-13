@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
+import clsx from "clsx"; 
+import { Heading } from "@chakra-ui/react";
 import axios from "axios";
 import MaterialTable from "material-table";
 import { Grid, List, ListItem, ListItemText } from "@material-ui/core";
@@ -9,10 +10,9 @@ import { loginLevelState } from "./data/atomdata";
 import { useEmployeesContext } from "../context/employees_context";
 import { useLeavesContext } from "../context/leaves_context";
 import { leaves_url } from "../utils/constants";
+import { useLeaves } from "./leaves/useLeaves";
 
 const drawerWidth = 240;
-
-
 
 // const fetchExpensesDetails = selector({
 //   key: "fetchExpensesDetailsSelector",
@@ -31,44 +31,28 @@ const drawerWidth = 240;
 const LeaveTableViewStaff = () => {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+  const { leaves, filter, setFilter, setLeaveId } = useLeaves();
   const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
   const [userdata, setUserdata] = useState([]);
   //const [userdata, setUserdata] = useRecoilState(userdatastate);
   //const ExpensesDetails = useRecoilValueLoadable(fetchExpensesDetails);
   //const { state, contents } = ExpensesDetails;
   const { editEmployeeID } = useEmployeesContext();
-  const {
-    leaves,
-    leaves_loading,
-    leaves_error,
-        loadEmpLeaves,
-  } = useLeavesContext();
+  const { leaves_loading, leaves_error, loadEmpLeaves } =
+    useLeavesContext();
 
   useEffect(() => {
-    loadEmpLeaves(editEmployeeID);
+    setFilter(loginLevel.loginUserId);
   }, []);
 
-  if (leaves_error) {
-    return (
-      <div>
-        <h2>Internet connections problem!</h2>
-      </div>
-    );
-  }
-
-  if (leaves_loading) {
-    return (
-      <div>
-        <h2>Loading....Expenses</h2>
-      </div>
-    );
-  }
-
+  
   return (
     <List className={classes.root}>
+  
       <Grid container direction="row">
+        <Heading as="h4" size="md">Leaves Schedule</Heading>
         {leaves
-          // .filter((i) => i.empid === loginLevel.loginUserId)
+          .filter((i) => i.status === "Pending")
           .map((row) => {
             return (
               <ListItem key={row.id}>

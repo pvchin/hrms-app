@@ -45,19 +45,19 @@ const columns = [
 //   default: [],
 // });
 
-const fetchOnLeavesDetails = selector({
-  key: "onLeaveDetailsSelector",
-  get: async ({ get }) => {
-    try {
-      const { data } = await axios.get(leaves_url);
-      const onleavesdata = data;
+// const fetchOnLeavesDetails = selector({
+//   key: "onLeaveDetailsSelector",
+//   get: async ({ get }) => {
+//     try {
+//       const { data } = await axios.get(leaves_url);
+//       const onleavesdata = data;
 
-      return data;
-    } catch (error) {
-      throw error;
-    }
-  },
-});
+//       return data;
+//     } catch (error) {
+//       throw error;
+//     }
+//   },
+// });
 
 const loadUsers = async () => {
   const { data } = await axios.get(leaves_url);

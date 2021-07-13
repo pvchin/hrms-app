@@ -12,6 +12,7 @@ import {
   NativeSelect,
   InputLabel,
 } from "@material-ui/core";
+import { Heading, Text } from "@chakra-ui/react";
 import { Autocomplete } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core/styles";
 import { usePayslipsContext } from "../context/payslips_context";
@@ -163,14 +164,20 @@ const PayForm = ({
     <form onSubmit={handleFormSubmit}>
       <Grid container direction="row" style={{ border: "1px solid white" }}>
         <Grid item sm={4} align="center" style={{ border: "1px solid white" }}>
-          <h2>Allowances</h2>
+          <Text as="u" fontSize="md">
+            Allowances
+          </Text>
         </Grid>
 
         <Grid item sm={4} align="center" style={{ border: "1px solid white" }}>
-          <h2>Deductions</h2>
+          <Text as="u" fontSize="md">
+            Deductions
+          </Text>
         </Grid>
         <Grid item sm={4} align="center" style={{ border: "1px solid white" }}>
-          <h2>Summary</h2>
+          <Text as="u" fontSize="md">
+            Summary
+          </Text>
         </Grid>
       </Grid>
       <Grid container direction="row" style={{ border: "1px solid white" }}>

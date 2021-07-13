@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import MaterialTable, { MTableToolbar } from "material-table";
 import { TextField, MenuItem, Button, Icon } from "@material-ui/core";
-import { Alert} from "@material-ui/lab"
+import { Alert } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core/styles";
 import { useRecoilState } from "recoil";
 import { loginLevelState } from "./data/atomdata";
@@ -15,6 +15,10 @@ import { CustomDialog } from "../helpers/CustomDialog";
 import { AlertDialog } from "../helpers/AlertDialog";
 import { useLeavesContext } from "../context/leaves_context";
 import { useEmployeesContext } from "../context/employees_context";
+import { useLeaves } from "./leaves/useLeaves";
+import { useAddLeaves } from "./leaves/useAddLeaves";
+import { useDeleteLeaves } from "./leaves/useDeleteLeaves";
+import { useUpdateLeaves } from "./leaves/useUpdateLeaves";
 
 const initial_form = {
   name: "",
@@ -85,6 +89,10 @@ const columns = [
 
 export default function LeaveTableStaff() {
   const classes = useStyles();
+  const { leaves, filter, setFilter, setLeaveId } = useLeaves();
+  const updateLeaves = useUpdateLeaves();
+  const addLeaves = useAddLeaves();
+  const deleteLeaves = useDeleteLeaves();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [alertSuccess, setAlertSuccess] = useState(false);
@@ -92,23 +100,15 @@ export default function LeaveTableStaff() {
   const [formdata, setFormdata] = useState(initial_form);
   const { editEmployeeID } = useEmployeesContext();
   const {
-    leaves,
     editLeaveID,
-    updateLeave,
-    addLeave,
-    deleteLeave,
     setEditLeaveID,
     setIsLeaveEditingOn,
     setIsLeaveEditingOff,
   } = useLeavesContext();
 
-  // useEffect(() => {
-  //   loadLeaves();
-  // }, []);
-
-  // useEffect(() => {
-  //   loadEmployees();
-  // }, []);
+  useEffect(() => {
+    setFilter(loginLevel.loginUserId);
+  }, []);
 
   const update_Leave = async (data) => {
     const { id } = data;
@@ -123,7 +123,7 @@ export default function LeaveTableStaff() {
   const add_Leave = async (data) => {
     // const { id } = data;
     //setEditLeaveID("");
-    setFormdata(initial_form)
+    setFormdata(initial_form);
     setFormdata(initial_form);
     setIsLeaveEditingOff();
     handleDialogOpen();
@@ -159,40 +159,9 @@ export default function LeaveTableStaff() {
 
   const handleOnDeleteConfirm = () => {
     const id = editLeaveID;
-    //const index = leaves.findIndex((r) => r.id === id);
-    // console.log("leave delete", index, leaves);
-    // leaves.splice(index, 1);
-    //deleteLeave(id);
-    const leavedata = leaves.filter((r) => r.id === editLeaveID);
-    leavedata[0].isdelete = true;
-    console.log(leaves);
+    deleteLeaves(id);
   };
-
-  const Save_Leavedata = (e) => {
-    e.preventDefault();
-
-    leaves.forEach((row) => {
-      if (row.isdelete) {
-        deleteLeave(row.id);
-      }
-      if (row.id) {
-        const { rec_id, ...fields } = row;
-        updateLeave({ id: editLeaveID, ...fields });
-      }
-      if (!row.id) {
-        addLeave({ ...row, empid: loginLevel.loginUserId });
-      }
-    });
-    setAlertSuccess(true)
-  };
-
-  // if (leaves_loading) {
-  //   return (
-  //     <div>
-  //       <h2>Loading...Leaves</h2>
-  //     </div>
-  //   );
-  // }
+  
   return (
     <div className={classes.root}>
       {/* <h1>Expenses Claims Application</h1> */}
@@ -200,13 +169,7 @@ export default function LeaveTableStaff() {
       <div style={{ maxWidth: "100%", paddingTop: "5px" }}>
         <MaterialTable
           columns={columns}
-          data={leaves
-            .filter(
-              (item) => item.empid === loginLevel.loginUserId && !item.isdelete
-            )
-            .map((row) => {
-              return { ...row };
-            })}
+          data={leaves}
           title="Leave Application"
           icons={{
             Add: (props) => <AddIcon />,
@@ -280,22 +243,6 @@ export default function LeaveTableStaff() {
             Toolbar: (props) => (
               <div>
                 <MTableToolbar {...props} />
-                <div style={{ padding: "5px 10px" }}>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    color="secondary"
-                    className={classes.button}
-                    onClick={(e) => Save_Leavedata(e)}
-                  >
-                    Update <Icon className={classes.rightIcon}>send</Icon>
-                  </Button>
-                </div>
-                {alertSuccess && (
-                  <Alert severity="success" onClose={() => setAlertSuccess(false)}>
-                    Changes being saved!
-                  </Alert>
-                )}
               </div>
             ),
           }}

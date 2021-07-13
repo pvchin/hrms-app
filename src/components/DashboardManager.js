@@ -17,6 +17,7 @@ import SingleDailyAllowance from "./SingleDailyAllowance";
 import SingleDailyAllowsDetls from "./SingleDailyAllowsDetls";
 import BatchDailyAllowances from "./BatchDailyAllowances";
 import SinglePayslip from "./SinglePayslip";
+import UserAccessTable from "./UserAccessTable"
 import Login from "./LoginForm";
 import Payrun from "./Payrun"
 import Payrunbatch from "./Payrunbatch"
@@ -27,6 +28,7 @@ import {
   Leave,
   Expenses,
   Payslip,
+  UserAccess,
   BatchPayslips,
   Payroll,
   Departments,
@@ -67,7 +69,7 @@ export default function DashboardMain() {
           handleDrawerClose={handleDrawerClose}
           open={open}
           setLogin={setLogin}
-          title="Human Resource Management System - AppSmiths Sutera Sdn Bhd (Main)"
+          title="Human Resource Management System - AppSmiths Sutera Sdn Bhd"
         />
 
         <SideDrawer
@@ -119,6 +121,9 @@ export default function DashboardMain() {
             </Route>
             <Route exact path="/departments">
               <Departments />
+            </Route>
+            <Route exact path="/useraccess">
+              <UserAccessTable />
             </Route>
             <Route exact path="/designation">
               <Designation />

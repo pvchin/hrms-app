@@ -42,7 +42,7 @@ const LoginForm = () => {
         Signin
       </Button> */}
       <Paper variant="outlined">
-        <img src={img} />
+        <img src={img} alt="logo"/>
       </Paper>
       <Card className={classes.card}>
         {/* <CardHeader
@@ -88,7 +88,7 @@ const LoginForm = () => {
             >
               {/* Access to Admin dashboard */}
             </Typography>
-            <SigninForm />
+            <SigninForm  />
           </CardContent>
         </CardActionArea>
       </Card>

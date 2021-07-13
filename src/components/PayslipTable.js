@@ -16,6 +16,8 @@ import { usePayslipsContext } from "../context/payslips_context";
 import { useExpensesContext } from "../context/expenses_context";
 import { useDailyAllowancesContext } from "../context/dailyallowances_context";
 import { AlertDialog } from "../helpers/AlertDialog";
+import { usePayrun } from "./payrun/usePayrun"
+
 
 const FILTERSTRING = "Pending";
 
@@ -43,6 +45,7 @@ const columns = [
 export default function PayslipTable() {
   let history = useHistory();
   const classes = useStyles();
+  const { payrun } = usePayrun()
   const [input, setInput] = useRecoilState(payrunState);
   const [isLoadInput, setIsLoadInput] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
@@ -58,7 +61,7 @@ export default function PayslipTable() {
     deleteDailyAllowance,
   } = useDailyAllowancesContext();
   const {
-    payrun,
+    //payrun,
     getPayrun,
     payrun_loading,
     payrun_error,
@@ -194,7 +197,7 @@ export default function PayslipTable() {
   }
   return (
     <div className={classes.root}>
-      <div style={{ maxWidth: "100%", paddingTop: "5px" }}>
+       <div style={{ maxWidth: "100%", paddingTop: "5px" }}>
         <MaterialTable
           columns={columns}
           data={payrun}

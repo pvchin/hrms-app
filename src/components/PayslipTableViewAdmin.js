@@ -10,8 +10,9 @@ import {
 } from "./data/atomdata";
 import { usePayslipsContext } from "../context/payslips_context";
 import { useEmployeesContext } from "../context/employees_context";
+import { usePayrun } from "./payrun/usePayrun";
 
-const FILTERSTRING = "Verified";
+const FILTERSTRING = "Pending";
 
 const columns = [
   {
@@ -39,43 +40,25 @@ const columns = [
   { title: "Status", field: "status", editable: "never" },
 ];
 
-export default function PayslipTableVIew() {
+export default function PayslipTableVIewAdmin() {
   let history = useHistory();
   const classes = useStyles();
+  const { payrun } = usePayrun();
   const setPayPeriodEmpId = useSetRecoilState(payPeriodEmpIdState);
-  const {
-    batchpayrun,
-    getBatchPayrun,
-    batchpayrun_loading,
-    batchpayrun_error,
-    loadPendingPayslips,
-  } = usePayslipsContext();
+  // const { getPayrun, payrun_loading, loadPendingPayslips } =
+  //   usePayslipsContext();
   //const { loadEmployees, employees } = useEmployeesContext();
 
-  useEffect(() => {
-    getBatchPayrun(FILTERSTRING);
-  }, []);
+  // useEffect(() => {
+  //   getPayrun();
+  // }, []);
 
-  if (batchpayrun_loading) {
-    return (
-      <div>
-        <h2>Loading.....Payslips</h2>
-      </div>
-    );
-  }
-  if (batchpayrun_error) {
-    return (
-      <div>
-        <h2>Internet connection problem!</h2>
-      </div>
-    );
-  }
   return (
     <div className={classes.root}>
       <div style={{ maxWidth: "100%", paddingTop: "5px" }}>
         <MaterialTable
           columns={columns}
-          data={batchpayrun}
+          data={payrun}
           title="Payslips"
           options={{
             filtering: false,

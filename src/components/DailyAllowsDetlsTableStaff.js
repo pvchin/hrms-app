@@ -14,6 +14,10 @@ import {
   allowsDataIdState,
 } from "./data/atomdata";
 import { useDailyAllowancesContext } from "../context/dailyallowances_context";
+import { useDailyAllowsDetls } from "./dailyallowsdetls/useDailyAllowsDetls"
+import { useAddDailyAllowsDetls } from "./dailyallowsdetls/useAddDailyAllowsDetls";
+import { useUpdateDailyAllowsDetls } from "./dailyallowsdetls/useUpdateDailyAllowsDetls";
+import { useDeleteDailyAllowsDetls } from "./dailyallowsdetls/useDeleteDailyAllowsDetls";
 
 const columns = [
   {
@@ -72,6 +76,11 @@ const columns = [
 export default function DailyAllowsDetlsTableStaff() {
   let history = useHistory();
   const classes = useStyles();
+  //const { dailyallowsdetls } = useDailyAllowsDetls()
+  const addDailyAllowsDetls = useAddDailyAllowsDetls()
+  const updateDailyAllowsDetls = useUpdateDailyAllowsDetls();
+  const deleteDailyAllowsDetls = useDeleteDailyAllowsDetls();
+
   // const [allowsDetlsTable, setAllowsDetlsTable] =
   // useRecoilState(allowsDataDetlsState);
   //console.log("detlstable", );

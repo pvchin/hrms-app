@@ -16,6 +16,10 @@ import { useExpensesContext } from "../context/expenses_context";
 import { useEmployeesContext } from "../context/employees_context";
 import { CustomDialog } from "../helpers/CustomDialog";
 import { AlertDialog } from "../helpers/AlertDialog";
+import { useExpenses } from "./expenses/useExpenses";
+import { useAddExpenses } from "./expenses/useAddExpenses";
+import { useDeleteExpenses } from "./expenses/useDeleteExpenses";
+import { useUpdateExpenses } from "./expenses/useUpdateExpenses";
 
 const initial_form = {
   name: "",
@@ -65,6 +69,10 @@ const columns = [
 export default function ExpenseTable() {
   const classes = useStyles();
   const [isLoad, setIsLoad] = useState(false);
+  const { expenses, filter, setFilter, setExpenseId } = useExpenses();
+  const updateExpenses = useUpdateExpenses();
+  const addExpenses = useAddExpenses();
+  const deleteExpenses = useDeleteExpenses();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const [expensesdata, setExpensesdata] = useState([]);
@@ -73,7 +81,7 @@ export default function ExpenseTable() {
   const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
   const { editEmployeeID } = useEmployeesContext();
   const {
-    expenses,
+    //expenses,
     editExpenseID,
     updateExpense,
     addExpense,
@@ -83,23 +91,9 @@ export default function ExpenseTable() {
     setIsExpenseEditingOff,
   } = useExpensesContext();
 
-  // useEffect(() => {
-  //   setExpensesdata(expenses);
-  //   console.log(expensesdata);
-  // }, []);
-
-  // useEffect(() => {
-  //   loadEmployees();
-  // }, []);
-
-  // useEffect(() => {
-  //   if (expenses) {
-  //     setExpensesdata(expenses);
-  //     console.log("expenses", expenses, expensesdata)
-  //   } else {
-  //     setIsLoad(!isLoad);
-  //   }
-  // }, [isLoad]);
+  useEffect(() => {
+    setFilter(loginLevel.loginUserId);
+  }, []);
 
   const add_Expense = async (data) => {
     // const { id } = data;
@@ -129,23 +123,6 @@ export default function ExpenseTable() {
     // loadExpenses();
   };
 
-  const Save_Expensedata = (e) => {
-    e.preventDefault();
-    expenses.forEach((row) => {
-      if (row.isdelete) {
-        deleteExpense(row.id);
-      }
-      if (row.id) {
-        const { rec_id, ...fields } = row;
-        updateExpense({ id: editExpenseID, ...fields });
-      }
-      if (!row.id) {
-        addExpense({ ...row, empid: loginLevel.loginUserId });
-      }
-    });
-    setAlertSuccess(true);
-  };
-
   const handleDialogOpen = () => {
     setIsDialogOpen(true);
   };
@@ -163,24 +140,10 @@ export default function ExpenseTable() {
   };
 
   const handleOnDeleteConfirm = () => {
-    const expensedata = expenses.filter((r) => r.id === editExpenseID);
-    expensedata[0].isdelete = true;
+    const id = editExpenseID;
+    deleteExpenses(id);
   };
 
-  // if (expenses_loading) {
-  //   return (
-  //     <div>
-  //       <h2>Loading...Expenses</h2>
-  //     </div>
-  //   );
-  // }
-  if (!expenses) {
-    return (
-      <div>
-        <h2>Loading...Expenses</h2>
-      </div>
-    );
-  }
   return (
     <div className={classes.root}>
       {/* <h1>Expenses Claims Application</h1> */}
@@ -188,13 +151,7 @@ export default function ExpenseTable() {
       <div style={{ maxWidth: "100%", paddingTop: "5px" }}>
         <MaterialTable
           columns={columns}
-          data={expenses
-            .filter(
-              (item) => item.empid === loginLevel.loginUserId && !item.isdelete
-            )
-            .map((row) => {
-              return { ...row };
-            })}
+          data={expenses}
           title="Expenses Claims Application"
           icons={{
             Add: (props) => <AddIcon />,
@@ -257,25 +214,6 @@ export default function ExpenseTable() {
             Toolbar: (props) => (
               <div>
                 <MTableToolbar {...props} />
-                <div style={{ padding: "5px 10px" }}>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    color="secondary"
-                    className={classes.button}
-                    onClick={(e) => Save_Expensedata(e)}
-                  >
-                    Update <Icon className={classes.rightIcon}>send</Icon>
-                  </Button>
-                </div>
-                {alertSuccess && (
-                  <Alert
-                    severity="success"
-                    onClose={() => setAlertSuccess(false)}
-                  >
-                    Changes being saved!
-                  </Alert>
-                )}
               </div>
             ),
           }}

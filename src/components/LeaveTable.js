@@ -12,6 +12,10 @@ import { CustomDialog } from "../helpers/CustomDialog";
 import { AlertDialog } from "../helpers/AlertDialog";
 import { useLeavesContext } from "../context/leaves_context";
 import { useEmployeesContext } from "../context/employees_context";
+import { useLeaves } from "./leaves/useLeaves";
+import { useAddLeaves } from "./leaves/useAddLeaves";
+import { useDeleteLeaves } from "./leaves/useDeleteLeaves";
+import { useUpdateLeaves } from "./leaves/useUpdateLeaves";
 
 const columns = [
   {
@@ -33,12 +37,22 @@ const columns = [
     dateSetting: { locale: "en-GB" },
     editable: "never",
   },
-  { title: "Leave Balance", field: "leave_bal", type:"numeric",editable: "never" },
-  { title: "No of Days", field: "no_of_days", type: "numeric",editable: "never" },
+  {
+    title: "Leave Balance",
+    field: "leave_bal",
+    type: "numeric",
+    editable: "never",
+  },
+  {
+    title: "No of Days",
+    field: "no_of_days",
+    type: "numeric",
+    editable: "never",
+  },
   {
     title: "Reason",
     field: "reason",
-    editable: "never"
+    editable: "never",
   },
   {
     title: "Status",
@@ -62,11 +76,15 @@ const columns = [
 
 export default function LeaveTable() {
   const classes = useStyles();
+  const { leaves, filter, setFilter, setLeaveId } = useLeaves();
+  const updateLeaves = useUpdateLeaves();
+  const addLeaves = useAddLeaves();
+  const deleteLeaves = useDeleteLeaves();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
   const { loadEmployees } = useEmployeesContext();
   const {
-    leaves,
+    // leaves,
     editLeaveID,
     leaves_loading,
     deleteLeave,
@@ -79,11 +97,7 @@ export default function LeaveTable() {
   } = useLeavesContext();
 
   useEffect(() => {
-    loadLeaves();
-  }, []);
-
-  useEffect(() => {
-    loadEmployees();
+    setLeaveId(editLeaveID);
   }, []);
 
   const update_Leave = async (data) => {
@@ -118,7 +132,6 @@ export default function LeaveTable() {
 
   const handleDialogClose = () => {
     setIsDialogOpen(false);
-    loadLeaves();
   };
 
   const handleAlertOpen = () => {
@@ -131,17 +144,9 @@ export default function LeaveTable() {
 
   const handleOnDeleteConfirm = () => {
     const id = editLeaveID;
-    deleteLeave(id);
-    loadLeaves();
+    deleteLeaves(id);
   };
 
-  if (leaves_loading) {
-    return (
-      <div>
-        <h2>Loading...Leaves</h2>
-      </div>
-    );
-  }
   return (
     <div className={classes.root}>
       {/* <h1>Expenses Claims Application</h1> */}
@@ -160,7 +165,6 @@ export default function LeaveTable() {
             Search: (props) => <SearchIcon />,
             ResetSearch: (props) => <DeleteIcon />,
           }}
-          
           actions={[
             {
               icon: "edit",
@@ -188,7 +192,7 @@ export default function LeaveTable() {
           options={{
             filtering: true,
             headerStyle: {
-              backgroundColor: "orange",
+              backgroundColor: "secondary",
               color: "primary",
             },
             showTitle: true,

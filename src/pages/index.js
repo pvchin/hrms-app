@@ -5,8 +5,11 @@ import Leave from "./LeavePage";
 import LeaveStaff from "./LeaveStaffPage";
 import Expenses from "./ExpensesPage";
 import ExpensesStaff from "./ExpensesStaffPage";
+import TrainingsStaff from "./TrainingsStaffPage";
+import UserAccess from "./UserAccessPage";
 import Payroll from "./PayrollPage";
 import Payslip from "./PayslipPage";
+import PayslipStaff from "./PayslipStaffPage";
 import BatchPayslips from "./BatchPayslipsPage";
 import Departments from "./DepartmentsPage";
 import Allowances from "./AllowancesPage";
@@ -24,11 +27,14 @@ export {
   AllEmployees,
   Leave,
   LeaveStaff,
+  TrainingsStaff,
   Expenses,
   ExpensesStaff,
   Payslip,
+  PayslipStaff,
   BatchPayslips,
   Payroll,
+  UserAccess,
   Departments,
   Designation,
   Tables,

@@ -1,9 +1,12 @@
 import React, { useEffect } from "react";
 import MaterialTable, { MTableToolbar } from "material-table";
-import { Button, Icon, TextField } from "@material-ui/core";
+import { TextField } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useEmployeesContext } from "../context/employees_context";
-import { useTablesContext } from "../context/tables_context";
+import { useEducations } from "./educations/useEducations";
+import { useUpdateEducations } from "./educations/useUpdateEducations";
+import { useAddEducations } from "./educations/useAddEducations";
+import { useDeleteEducations } from "./educations/useDeleteEducations";
 
 const columns = [
   {
@@ -54,107 +57,41 @@ export default function Emp_Educations({
   handleDialogClose,
 }) {
   const classes = useStyles();
+  const { educations, setEducationId } = useEducations();
+  const updateEducations = useUpdateEducations();
+  const addEducations = useAddEducations();
+  const deleteEducations = useDeleteEducations();
   const { editEmployeeID } = useEmployeesContext();
 
-  const {
-    singlebatcheducation,
-    addEducation,
-    deleteEducation,
-    updateEducation,
-    singlebatch_education_loading,
-    singlebatch_education_error,
-    loadSingleBatchEducation,
-  } = useTablesContext();
-
   useEffect(() => {
-    loadSingleBatchEducation(editEmployeeID);
+    setEducationId(editEmployeeID);
   }, []);
-
-  const Save_EducationData = () => {
-    //console.log(educationdata);
-    // delete unwanted data
-    singlebatcheducation.forEach((row) => {
-      const { id, rec_id } = row;
-      const res = educationdata.find((r) => r.rec_id === rec_id);
-      if (!res) {
-        deleteEducation(id);
-      }
-    });
-
-    //add or update new data
-
-    educationdata.forEach((data) => {
-      const { id, institution, course, from_date, to_date, grade, remark } =
-        data;
-      if (id) {
-        const { id, rec_id, tableData, ...fields } = data;
-        updateEducation({ id, ...fields });
-      } else {
-        addEducation({
-          institution,
-          course,
-          from_date,
-          to_date,
-          grade,
-          remark,
-          empid: editEmployeeID,
-        });
-      }
-    });
-
-    handleDialogClose();
-  };
 
   const update_Education = (data) => {
     const { id, rec_id, tableData, ...fields } = data;
-    setTimeout(() => {
-      updateEducation({ id, ...fields });
-    }, 1000);
-    //loadSingleBatchEducation(editEmployeeID);
-    const rec = singlebatcheducation.filter((i) => i.id === data.id);
-    rec[0].institution = data.institution;
-    rec[0].course = data.course;
-    rec[0].from_date = data.from_date;
-    rec[0].to_date = data.to_date;
-    rec[0].achievement = data.achievement;
-    rec[0].grade = data.grade;
-    rec[0].remark = data.remark;
+    updateEducations({ id, ...fields });
   };
 
   const add_Education = (data) => {
-    addEducation({ ...data, empid: editEmployeeID });
-    loadSingleBatchEducation(editEmployeeID);
+    addEducations({ ...data, empid: editEmployeeID });
   };
 
   const delete_Education = (data) => {
     const { id } = data;
-    deleteEducation(id);
-    loadSingleBatchEducation(editEmployeeID);
+    deleteEducations(id);
   };
 
-   const Refresh_Data = () => {
-     loadSingleBatchEducation(editEmployeeID);
-  };
-  
-  if (singlebatch_education_loading) {
-    return (
-      <div>
-        <h2>Loading...Education</h2>
-      </div>
-    );
-  }
   return (
     <div className={classes.root}>
       <div style={{ maxWidth: "100%", paddingTop: "5px" }}>
         <MaterialTable
           columns={columns}
-          data={singlebatcheducation}
+          data={educations}
           title="Education"
           editable={{
             onRowAdd: (newData) =>
               new Promise((resolve, reject) => {
                 setTimeout(() => {
-                  //setEducationdata([...educationdata, newData]);
                   add_Education(newData);
                   resolve();
                 }, 1000);
@@ -162,10 +99,6 @@ export default function Emp_Educations({
             onRowUpdate: (newData, oldData) =>
               new Promise((resolve, reject) => {
                 setTimeout(() => {
-                  // const dataUpdate = [...educationdata];
-                  // const index = oldData.tableData.id;
-                  // dataUpdate[index] = newData;
-                  // setEducationdata([...dataUpdate]);
                   update_Education(newData);
                   resolve();
                 }, 1000);
@@ -194,17 +127,6 @@ export default function Emp_Educations({
             Toolbar: (props) => (
               <div>
                 <MTableToolbar {...props} />
-                <div style={{ padding: "5px 10px" }}>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    color="secondary"
-                    className={classes.button}
-                    onClick={Refresh_Data}
-                  >
-                    Refresh <Icon className={classes.rightIcon}>send</Icon>
-                  </Button>
-                </div>
               </div>
             ),
           }}

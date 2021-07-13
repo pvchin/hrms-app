@@ -6,6 +6,7 @@ import CardLayout from "../helpers/CardLayout";
 import CardLayout2 from "../helpers/CardLayout2";
 import CardLayout3 from "../helpers/CardLayout3";
 import Copyright from "../components/Copyright";
+import { useEmployees } from "./employees/useEmployees";
 import { CustomDialog } from "../helpers/CustomDialog";
 import { useRecoilState } from "recoil";
 import { loginLevelState } from "./data/atomdata";
@@ -13,16 +14,16 @@ import { useLeavesContext } from "../context/leaves_context";
 import { useExpensesContext } from "../context/expenses_context";
 import { usePayslipsContext } from "../context/payslips_context";
 import { useDailyAllowancesContext } from "../context/dailyallowances_context";
-import LeaveTableView from "./LeaveTableView";
+import LeaveTableViewAdmin from "./LeaveTableViewAdmin";
 import LeaveTableAdmin from "./LeaveTableAdmin";
-import ExpenseTableView from "./ExpenseTableView";
+//import ExpenseTableView from "./ExpenseTableView";
 import ExpenseTableAdmin from "./ExpenseTableAdmin";
-import PayslipTableView from "./PayslipTableView";
+//import PayslipTableView from "./PayslipTableView";
 import PayslipTableAdmin from "./PayslipTableAdmin";
-import DailyAllowancesTableView from "./DailyAllowancesTableView";
+//import DailyAllowancesTableView from "./DailyAllowancesTableView";
 import DailyAllowancesTableAdmin from "./DailyAllowancesTableAdmin";
-import OnLeavesView from "./OnLeavesView";
-import WPExpiryView from "./WPExpiryView";
+import TrainingsTableViewAdmin from "./TrainingsTableViewAdmin";
+import WPExpiryViewAdmin from "./WPExpiryViewAdmin";
 
 const drawerWidth = 240;
 
@@ -31,6 +32,7 @@ const FILTERSTRING = "Pending";
 const EmployeeView = () => {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+  const { employees } = useEmployees();
   const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
   const [leavesdata, setLeavesdata] = useState([]);
   const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false);
@@ -47,6 +49,7 @@ const EmployeeView = () => {
   const { payslips, loadPendingPayslips } = usePayslipsContext();
   const { dailyallowances, loadPendingDailyAllowances } =
     useDailyAllowancesContext();
+  
   const handleLeaveDialogOpen = () => {
     setLeavesdata([]);
     setLeavesdata([...leaves]);
@@ -95,8 +98,8 @@ const EmployeeView = () => {
     <div>
       <div className={classes.appBarSpacer} />
       <div style={{ paddingLeft: 50 }}>
-        <h2>Welcome {loginLevel.loginUser}!</h2>
-        <h3>Dashboard</h3>
+        {/* <h2>Welcome {loginLevel.loginUser}!</h2>
+        <h3>Dashboard</h3> */}
       </div>
       <Container maxWidth="lg" className={classes.container}>
         <Grid container spacing={3}>
@@ -111,14 +114,19 @@ const EmployeeView = () => {
           </Grid>
           {/* Recent Deposits */}
           <Grid item xs={6} md={8} lg={6}>
-            <CardLayout3 title="Staffs Onleave within 30 Days">
-              <OnLeavesView />
-            </CardLayout3>
+            <CardLayout2 title="">
+              <LeaveTableViewAdmin />
+            </CardLayout2>
           </Grid>
           <Grid item xs={6} md={8} lg={6}>
-            <CardLayout3 title="Work Permit Expiry within 90 Days">
-              <WPExpiryView />
-            </CardLayout3>
+            <CardLayout2 title="">
+              <WPExpiryViewAdmin />
+            </CardLayout2>
+          </Grid>
+          <Grid item xs={6} md={8} lg={6}>
+            <CardLayout2 title="">
+              <TrainingsTableViewAdmin />
+            </CardLayout2>
           </Grid>
         </Grid>
         <Box pt={4}>

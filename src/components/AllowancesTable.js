@@ -1,8 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import MaterialTable from "material-table";
 import { makeStyles } from "@material-ui/core/styles";
-
-import { useTablesContext } from "../context/tables_context";
+import { useAllowances } from "./allowances/useAllowances";
+import { useUpdateAllowances } from "./allowances/useUpdateAllowances";
+import { useDeleteAllowances } from "./allowances/useDeleteAllowances";
+import { useAddAllowances } from "./allowances/useAddAllowances";
 
 const columns = [
   {
@@ -12,43 +14,26 @@ const columns = [
 ];
 
 export default function UpdateAllowances() {
-   const classes = useStyles();
-  const {
-    loadAllowances,
-    allowances,
-    allowances_loading,
-    addAllowance,
-    deleteAllowance,
-    updateAllowance,
-  } = useTablesContext();
-
-  useEffect(() => {
-    loadAllowances();
-  }, []);
+  const classes = useStyles();
+  const { allowances } = useAllowances();
+  const updateAllowances = useUpdateAllowances();
+  const deleteAllowances = useDeleteAllowances();
+  const addAllowances = useAddAllowances();
 
   const update_Allowance = (data) => {
-    updateAllowance({ id: data.id, ...data });
-    loadAllowances();
+    const { id, rec_id, ...fields } = data;
+    updateAllowances({ id, ...fields });
   };
 
   const add_Allowance = async (data) => {
-    addAllowance(data);
-    loadAllowances();
+    addAllowances(data);
   };
 
   const delete_Allowance = (data) => {
     const { id } = data;
-    deleteAllowance(id);
-    loadAllowances();
+    deleteAllowances(id);
   };
 
-  if (allowances_loading) {
-    return (
-      <div>
-        <h2>Loading...Allowances</h2>
-      </div>
-    );
-  }
   return (
     <div className={classes.root}>
       <div style={{ maxWidth: "100%", paddingTop: "5px" }}>

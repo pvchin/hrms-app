@@ -13,10 +13,13 @@ import { Alert } from "@material-ui/lab";
 import { makeStyles } from "@material-ui/core/styles";
 import MenuItem from "@material-ui/core/MenuItem";
 import { useEmployeesContext } from "../context/employees_context";
-import { useTablesContext } from "../context/tables_context";
 import { Controller, useForm } from "react-hook-form";
 import { useRecoilState } from "recoil";
 import { loginLevelState } from "./data/atomdata";
+import { useAddEmployees } from "./employees/useAddEmployees";
+import { useUpdateEmployees } from "./employees/useUpdateEmployees";
+import { useDepartments } from "./departments/useDepartments";
+import { useDesignations } from "./designations/useDesignations";
 
 // import EmpFamily from "./EmpFamily";
 // import EmpEducations from "./EmpEducations";
@@ -29,6 +32,7 @@ const initial_values = {
   ic_no: "",
   email: "",
   age: 0,
+  address:"",
   basic_salary: 0,
   bank_name: "",
   bank_acno: "",
@@ -55,7 +59,7 @@ const EmployeeFormNew = () => {
     isEditing,
     single_employee,
     updateEmployee,
-    addEmployee,
+    //addEmployee,
     editEmployeeID,
     single_employee_loading,
   } = useEmployeesContext();
@@ -65,6 +69,7 @@ const EmployeeFormNew = () => {
     gender,
     age,
     email,
+    address,
     basic_salary,
     bank_name,
     bank_acno,
@@ -81,21 +86,24 @@ const EmployeeFormNew = () => {
     siteallows_fee,
     perdiem_fee,
   } = single_employee || initial_values;
-  const { departments, designations } = useTablesContext();
+  const addEmployees = useAddEmployees();
+  const updateEmployees = useUpdateEmployees();
+  const { designations } = useDesignations();
+  const { departments } = useDepartments();
   const [alert, setAlert] = useState(false);
   const { handleSubmit, control } = useForm();
   const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
   console.log("emplevel", loginLevel);
   const onSubmit = (data) => {
     if (isEditing) {
-      updateEmployee({ id: editEmployeeID, ...data });
+      updateEmployees({ id: editEmployeeID, ...data });
     } else {
-      addEmployee({ ...data });
+      addEmployees({ ...data });
     }
-    setAlert(true);
-    setTimeout(() => {
-      setAlert(false);
-    }, 3000);
+    // setAlert(true);
+    // setTimeout(() => {
+    //   setAlert(false);
+    // }, 3000);
     //loadEmployees();
     // <Alert severity="success">
     //   <AlertTitle>Success</AlertTitle>
@@ -125,9 +133,6 @@ const EmployeeFormNew = () => {
               >
                 Submit <Icon className={classes.rightIcon}>send</Icon>
               </Button>
-              {alert && (
-                <Alert severity="success">Changes have been saved!</Alert>
-              )}
             </div>
           </Grid>
           <Divider className={classes.divider} />
@@ -314,6 +319,31 @@ const EmployeeFormNew = () => {
                     );
                   }}
                   //rules={{ required: "Name required" }}
+                />
+              </div>
+              <div>
+                <Controller
+                  name="address"
+                  control={control}
+                  defaultValue={address}
+                  render={({
+                    field: { onChange, value },
+                    fieldState: { error },
+                  }) => {
+                    return (
+                      <TextField
+                        label="Address"
+                        id="standard-address"
+                        name="address"
+                        defaultValue={address}
+                        className={classes.textField}
+                        onChange={onChange}
+                        error={!!error}
+                        helperText={error ? error.message : null}
+                      />
+                    );
+                  }}
+                  //rules={{ required: "IC No required" }}
                 />
               </div>
             </div>

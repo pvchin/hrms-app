@@ -7,6 +7,10 @@ import MenuItem from "@material-ui/core/MenuItem";
 import { useEmployeesContext } from "../context/employees_context";
 import { useExpensesContext } from "../context/expenses_context";
 import { Controller, useForm } from "react-hook-form";
+import { useExpenses } from "./expenses/useExpenses";
+import { useAddExpenses } from "./expenses/useAddExpenses";
+import { useDeleteExpenses } from "./expenses/useDeleteExpenses";
+import { useUpdateExpenses } from "./expenses/useUpdateExpenses";
 
 const initial_values = {
   name: "",
@@ -21,59 +25,28 @@ const initial_values = {
 
 const ExpenseForm = ({ formdata, setFormdata, handleDialogClose }) => {
   const classes = useStyles();
+  const { expenses, filter, setFilter, setExpenseId } = useExpenses();
+  const updateExpenses = useUpdateExpenses();
+  const addExpenses = useAddExpenses();
   const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
   const {
-    expenses,
     isExpenseEditing,
-    single_expense,
-    updateExpense,
-    addExpense,
     editExpenseID,
-    single_expense_loading,
-    single_expense_error,
   } = useExpensesContext();
-  const { employees } = useEmployeesContext();
-  const {
-    name,
-    from_date,
-    to_date,
-    purchased_from,
-    description,
-    remark,
-    status,
-    amount,
-  } = single_expense || initial_values;
+
   const { handleSubmit, control } = useForm();
 
   const onSubmit = (data, e) => {
-   
     e.preventDefault();
     if (isExpenseEditing) {
-      updateExpense({ id: editExpenseID, ...data });
-      const editexpensedata = expenses.filter((r) => r.id === editExpenseID);
-      editexpensedata[0].date = data.date;
-      editexpensedata[0].purchased_from = data.purchased_from;
-      editexpensedata[0].description = data.description;
-      editexpensedata[0].amount = data.amount;
-      console.log("expense form", expenses);
+      updateExpenses({ id: editExpenseID, ...data });
     } else {
-      addExpense({ empid: loginLevel.loginUserId, ...data });
-      expenses.push({ ...data, empid: loginLevel.loginUserId });
+      addExpenses({ empid: loginLevel.loginUserId, ...data });
     }
 
     handleDialogClose();
   };
 
-  if (single_expense_loading) {
-    return <div>Loading...</div>;
-  }
-  if (single_expense_error) {
-    return (
-      <div>
-        <h2>Loading...</h2>
-      </div>
-    );
-  }
   return (
     <div>
       <Paper className={classes.root}>
@@ -223,7 +196,7 @@ const ExpenseForm = ({ formdata, setFormdata, handleDialogClose }) => {
             <Controller
               name="remark"
               control={control}
-              defaultValue={remark}
+              defaultValue={formdata.remark}
               render={({
                 field: { onChange, value },
                 fieldState: { error },
@@ -233,7 +206,7 @@ const ExpenseForm = ({ formdata, setFormdata, handleDialogClose }) => {
                     label="Remark"
                     id="margin-normal5"
                     name="remark"
-                    defaultValue={remark}
+                    defaultValue={formdata.remark}
                     className={classes.textField}
                     onChange={onChange}
                     error={!!error}

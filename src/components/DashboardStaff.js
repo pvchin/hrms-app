@@ -10,6 +10,7 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import Appbanner from "./Appbanner";
 import Example from "./Example8";
 import SideDrawer from "./SideDrawer";
+import SingleEmployee from "./SingleEmployee";
 import SingleEmployeeStaff from "./SingleEmployeeStaff";
 import SingleLeave from "./SingleLeave";
 import SingleExpense from "./SingleExpense";
@@ -18,16 +19,17 @@ import SingleDailyAllowsDetlsStaff from "./SingleDailyAllowsDetlsStaff";
 import BatchDailyAllowances from "./BatchDailyAllowances";
 import SinglePayslip from "./SinglePayslip";
 import Login from "./LoginForm";
-import Payrun from "./Payrun"
-import Payrunbatch from "./Payrunbatch"
+import Payrun from "./Payrun";
+import Payrunbatch from "./Payrunbatch";
 
 import {
   Home,
   AllEmployees,
   Leave,
   LeaveStaff,
+  TrainingsStaff,
   ExpensesStaff,
-  Payslip,
+  PayslipStaff,
   BatchPayslips,
   Payroll,
   Departments,
@@ -45,7 +47,6 @@ const drawerWidth = 240;
 export default function DashboardMain() {
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
-  const [login, setLogin] = React.useState(true);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -56,7 +57,6 @@ export default function DashboardMain() {
 
   //  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
- 
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -65,7 +65,7 @@ export default function DashboardMain() {
           handleDrawerOpen={handleDrawerOpen}
           handleDrawerClose={handleDrawerClose}
           open={open}
-            title="AppSmiths Sutera Sdn Bhd"
+          title="AppSmiths Sutera Sdn Bhd"
         />
 
         <SideDrawer
@@ -88,8 +88,8 @@ export default function DashboardMain() {
             <Route exact path="/payroll">
               <Payroll />
             </Route>
-            <Route exact path="/payslip">
-              <Payslip />
+            <Route exact path="/payslips">
+              <PayslipStaff />
             </Route>
             <Route exact path="/singlepayslip">
               <SinglePayslip />
@@ -99,6 +99,9 @@ export default function DashboardMain() {
             </Route>
             <Route exact path="/leave">
               <LeaveStaff />
+            </Route>
+            <Route exact path="/trainings">
+              <TrainingsStaff />
             </Route>
             {/* <Route exact path="/payrun">
               <Payrun />

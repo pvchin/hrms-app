@@ -14,6 +14,11 @@ import {
 import { makeStyles } from "@material-ui/core/styles";
 import { useHistory, Link } from "react-router-dom";
 
+import { useDepartments } from "./departments/useDepartments";
+import { useDesignations } from "./designations/useDesignations"
+import { useAllowances } from "./allowances/useAllowances";
+import { useDeductions } from "./deductions/useDeductions";
+
 import { useTablesContext } from "../context/tables_context";
 import UpdateAllowances from "./AllowancesTable";
 import UpdateDeductions from "./DeductionsTable";
@@ -23,7 +28,11 @@ import UpdateDesignations from "./DesignationsTable";
 const TablesUpdate = () => {
   let history = useHistory();
   const classes = useStyles();
-  const { allowances, load_allowances } = useTablesContext();
+  const departments = useDepartments();
+  const deductions = useDeductions();
+  const allowances = useAllowances();
+  
+  
   return (
     <div>
       <Grid container alignItems="center" className={classes.grid}>

@@ -1,17 +1,16 @@
-import React, { useEffect } from "react";
+import React,{useEffect} from "react";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import clsx from "clsx";
 import { lighten, makeStyles } from "@material-ui/core/styles";
-import { loginLevelState } from "./data/atomdata";
-import { atom, selector, useRecoilState, useRecoilValueLoadable } from "recoil";
-import { Container, Grid, Paper, Toolbar, Typography } from "@material-ui/core";
+import Container from "@material-ui/core/Container";
+import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
+import Toolbar from "@material-ui/core/Toolbar";
+import Typography from "@material-ui/core/Typography";
 import ArrowBackIcon from "@material-ui/icons/ArrowBack";
 import { Link } from "react-router-dom";
-
 import EmployeeFormStaff from "./EmployeeFormStaff";
-import EmployeeViewStaff from "./EmployeeViewStaff";
 import { useEmployeesContext } from "../context/employees_context";
-import { useTablesContext } from "../context/tables_context";
 
 const drawerWidth = 240;
 
@@ -34,46 +33,71 @@ const ToolbarHeader = ({ title }) => {
   );
 };
 
-const SingleEmployeeStaff = ({ title }) => {
+
+const SingleEmployee = ({ title }) => {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
-  const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
+  const { isEditing, setEditEmployeeID, setIsEditingOn } =
+    useEmployeesContext();
+   
   
-  
-  // useEffect(() => {
-  //   getSingleEmployee(loginLevel.loginUserId);
-  //   loadSingleBatchFamily(loginLevel.loginUserId);
-  //   loadSingleBatchEducation(loginLevel.loginUserId);
-  //   loadSingleBatchExperience(loginLevel.loginUserId);
-  // }, []);
+  if (isEditing) {
+    return (
+      <div>
+        <CssBaseline />
 
-  return (
-    <div>
-      <CssBaseline />
-
-      <div className={classes.appBarSpacer}>
-        <Container maxWidth="lg" className={classes.container}>
-          <Grid container spacing={3}>
-            {/* <Grid item xs={12} md={8} lg={9}> */}
-            <Grid item xs={12}>
-              <Paper className={fixedHeightPaper}>
-                <Link to="/home">
+        <div className={classes.appBarSpacer}>
+          <Container maxWidth="lg" className={classes.container}>
+            <Grid container spacing={3}>
+              {/* <Grid item xs={12} md={8} lg={9}> */}
+              <Grid item xs={12}>
+                <Paper className={fixedHeightPaper}>
+                  <Link to="/allemployees">
+                    <div>
+                      <ArrowBackIcon fontSize="large" color="primary" />
+                    </div>
+                  </Link>
                   <div>
-                    <ArrowBackIcon fontSize="large" color="primary" />
-                  </div>
-                </Link>
-                <div>
-                  {/* <ToolbarHeader title={title} /> */}
+                    {/* <ToolbarHeader title={title} /> */}
 
-                  <EmployeeViewStaff />
-                </div>
-              </Paper>
+                    <EmployeeFormStaff />
+                  </div>
+                </Paper>
+              </Grid>
             </Grid>
-          </Grid>
-        </Container>
+          </Container>
+        </div>
       </div>
-    </div>
-  );
+    );
+  } else {
+    return (
+      <div>
+        <CssBaseline />
+
+        <div className={classes.appBarSpacer}>
+          <Container maxWidth="lg" className={classes.container}>
+            <Grid container spacing={3}>
+              {/* <Grid item xs={12} md={8} lg={9}> */}
+              <Grid item xs={12}>
+                <Paper className={fixedHeightPaper}>
+                  {/* <Link to="/allemployees">
+                    <div>
+                      <ArrowBackIcon fontSize="large" color="primary" />
+                    </div>
+                  </Link> */}
+                  <div>
+                    {/* <ToolbarHeader title={title} /> */}
+
+                    <EmployeeFormStaff />
+                  </div>
+                </Paper>
+              </Grid>
+            </Grid>
+          </Container>
+        </div>
+      </div>
+    );
+  }
 };
 
 const useStyles = makeStyles((theme) => ({
@@ -179,4 +203,4 @@ const useToolbarStyles = makeStyles((theme) => ({
   },
 }));
 
-export default SingleEmployeeStaff;
+export default SingleEmployee;

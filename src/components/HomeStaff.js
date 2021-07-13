@@ -10,11 +10,13 @@ import { CustomDialog } from "../helpers/CustomDialog";
 import { useRecoilState } from "recoil";
 import { loginLevelState } from "./data/atomdata";
 
+import { useEmployeesContext } from "../context/employees_context";
 import { useLeavesContext } from "../context/leaves_context";
 import { useExpensesContext } from "../context/expenses_context";
 import { usePayslipsContext } from "../context/payslips_context";
 import { useDailyAllowancesContext } from "../context/dailyallowances_context";
 import LeaveTableViewStaff from "./LeaveTableViewStaff";
+import TrainingsTableViewStaff from "./TrainingsTableViewStaff";
 import LeaveTableAdmin from "./LeaveTableAdmin";
 import ExpenseTableViewStaff from "./ExpenseTableViewStaff";
 import ExpenseTableAdmin from "./ExpenseTableAdmin";
@@ -24,16 +26,19 @@ import DailyAllowancesTableViewStaff from "./DailyAllowancesTableViewStaff";
 import DailyAllowancesTableAdmin from "./DailyAllowancesTableAdmin";
 import OnLeavesViewStaff from "./OnLeavesViewStaff";
 import WPExpiryViewStaff from "./WPExpiryViewStaff";
+import { useEmployees } from "./employees/useEmployees";
+import { useSingleEmployee } from "./employees/useSingleEmployee";
 
 const drawerWidth = 240;
 
 const FILTERSTRING = "Pending";
 
-const EmployeeView = () => {
+const HomeStaff = () => {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
   const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
-
+  const { employees, setFilter, setEmployeeId } = useEmployees();
+  const { singleemployee, setSingleEmployeeId } = useSingleEmployee();
   const [leavesdata, setLeavesdata] = useState([]);
   const [isLeaveDialogOpen, setIsLeaveDialogOpen] = useState(false);
   const [expensesdata, setExpensesdata] = useState([]);
@@ -49,8 +54,9 @@ const EmployeeView = () => {
   const { payslips, loadPendingPayslips } = usePayslipsContext();
   const { dailyallowances, loadPendingDailyAllowances } =
     useDailyAllowancesContext();
- 
-  
+  const { isEditing, setEditEmployeeID, setIsEditingOn } =
+    useEmployeesContext();
+
   const handleLeaveDialogOpen = () => {
     setLeavesdata([]);
     setLeavesdata([...leaves]);
@@ -59,7 +65,7 @@ const EmployeeView = () => {
 
   const handleLeaveDialogClose = () => {
     setIsLeaveDialogOpen(false);
-    loadPendingLeaves(FILTERSTRING);
+    //loadPendingLeaves(FILTERSTRING);
   };
 
   const handleExpenseDialogOpen = () => {
@@ -70,7 +76,7 @@ const EmployeeView = () => {
 
   const handleExpenseDialogClose = () => {
     setIsExpenseDialogOpen(false);
-    loadPendingExpenses(FILTERSTRING);
+    //loadPendingExpenses(FILTERSTRING);
   };
 
   const handlePayslipDialogOpen = () => {
@@ -81,7 +87,7 @@ const EmployeeView = () => {
 
   const handlePayslipDialogClose = () => {
     setIsPayslipDialogOpen(false);
-    loadPendingPayslips(FILTERSTRING);
+    //loadPendingPayslips(FILTERSTRING);
   };
 
   const handleDailyAllowancesDialogOpen = () => {
@@ -95,12 +101,17 @@ const EmployeeView = () => {
     loadPendingDailyAllowances(FILTERSTRING);
   };
 
+  useEffect(() => {
+    setEditEmployeeID(loginLevel.loginUserId);
+    setIsEditingOn();
+  });
+
   return (
     <div>
       <div className={classes.appBarSpacer} />
       <div style={{ paddingLeft: 50 }}>
-        <h2>Welcome {loginLevel.loginUser}!</h2>
-        <h3>Dashboard</h3>
+        {/* <h2>Welcome Staff {loginLevel.loginUser}!</h2>
+        <h3>Dashboard</h3> */}
       </div>
       <Container maxWidth="lg" className={classes.container}>
         <Grid container spacing={3}>
@@ -115,37 +126,38 @@ const EmployeeView = () => {
           </Grid>
           {/* Recent Deposits */}
           <Grid item xs={6} md={8} lg={6}>
-            <CardLayout2 title="Leave Schedule">
+            <CardLayout2 title="">
               <LeaveTableViewStaff />
             </CardLayout2>
           </Grid>
           <Grid item xs={6} md={8} lg={6}>
-            <CardLayout2
-              title="Expenses History"
-              handleClick={handleExpenseDialogOpen}
-            >
+            <CardLayout2 title="" handleClick={handleExpenseDialogOpen}>
               <ExpenseTableViewStaff />
             </CardLayout2>
           </Grid>
-
           <Grid item xs={6} md={8} lg={6}>
+            <CardLayout2 title="">
+              <TrainingsTableViewStaff />
+            </CardLayout2>
+          </Grid>
+          {/* <Grid item xs={6} md={8} lg={6}>
             <CardLayout2
               title="Payroll History"
               handleClick={handlePayslipDialogOpen}
             >
               <PayslipTableViewStaff />
             </CardLayout2>
-          </Grid>
-          <Grid item xs={6} md={8} lg={6}>
+          </Grid> */}
+          {/* <Grid item xs={6} md={8} lg={6}>
             <CardLayout2
               title="Site Allowances History"
               handleClick={handleDailyAllowancesDialogOpen}
             >
               <DailyAllowancesTableViewStaff />
             </CardLayout2>
-          </Grid>
+          </Grid> */}
           <Grid item xs={6} md={8} lg={6}>
-            <CardLayout2 title="Work Permit Expiry within 90 Days">
+            <CardLayout2 title="">
               <WPExpiryViewStaff />
             </CardLayout2>
           </Grid>
@@ -294,4 +306,4 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default EmployeeView;
+export default HomeStaff;

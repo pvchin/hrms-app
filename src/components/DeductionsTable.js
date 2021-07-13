@@ -1,8 +1,12 @@
-import React, { useEffect } from "react";
+import React from "react";
 import MaterialTable from "material-table";
 import { makeStyles } from "@material-ui/core/styles";
 
+import { useDeductions } from "./deductions/useDeductions";
 import { useTablesContext } from "../context/tables_context";
+import { useUpdateDeductions } from "./deductions/useUpdateDeductions";
+import { useDeleteDeductions } from "./deductions/useDeleteDeductions";
+import { useAddDeductions } from "./deductions/useAddDeductions";
 
 const columns = [
   {
@@ -12,44 +16,39 @@ const columns = [
 ];
 
 export default function UpdateDeductions() {
-
   const classes = useStyles();
+  const { deductions } = useDeductions();
+  const updateDeductions = useUpdateDeductions();
+  const deleteDeductions = useDeleteDeductions();
+  const addDeductions = useAddDeductions();
+
   const {
-    loadDeductions,
-    deductions,
+    //loadDeductions,
+    //deductions,
     deductions_loading,
     addDeduction,
     deleteDeduction,
     updateDeduction,
   } = useTablesContext();
 
-  useEffect(() => {
-    loadDeductions();
-  }, []);
+  // useEffect(() => {
+  //   loadDeductions();
+  // }, []);
 
   const update_Deduction = (data) => {
-    updateDeduction({ id: data.id, ...data });
-    loadDeductions();
+    const { id, rec_id, ...fields } = data;
+    updateDeductions({ id, ...fields });
   };
 
   const add_Deduction = (data) => {
-    addDeduction(data);
-    loadDeductions();
+    addDeductions(data);
   };
 
   const delete_Deduction = (data) => {
     const { id } = data;
-    deleteDeduction(id);
-    loadDeductions();
+    deleteDeductions(id);
   };
 
-  if (deductions_loading) {
-    return (
-      <div>
-        <h2>Loading...Deductions</h2>
-      </div>
-    );
-  }
   return (
     <div className={classes.root}>
       <div style={{ maxWidth: "100%", paddingTop: "5px" }}>

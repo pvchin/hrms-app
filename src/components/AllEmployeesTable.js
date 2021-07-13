@@ -7,11 +7,16 @@ import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import CheckIcon from "@material-ui/icons/Check";
 import SearchIcon from "@material-ui/icons/Search";
+
 import { CustomDialog } from "../helpers/CustomDialog";
 import { AlertDialog } from "../helpers/AlertDialog";
 import EmployeeView from "./EmployeeView";
 import { useEmployeesContext } from "../context/employees_context";
 import { useTablesContext } from "../context/tables_context";
+import { useDepartments } from "./departments/useDepartments";
+import { useDesignations } from "./designations/useDesignations";
+import { useEmployees } from "./employees/useEmployees";
+import { useDeleteEmployees } from "./employees/useDeleteEmployees";
 
 const columns = [
   {
@@ -27,15 +32,18 @@ const columns = [
 export default function AllEmployeesTable() {
   let history = useHistory();
   const classes = useStyles();
+  const { designations } = useDesignations();
+  const { departments } = useDepartments();
+  const { employees } = useEmployees();
+  const deleteEmployees = useDeleteEmployees();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isAlertOpen, setIsAlertOpen] = useState(false);
 
   const {
-    employees,
     editEmployeeID,
     employees_loading,
     deleteEmployee,
-    loadEmployees,
+    //loadEmployees,
     setEditEmployeeID,
     setIsEditingOn,
     setIsEditingOff,
@@ -44,26 +52,12 @@ export default function AllEmployeesTable() {
     getSingleEmployee,
   } = useEmployeesContext();
 
-  const {
-    departments,
-    designations,
-    loadDepartments,
-    loadDesignations,
-    resetTables,
-  } = useTablesContext();
+  const { loadDepartments, loadDesignations, resetTables } = useTablesContext();
 
-  useEffect(() => {
-    resetEmployees();
-    loadEmployees();
-  }, []);
-
-  useEffect(() => {
-    loadDepartments();
-  }, []);
-
-   useEffect(() => {
-     loadDesignations();
-   }, []);
+  // useEffect(() => {
+  //   resetEmployees();
+  //   loadEmployees();
+  // }, []);
 
   const update_Employee = async (data) => {
     const { id } = data;
@@ -99,7 +93,7 @@ export default function AllEmployeesTable() {
 
   const handleDialogClose = () => {
     setIsDialogOpen(false);
-    loadEmployees();
+    //loadEmployees();
   };
 
   const handleAlertOpen = () => {
@@ -112,8 +106,8 @@ export default function AllEmployeesTable() {
 
   const handleOnDeleteConfirm = () => {
     const id = editEmployeeID;
-    deleteEmployee(id);
-    loadEmployees();
+    deleteEmployees(id);
+    //loadEmployees();
   };
 
   if (employees_loading) {
@@ -164,7 +158,7 @@ export default function AllEmployeesTable() {
           options={{
             filtering: true,
             headerStyle: {
-              backgroundColor: "orange",
+              backgroundColor: "primary",
               color: "secondary",
             },
             showTitle: true,

@@ -1,22 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { differenceInDays, addDays } from "date-fns";
+import { Heading } from "@chakra-ui/react";
+import { useCustomToast } from "../helpers/useCustomToast";
 import clsx from "clsx";
-import {
-  Button,
-  Paper,
-  Grid,
-  Icon,
-  Divider,
-  TextField,
-  NativeSelect,
-  InputLabel,
-  MenuItem,
-} from "@material-ui/core";
+import { Button, Paper, Grid, Icon, TextField } from "@material-ui/core";
 import { Alert } from "@material-ui/lab";
 import { useRecoilState } from "recoil";
 import { siteallowsState, loginLevelState } from "./data/atomdata";
 import { useDailyAllowancesContext } from "../context/dailyallowances_context";
+import { useDailyAllows } from "./dailyallows/useDailyAllows";
+import { useAddDailyAllows } from "./dailyallows/useAddDailyAllows";
+import { useDailyAllowsDetls } from "./dailyallowsdetls/useDailyAllowsDetls";
+import { useAddDailyAllowsDetls } from "./dailyallowsdetls/useAddDailyAllowsDetls";
 
 //const drawerWidth = 240;
 const selectYear = [{ name: "2021" }, { name: "2022" }];
@@ -35,13 +31,18 @@ const DailyAllowancesAddPeriod = ({ handleDialogClose }) => {
   //console.log("date", date, longMonth);
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+  const toast = useCustomToast();
+  const { dailyallows } = useDailyAllows();
+  const { dailyallowsdetls } = useDailyAllowsDetls();
+  const addDailyAllows = useAddDailyAllows();
+  const addDailyAllowsDetls = useAddDailyAllowsDetls();
   const [input, setInput] = useRecoilState(siteallowsState);
   const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
   const [allowsPeriod, setAllowsPeriod] = useState("");
   const [alert, setAlert] = useState(false);
   const [error, setError] = useState(false);
-  const { dailyallowances, addDailyAllowance, addDailyAllowsDetl } =
-    useDailyAllowancesContext();
+  // const { dailyallowances, addDailyAllowance, addDailyAllowsDetl } =
+  //   useDailyAllowancesContext();
   // function daysInMonth(month, year) {
   //   return new Date(year, month, 0).getDate();
   // }
@@ -59,7 +60,7 @@ const DailyAllowancesAddPeriod = ({ handleDialogClose }) => {
   }, []);
 
   const periodExists = (data) => {
-    return dailyallowances.some(function (el) {
+    return dailyallows.some(function (el) {
       return el.period === data;
     });
   };
@@ -70,7 +71,11 @@ const DailyAllowancesAddPeriod = ({ handleDialogClose }) => {
 
     const isExist = periodExists(period);
     if (isExist) {
-      setError(true);
+      toast({
+        title: "Site Allowance period is existed!",
+        status: "warning",
+      });
+      // setError(true);
       return null;
     }
 
@@ -85,7 +90,7 @@ const DailyAllowancesAddPeriod = ({ handleDialogClose }) => {
     for (let i = 0; i <= diffInDays; i++) {
       amount = amount + input.jobbonus + input.perdiem;
       const data = addDays(new Date(input.fromdate), i);
-      addDailyAllowsDetl({
+      addDailyAllowsDetls({
         empid: loginLevel.loginUserId,
         name: loginLevel.loginUser,
         period: period,
@@ -102,7 +107,7 @@ const DailyAllowancesAddPeriod = ({ handleDialogClose }) => {
       });
     }
     //add daily allowances batch
-    addDailyAllowance({
+    addDailyAllows({
       period: period,
       location: input.location,
       manager: input.manager,
@@ -113,21 +118,24 @@ const DailyAllowancesAddPeriod = ({ handleDialogClose }) => {
       amount: amount,
     });
 
-    dailyallowances.push({
-      period: period,
-      location: input.location,
-      manager: input.manager,
-      name: loginLevel.loginUser,
-      empid: loginLevel.loginUserId,
-      status: "Pending",
-      no_of_days: diffInDays,
-      amount: amount,
-    });
+    // dailyallowances.push({
+    //   period: period,
+    //   location: input.location,
+    //   manager: input.manager,
+    //   name: loginLevel.loginUser,
+    //   empid: loginLevel.loginUserId,
+    //   status: "Pending",
+    //   no_of_days: diffInDays,
+    //   amount: amount,
+    // });
     handleDialogClose();
   };
 
   const handleChange = (e) => {
-    setInput({ ...input, [e.target.name]: e.target.value });
+    e.preventDefault();
+    const { name, type, value } = e.target;
+    const val = type === "number" ? parseFloat(value) : value;
+    setInput({ ...input, [name]: val });
   };
 
   const handleSubmit = (e) => {
@@ -143,7 +151,10 @@ const DailyAllowancesAddPeriod = ({ handleDialogClose }) => {
   };
 
   return (
-    <Paper className={fixedHeightPaper} style={{ backgroundColor: "black" }}>
+    <Paper
+      className={fixedHeightPaper}
+      style={{ backgroundColor: "secondary" }}
+    >
       <form onSubmit={(e) => handleSubmit(e)}>
         <Grid
           container
@@ -153,7 +164,9 @@ const DailyAllowancesAddPeriod = ({ handleDialogClose }) => {
           justify="center"
           style={{ border: "1px solid white" }}
         >
-          <h2>Build Site Allowances</h2>
+          <Heading color="blue" style={{ padding: 10 }}>
+            Build Site Allowances
+          </Heading>
         </Grid>
         <Grid
           container
@@ -333,7 +346,7 @@ const DailyAllowancesAddPeriod = ({ handleDialogClose }) => {
                   value={input.jobbonus}
                   style={{ width: "100%" }}
                   name="jobbonus"
-                  type="currency"
+                  type="number"
                   className={classes.textField}
                   onChange={(e) => handleChange(e)}
                   InputLabelProps={{
@@ -347,7 +360,7 @@ const DailyAllowancesAddPeriod = ({ handleDialogClose }) => {
                   value={input.perdiem}
                   style={{ width: "100%" }}
                   name="perdiem"
-                  type="currency"
+                  type="number"
                   className={classes.textField}
                   onChange={(e) => handleChange(e)}
                   InputLabelProps={{

@@ -6,12 +6,11 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 // import Chart from "./Chart";
 // import Deposits from "./Deposits";
 // import Orders from "./Orders";
-
 import Appbanner from "./Appbanner";
 import Example from "./Example7";
 import SideDrawer from "./SideDrawer";
 import SingleEmployee from "./SingleEmployee";
-import SingleEmployeeStaff from "./SingleEmployeeStaff";
+import SingleEmployeeStaff from "./SingleEmployeeStaff old";
 import SingleLeave from "./SingleLeave";
 import SingleExpense from "./SingleExpense";
 import SingleDailyAllowance from "./SingleDailyAllowance";
@@ -68,7 +67,7 @@ export default function DashboardAdmin() {
           handleDrawerClose={handleDrawerClose}
           open={open}
           setLogin={setLogin}
-          title="Human Resource Management System - AppSmiths Sutera Sdn Bhd (Main)"
+          title="Human Resource Management System - AppSmiths Sutera Sdn Bhd"
         />
 
         <SideDrawer

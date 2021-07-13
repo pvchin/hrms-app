@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Button,
   Icon,
@@ -16,9 +16,15 @@ import { loginLevelState } from "./data/atomdata";
 import { useEmployeesContext } from "../context/employees_context";
 import { Controller, useForm } from "react-hook-form";
 
-import EmpFamilyStaff from "./EmpFamilyStaff";
-import EmpEducationsStaff from "./EmpEducationsStaff";
-import EmpExperiencesStaff from "./EmpExperiencesStaff";
+import { useEmployees } from "./employees/useEmployees";
+import { useUpdateEmployees } from "./employees/useUpdateEmployees";
+// import EmpFamilyStaff from "./EmpFamilyStaff";
+// import EmpEducationsStaff from "./EmpEducationsStaff";
+// import EmpExperiencesStaff from "./EmpExperiencesStaff";
+import EmpFamily from "./EmpFamily";
+import EmpEducations from "./EmpEducations";
+import EmpExperiences from "./EmpExperiences";
+import EmpTrainings from "./EmpTrainings";
 
 const initial_values = {
   name: "",
@@ -29,6 +35,7 @@ const initial_values = {
   basic_salary: 0,
   bank_name: "",
   bank_acno: "",
+  address: "",
   tap_acno: "",
   scp_acno: "",
   date_of_join: null,
@@ -46,20 +53,24 @@ const initial_values = {
 
 const EmployeeForm = () => {
   const classes = useStyles();
+  const { employees, setFilter } = useEmployees();
+  const updateEmployees = useUpdateEmployees();
+  const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
   const {
     isEditing,
     single_employee,
-    updateEmployee,
-    addEmployee,
     editEmployeeID,
+    getSingleEmployee,
     single_employee_loading,
   } = useEmployeesContext();
+
   const {
     name,
     ic_no,
     gender,
     age,
     email,
+    address,
     basic_salary,
     bank_name,
     bank_acno,
@@ -82,22 +93,21 @@ const EmployeeForm = () => {
   const { handleSubmit, control } = useForm();
 
   const onSubmit = (data) => {
-    if (isEditing) {
-      updateEmployee({ id: editEmployeeID, ...data });
-    } else {
-      addEmployee({ ...data });
-    }
-    //loadEmployees();
-    // <Alert severity="success">
-    //   <AlertTitle>Success</AlertTitle>
-    //   This is a success alert — <strong>check it out!</strong>
-    // </Alert>;
-    //history.push("/allemployees");
+    updateEmployees({ id: editEmployeeID, ...data });
   };
 
+  useEffect(() => {
+    getSingleEmployee(editEmployeeID);
+  }, []);
+
   if (single_employee_loading) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <h2>Loading... </h2>
+      </div>
+    );
   }
+
   return (
     <div>
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -133,7 +143,7 @@ const EmployeeForm = () => {
                     return (
                       <TextField
                         label="Name"
-                        id="margin-normal"
+                        id="standard-name"
                         name="name"
                         defaultValue={name}
                         className={classes.textField}
@@ -145,7 +155,7 @@ const EmployeeForm = () => {
                   }}
                   rules={{ required: "Name required" }}
                 />
-            
+
                 <Controller
                   name="email"
                   control={control}
@@ -157,7 +167,7 @@ const EmployeeForm = () => {
                     return (
                       <TextField
                         label="Email"
-                        id="margin-normal"
+                        id="standard-email"
                         name="email"
                         defaultValue={email}
                         className={classes.textField}
@@ -181,7 +191,7 @@ const EmployeeForm = () => {
                     return (
                       <TextField
                         label="IC No"
-                        id="margin-normal"
+                        id="standard-icno"
                         name="ic_no"
                         defaultValue={ic_no}
                         className={classes.textField}
@@ -206,7 +216,7 @@ const EmployeeForm = () => {
                     return (
                       <TextField
                         label="Gender"
-                        id="margin-normal"
+                        id="standard-gender"
                         name="gender"
                         defaultValue={gender}
                         className={classes.textField}
@@ -235,7 +245,7 @@ const EmployeeForm = () => {
                       <TextField
                         label="Age"
                         type="number"
-                        id="standard-number"
+                        id="standard-age"
                         name="age"
                         defaultValue={age}
                         className={classes.textField}
@@ -263,7 +273,7 @@ const EmployeeForm = () => {
                     return (
                       <TextField
                         label="Passport No"
-                        id="margin-normal"
+                        id="stanrad-ppno"
                         name="passportno"
                         defaultValue={passportno}
                         className={classes.textField}
@@ -286,7 +296,7 @@ const EmployeeForm = () => {
                     return (
                       <TextField
                         label="Passport Expiry Date"
-                        id="margin-normal"
+                        id="standard-ppexpiry"
                         name="passport_expirydate"
                         type="date"
                         defaultValue={passport_expirydate}
@@ -303,7 +313,33 @@ const EmployeeForm = () => {
                   //rules={{ required: "Name required" }}
                 />
               </div>
+              <div>
+                <Controller
+                  name="address"
+                  control={control}
+                  defaultValue={address}
+                  render={({
+                    field: { onChange, value },
+                    fieldState: { error },
+                  }) => {
+                    return (
+                      <TextField
+                        label="Address"
+                        id="standard-address"
+                        name="address"
+                        defaultValue={address}
+                        className={classes.textField}
+                        onChange={onChange}
+                        error={!!error}
+                        helperText={error ? error.message : null}
+                      />
+                    );
+                  }}
+                  //rules={{ required: "IC No required" }}
+                />
+              </div>
             </div>
+
             <Divider className={classes.divider} />
             <div>
               <div>
@@ -319,7 +355,7 @@ const EmployeeForm = () => {
                       <TextField
                         label="Basic Salary"
                         type="number"
-                        id="standard-number"
+                        id="standard-bsalary"
                         name="basic_pay"
                         defaultValue={basic_salary}
                         className={classes.textField}
@@ -348,7 +384,7 @@ const EmployeeForm = () => {
                       <TextField
                         label="Site Allowances Fee"
                         type="number"
-                        id="standard-number"
+                        id="standard-siteallows"
                         name="siteallows_fee"
                         defaultValue={siteallows_fee}
                         className={classes.textField}
@@ -375,7 +411,7 @@ const EmployeeForm = () => {
                       <TextField
                         label="Perdiem Fee"
                         type="number"
-                        id="standard-number"
+                        id="standard-perdiem"
                         name="perdiem_fee"
                         defaultValue={perdiem_fee}
                         className={classes.textField}
@@ -403,7 +439,7 @@ const EmployeeForm = () => {
                     return (
                       <TextField
                         label="Bank Name"
-                        id="margin-normal"
+                        id="standard-bankname"
                         name="bank_name"
                         defaultValue={bank_name}
                         className={classes.textField}
@@ -427,7 +463,7 @@ const EmployeeForm = () => {
                     return (
                       <TextField
                         label="Bank Ac No"
-                        id="margin-normal"
+                        id="standard-bankacno"
                         name="bank_acno"
                         defaultValue={bank_acno}
                         className={classes.textField}
@@ -452,7 +488,7 @@ const EmployeeForm = () => {
                     return (
                       <TextField
                         label="TAP Ac No"
-                        id="margin-normal"
+                        id="standard-tapacno"
                         name="tap_acno"
                         defaultValue={tap_acno}
                         className={classes.textField}
@@ -476,7 +512,7 @@ const EmployeeForm = () => {
                     return (
                       <TextField
                         label="SCP Ac No"
-                        id="margin-normal"
+                        id="standard-scpacno"
                         name="scp_acno"
                         defaultValue={scp_acno}
                         className={classes.textField}
@@ -501,7 +537,7 @@ const EmployeeForm = () => {
                     return (
                       <TextField
                         label="Work Permit No"
-                        id="margin-normal"
+                        id="standard-wpno"
                         name="workpermitno"
                         defaultValue={workpermitno}
                         className={classes.textField}
@@ -524,7 +560,7 @@ const EmployeeForm = () => {
                     return (
                       <TextField
                         label="Work Permit Expiry Date"
-                        id="margin-normal"
+                        id="standard-wpexpiry"
                         name="workpermit_expirydate"
                         type="date"
                         defaultValue={workpermit_expirydate}
@@ -554,7 +590,7 @@ const EmployeeForm = () => {
                     return (
                       <TextField
                         label="Joining Date"
-                        id="margin-normal"
+                        id="standard-joindate"
                         name="date_of_join"
                         type="date"
                         defaultValue={date_of_join}
@@ -581,7 +617,7 @@ const EmployeeForm = () => {
                     return (
                       <TextField
                         label="Resign Date"
-                        id="margin-normal"
+                        id="standard-resigndate"
                         name="date_of_resign"
                         type="date"
                         defaultValue={date_of_resign}
@@ -610,7 +646,7 @@ const EmployeeForm = () => {
                     return (
                       <TextField
                         label="Annual Leaves Entitled"
-                        id="margin-normal"
+                        id="standard-annualleave"
                         name="leave_entitled"
                         type="numeric"
                         defaultValue={leave_entitled}
@@ -637,7 +673,7 @@ const EmployeeForm = () => {
                     return (
                       <TextField
                         label="Leaves Balance"
-                        id="margin-normal"
+                        id="standard-leavebal"
                         name="leave_bal"
                         type="numeric"
                         defaultValue={leave_bal}
@@ -666,7 +702,7 @@ const EmployeeForm = () => {
                     return (
                       <TextField
                         label="Designation"
-                        id="margin-normal"
+                        id="standard-designation"
                         name="designation"
                         defaultValue={designation}
                         className={classes.textField}
@@ -689,7 +725,7 @@ const EmployeeForm = () => {
                     return (
                       <TextField
                         label="Department"
-                        id="margin-normal"
+                        id="standard-department"
                         name="department"
                         defaultValue={department}
                         className={classes.textField}
@@ -710,13 +746,16 @@ const EmployeeForm = () => {
       </form>
 
       <Grid xs={12}>
-        <EmpFamilyStaff />
+        <EmpFamily />
       </Grid>
       <Grid xs={12}>
-        <EmpEducationsStaff />
+        <EmpEducations />
       </Grid>
       <Grid xs={12}>
-        <EmpExperiencesStaff />
+        <EmpExperiences />
+      </Grid>
+      <Grid xs={12}>
+        <EmpTrainings />
       </Grid>
     </div>
   );

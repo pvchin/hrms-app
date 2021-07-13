@@ -84,6 +84,18 @@ const MenuListItemsStaff = () => {
         </ListItem>
       </Link>
 
+      <Link to="/trainings">
+        <ListItem button>
+          <ListItemIcon className={classes.itemIcon}>
+            <ShoppingCartIcon />
+          </ListItemIcon>
+          <ListItemText
+            primary="Trainings"
+            className={classes.categoryHeaderPrimary}
+          />
+        </ListItem>
+      </Link>
+
       <Link to="/dailyallowances">
         <ListItem button>
           <ListItemIcon className={classes.itemIcon}>
@@ -95,7 +107,18 @@ const MenuListItemsStaff = () => {
           />
         </ListItem>
       </Link>
-      
+
+      <Link to="/payslips">
+        <ListItem button>
+          <ListItemIcon className={classes.itemIcon}>
+            <ShoppingCartIcon />
+          </ListItemIcon>
+          <ListItemText
+            primary="Payslips"
+            className={classes.categoryHeaderPrimary}
+          />
+        </ListItem>
+      </Link>
     </div>
   );
 };

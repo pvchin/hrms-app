@@ -1,9 +1,13 @@
 import React, { useEffect } from "react";
 import MaterialTable, { MTableToolbar } from "material-table";
-import { Button, Icon, TextField } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { TextField } from "@material-ui/core";
 import { useEmployeesContext } from "../context/employees_context";
 import { useTablesContext } from "../context/tables_context";
+import { useExperiences } from "./experiences/useExperiences";
+import { useUpdateExperiences } from "./experiences/useUpdateExperiences";
+import { useAddExperiences } from "./experiences/useAddExperiences";
+import { useDeleteExperiences } from "./experiences/useDeleteExperiences";
 
 const columns = [
   {
@@ -51,125 +55,56 @@ export default function Emp_Experiences({
   handleDialogClose,
 }) {
   const classes = useStyles();
+  const { experiences, setExperienceId } = useExperiences();
+  const updateExperiences = useUpdateExperiences();
+  const addExperiences = useAddExperiences();
+  const deleteExperiences = useDeleteExperiences();
   const { editEmployeeID } = useEmployeesContext();
-  const {
-    loadSingleBatchExperience,
-    singlebatchexperience,
-    addExperience,
-    deleteExperience,
-    updateExperience,
-    singlebatch_experience_loading,
-  } = useTablesContext();
 
   useEffect(() => {
-    loadSingleBatchExperience(editEmployeeID);
+    setExperienceId(editEmployeeID);
   }, []);
-
-  const Save_ExperienceData = () => {
-    //console.log(experiencedata);
-    // delete unwanted data
-    singlebatchexperience.forEach((row) => {
-      const { id, rec_id } = row;
-      const res = experiencedata.find((r) => r.rec_id === rec_id);
-      if (!res) {
-        deleteExperience(id);
-      }
-    });
-
-    //add or update new data
-    experiencedata.forEach((data) => {
-      const { id, company, location, position, from_date, to_date, remark } =
-        data;
-      if (id) {
-        const { id, rec_id, tableData, ...fields } = data;
-        updateExperience({ id, ...fields });
-      } else {
-        addExperience({
-          company,
-          location,
-          position,
-          from_date,
-          to_date,
-          remark,
-          empid: editEmployeeID,
-        });
-      }
-    });
-
-    loadSingleBatchExperience(editEmployeeID);
-    handleDialogClose();
-  };
 
   const update_Experience = (data) => {
     const { id, rec_id, tableData, ...fields } = data;
-    setTimeout(() => {}, 1000);
-
-    updateExperience({ id, ...fields });
-    const rec = singlebatchexperience.filter((i) => i.id === id);
-    rec[0].company = data.company;
-    rec[0].location = data.location;
-    rec[0].position = data.position;
-    rec[0].from_date = data.from_date;
-    rec[0].to_date = data.to_date;
-     rec[0].remark = data.remark;
-    //loadSingleBatchExperience(editEmployeeID);
+    updateExperiences({ id, ...fields });
   };
 
   const add_Experience = (data) => {
-    addExperience({ ...data, empid: editEmployeeID });
-    loadSingleBatchExperience(editEmployeeID);
+    addExperiences({ ...data, empid: editEmployeeID });
   };
 
   const delete_Experience = (data) => {
     const { id } = data;
-    deleteExperience(id);
-    loadSingleBatchExperience(editEmployeeID);
+    deleteExperiences(id);
   };
 
-   const Refresh_Data = () => {
-     loadSingleBatchExperience(editEmployeeID);
-   };
-  if (singlebatch_experience_loading) {
-    return (
-      <div>
-        <h2>Loading...Experience</h2>
-      </div>
-    );
-  }
   return (
     <div className={classes.root}>
       <div style={{ maxWidth: "100%", paddingTop: "5px" }}>
         <MaterialTable
           columns={columns}
-          data={singlebatchexperience}
+          data={experiences}
           title="Experience"
           editable={{
             onRowAdd: (newData) =>
               new Promise((resolve, reject) => {
                 setTimeout(() => {
-                  add_Experience(newData)
+                  add_Experience(newData);
                   resolve();
                 }, 1000);
               }),
             onRowUpdate: (newData, oldData) =>
               new Promise((resolve, reject) => {
                 setTimeout(() => {
-                  // const dataUpdate = [...experiencedata];
-                  // const index = oldData.tableData.id;
-                  // dataUpdate[index] = newData;
-                  // setExperiencedata([...dataUpdate]);
-                  update_Experience(newData)
+                  update_Experience(newData);
                   resolve();
                 }, 1000);
               }),
             onRowDelete: (oldData) =>
               new Promise((resolve, reject) => {
                 setTimeout(() => {
-                  // const dataDelete = [...experiencedata];
-                  // const index = oldData.tableData.id;
-                  // dataDelete.splice(index, 1);
-                  // setExperiencedata([...dataDelete]);
-                  delete_Experience(oldData)
+                  delete_Experience(oldData);
                   resolve();
                 }, 1000);
               }),
@@ -186,17 +121,6 @@ export default function Emp_Experiences({
             Toolbar: (props) => (
               <div>
                 <MTableToolbar {...props} />
-                <div style={{ padding: "5px 10px" }}>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    color="secondary"
-                    className={classes.button}
-                    onClick={Refresh_Data}
-                  >
-                    Refresh <Icon className={classes.rightIcon}>send</Icon>
-                  </Button>
-                </div>
               </div>
             ),
           }}

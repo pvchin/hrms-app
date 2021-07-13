@@ -14,6 +14,10 @@ import MenuItem from "@material-ui/core/MenuItem";
 import { useEmployeesContext } from "../context/employees_context";
 import { useLeavesContext } from "../context/leaves_context";
 import { Controller, useForm } from "react-hook-form";
+import { useLeaves } from "./leaves/useLeaves";
+import { useAddLeaves } from "./leaves/useAddLeaves";
+import { useDeleteLeaves } from "./leaves/useDeleteLeaves";
+import { useUpdateLeaves } from "./leaves/useUpdateLeaves";
 
 const initial_state = {
   name: "",
@@ -27,28 +31,21 @@ const initial_state = {
 
 const LeaveForm = ({ formdata, setFormdata, handleDialogClose }) => {
   const classes = useStyles();
+  const { leaves, filter, setFilter, setLeaveId } = useLeaves();
+  const updateLeaves = useUpdateLeaves();
+  const addLeaves = useAddLeaves();
   const [state, setState] = useState(initial_state);
   const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
   const { handleSubmit, control } = useForm();
   const initialValues = Object.values(initial_state).join("");
-  const { leaves, isLeaveEditing, editLeaveID, updateLeave, addLeave } =
+  const { isLeaveEditing, editLeaveID } =
     useLeavesContext();
 
   const onSubmit = (data) => {
     if (isLeaveEditing) {
-     
-      //updateLeave({ id: editLeaveID, ...data });
-      // update leaves
-      const editleavedata = leaves.filter((r) => r.id === editLeaveID);
-      editleavedata[0].from_date = data.from_date;
-      editleavedata[0].to_date = data.to_date;
-      editleavedata[0].no_of_days = data.no_of_days;
-      editleavedata[0].reason = data.reason;
+      updateLeaves({ id: editLeaveID, ...data });
     } else {
-     
-      //addLeave({ ...data, empid: loginLevel.loginUserId });
-      leaves.push({ ...data, empid: loginLevel.loginUserId })
-      
+      addLeaves({ ...data, empid: loginLevel.loginUserId });
     }
 
     //history.push("/leave");

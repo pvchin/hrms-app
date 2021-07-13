@@ -17,7 +17,7 @@ import LeaveTableView from "./LeaveTableView";
 import LeaveTableAdmin from "./LeaveTableAdmin";
 import ExpenseTableView from "./ExpenseTableView";
 import ExpenseTableAdmin from "./ExpenseTableAdmin";
-import PayslipTableViewAdmin from "./PayslipTableViewAdmin";
+import PayslipTableViewAdmin from "./PayslipTableViewAdmin Copy";
 import PayslipTableAdmin from "./PayslipTableAdmin";
 import DailyAllowancesTableView from "./DailyAllowancesTableView";
 import DailyAllowancesTableAdmin from "./DailyAllowancesTableAdmin";
@@ -96,8 +96,8 @@ const EmployeeView = () => {
     <div>
       <div className={classes.appBarSpacer} />
       <div style={{ paddingLeft: 50 }}>
-        <h2>Welcome {loginLevel.loginUser}!</h2>
-        <h3>Dashboard</h3>
+        {/* <h2>Welcome {loginLevel.loginUser}!</h2>
+        <h3>Dashboard</h3> */}
       </div>
       <Container maxWidth="lg" className={classes.container}>
         <Grid container spacing={3}>
@@ -121,7 +121,7 @@ const EmployeeView = () => {
               <WPExpiryView />
             </CardLayout3>
           </Grid> */}
-          <Grid item xs={6} md={8} lg={6}>
+          <Grid item xs={12} md={8} lg={12}>
             <CardLayout3
               title="Expenses pending for approval"
               handleClick={handleExpenseDialogOpen}
@@ -129,7 +129,7 @@ const EmployeeView = () => {
               <ExpenseTableView />
             </CardLayout3>
           </Grid>
-          <Grid item xs={6} md={8} lg={6}>
+          <Grid item xs={12} md={8} lg={12}>
             <CardLayout3
               title="Site Allowances pending for approval"
               handleClick={handleDailyAllowancesDialogOpen}
@@ -137,7 +137,7 @@ const EmployeeView = () => {
               <DailyAllowancesTableView />
             </CardLayout3>
           </Grid>
-          <Grid item xs={6} md={8} lg={6}>
+          <Grid item xs={12} md={8} lg={12}>
             <CardLayout3
               title="Leaves pending for approval"
               handleClick={handleLeaveDialogOpen}
@@ -147,7 +147,7 @@ const EmployeeView = () => {
           </Grid>
           {/* Recent Orders */}
 
-          <Grid item xs={6} md={8} lg={6}>
+          <Grid item xs={12} md={8} lg={12}>
             <CardLayout3
               title="Payroll pending for approval"
               handleClick={handlePayslipDialogOpen}

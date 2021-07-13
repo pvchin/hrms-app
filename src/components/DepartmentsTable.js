@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
+import React from "react";
 import MaterialTable from "material-table";
 import { makeStyles } from "@material-ui/core/styles";
-import { useRecoilState, useRecoilValueLoadable } from "recoil";
-import { fetchDepartmentsSelector } from "./data/selectordata";
-import { deptDataState } from "./data/atomdata";
-import { useTablesContext } from "../context/tables_context";
+import { useDepartments } from "./departments/useDepartments";
+import { useUpdateDepartments } from "./departments/useUpdateDepartments";
+import { useDeleteDepartments } from "./departments/useDeleteDepartments";
+import { useAddDepartments } from "./departments/useAddDepartments";
 
 const columns = [
   {
@@ -15,45 +15,24 @@ const columns = [
 
 export default function UpdateDepartments() {
   const classes = useStyles();
-  const [deptdata, setDeptdata] = useRecoilState(deptDataState);
-  const deptDetails = useRecoilValueLoadable(fetchDepartmentsSelector);
-  const { state, contents } = deptDetails;
-  const {
-    loadDepartments,
-    departments,
-    departments_loading,
-    addDepartment,
-    deleteDepartment,
-    updateDepartment,
-  } = useTablesContext();
-
-  useEffect(() => {
-    loadDepartments();
-  }, []);
+  const { departments } = useDepartments();
+  const updateDepartments = useUpdateDepartments();
+  const deleteDepartments = useDeleteDepartments();
+  const addDepartments = useAddDepartments();
 
   const update_Department = (data) => {
-    updateDepartment({ id: data.id, ...data });
-    loadDepartments();
+    const { id, rec_id, ...fields } = data;
+    updateDepartments({ id, ...fields });
   };
 
   const add_Department = (data) => {
-    addDepartment(data);
-    loadDepartments();
+    addDepartments(data);
   };
 
   const delete_Department = (data) => {
     const { id } = data;
-    deleteDepartment(id);
-    loadDepartments();
+    deleteDepartments(id);
   };
-
-  if (departments_loading) {
-    return (
-      <div>
-        <h2>Loading.....Designations</h2>
-      </div>
-    );
-  }
 
   return (
     <div className={classes.root}>
@@ -74,6 +53,7 @@ export default function UpdateDepartments() {
               new Promise((resolve, reject) => {
                 setTimeout(() => {
                   update_Department(newData);
+
                   resolve();
                 }, 1000);
               }),

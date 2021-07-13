@@ -2,12 +2,13 @@ import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import axios from "axios";
+import { Heading } from "@chakra-ui/react";
+import { differenceInDays, addDays } from "date-fns";
+import { useRecoilState } from "recoil";
 import { Grid, List, ListItem, ListItemText } from "@material-ui/core";
 import { loginLevelState } from "./data/atomdata";
-import { atom, selector, useRecoilState,useRecoilValueLoadable } from "recoil";
-// import { departmentsSelector } from "../helpers/Recoilhelpers";
-import { wpexpiry_url } from "../utils/constants";
-import { fetchDepartmentsSelector } from "./data/selectordata";
+import { useEmployees } from "./employees/useEmployees";
+import { useUser } from "./user/useUser";
 
 const drawerWidth = 240;
 
@@ -31,64 +32,36 @@ const columns = [
   },
 ];
 
-export const onleavesdatastate = atom({
-  key: "onleavesdatastate",
-  default: [],
-});
-
-const fetchWPExpiryDetails = selector({
-  key: "wpExpiryDetailsSelector",
-  get: async ({ get }) => {
-    try {
-      const { data } = await axios.get(wpexpiry_url);
-      const wpexpirydata = data;
-
-      return data;
-    } catch (error) {
-      throw error;
-    }
-  },
-});
-
 const WPExpiryViewStaff = () => {
   const classes = useStyles();
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
-   const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
+  const { employees, setFilter } = useEmployees();
+  const { user } = useUser();
+  const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
   const [userdata, setUserdata] = useState([]);
-  //const [userdata, setUserdata] = useRecoilState(userdatastate);
-  const wpExpiryDetails = useRecoilValueLoadable(fetchWPExpiryDetails);
-  const { state, contents } = wpExpiryDetails;
+  const today = Date().toLocaleString();
 
-  
-  if (wpExpiryDetails.state === "hasError") {
-    return (
-      <div>
-        <h2>Internet connections problem!</h2>
-      </div>
-    );
-  }
+  // useEffect(() => {
+  //   setFilter(user.id);
+  // }, []);
 
-  if (state === "loading") {
-    return (
-      <div>
-        <h2>Loading....WP Expiry</h2>
-      </div>
-    );
-  }
-
-  if (state === "hasValue") {
-    const editable = contents.map((r) => {
-      return { ...r };
-    });
-    return (
-      <List className={classes.root}>
-        <Grid container direction="row">
-          {editable.filter((i)=>i.empid === loginLevel.loginUserId).map((row) => {
+  return (
+    <List className={classes.root}>
+      <Grid container direction="row">
+        <Heading as="h4" size="md">
+          Work Permit Expiry Within 90 days
+        </Heading>
+        {employees
+          .filter(
+            (i) =>
+              differenceInDays(
+                new Date(i.workpermit_expirydate),
+                new Date(today)
+              ) < 90 && i.id === loginLevel.loginUserId
+          )
+          .map((row) => {
             return (
               <ListItem key={row.id}>
-                <Grid item sm={4} align="center">
-                  <ListItemText>{row.name}</ListItemText>
-                </Grid>
                 <Grid item sm={4} align="center">
                   <ListItemText>{row.workpermitno}</ListItemText>
                 </Grid>
@@ -98,10 +71,9 @@ const WPExpiryViewStaff = () => {
               </ListItem>
             );
           })}
-        </Grid>
-      </List>
-    );
-  }
+      </Grid>
+    </List>
+  );
 };
 
 const useStyles = makeStyles((theme) => ({

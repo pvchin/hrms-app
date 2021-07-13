@@ -2,9 +2,14 @@ import React, { useState, useEffect } from "react";
 import MaterialTable, { MTableToolbar } from "material-table";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button, Icon, TextField } from "@material-ui/core";
+import { useRecoilState } from "recoil";
+import { loginLevelState } from "./data/atomdata";
 import { useEmployeesContext } from "../context/employees_context";
 import { useTrainingsContext } from "../context/trainings_context";
-
+import { useTrainings } from "./trainings/useTrainings";
+import { useUpdateTrainings } from "./trainings/useUpdateTrainings";
+import { useAddTrainings } from "./trainings/useAddTrainings";
+import { useDeleteTrainings } from "./trainings/useDeleteTrainings";
 const columns = [
   {
     title: "Institute",
@@ -61,105 +66,50 @@ export default function Emp_Training({
   handleDialogClose,
 }) {
   const classes = useStyles();
-
+  const { trainings, filter, setFilter, setTrainingId } = useTrainings();
+  const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
+  const updateTrainings = useUpdateTrainings();
+  const addTrainings = useAddTrainings();
+  const deleteTrainings = useDeleteTrainings();
   const { editEmployeeID } = useEmployeesContext();
   const {
     getSingleBatchTraining,
     singlebatch_training,
-    addTraining,
-    deleteTraining,
-    updateTraining,
+    //addTraining,
+    //deleteTraining,
+    //updateTraining,
     singlebatch_training_loading,
   } = useTrainingsContext();
 
   useEffect(() => {
-    getSingleBatchTraining(editEmployeeID);
+    setTrainingId(editEmployeeID);
   }, []);
 
-  const Save_TrainingData = () => {
-    //console.log(trainingdata);
-    // delete unwanted data
-    singlebatch_training.forEach((row) => {
-      const { id, rec_id } = row;
-      const res = trainingdata.find((r) => r.rec_id === rec_id);
-      if (!res) {
-        deleteTraining(id);
-      }
-    });
-
-    //add or update new data
-
-    trainingdata.forEach((data) => {
-      const { id, institute, course, from_date, to_date, expiry_date } = data;
-      if (id) {
-        const { id, rec_id, tableData, ...fields } = data;
-        updateTraining({ id, ...fields });
-      } else {
-        addTraining({
-          institute,
-          course,
-          from_date,
-          to_date,
-          expiry_date,
-          empid: editEmployeeID,
-        });
-      }
-    });
-
-    getSingleBatchTraining(editEmployeeID);
-    handleDialogClose();
-  };
-
   const add_Training = (data) => {
-    addTraining({ ...data, empid: editEmployeeID });
-    getSingleBatchTraining(editEmployeeID);
+    addTrainings({ ...data, name:loginLevel.loginUser  ,empid: editEmployeeID });
   };
 
   const delete_Training = (data) => {
     const { id } = data;
-    deleteTraining(id);
-    // const index = data.tableData.id;
-    // const rec = singlebatchfamily
-    // rec.splice(index, 1);
-    getSingleBatchTraining(editEmployeeID);
+    deleteTrainings(id);
   };
-  const Refresh_Data = () => {
-     getSingleBatchTraining(editEmployeeID);
-  };
-  
-  const update_Training = (data) => {
-    const { id, rec_id, tableData, ...fields } = data;
-    setTimeout(() => {}, 1000);
 
-    updateTraining({ id, ...fields });
-    const rec = singlebatch_training.filter((i) => i.id === id);
-    rec[0].institute = data.institute;
-    rec[0].course = data.course;
-    rec[0].from_date = data.from_date;
-    rec[0].to_date = data.to_date;
-    rec[0].expiry_date = data.expiry_date;
-    //loadSingleBatchFamily(editEmployeeID);
-    //loadSingleBatchFamily(editEmployeeID);
+  const update_Training = (data) => {
+    const { id, rec_id, tableData,...fields } = data;
+    updateTrainings({ id, ...fields });
   };
-  if (singlebatch_training_loading) {
-    return (
-      <div>
-        <h2>Loading...Training</h2>
-      </div>
-    );
-  }
+
   return (
     <div className={classes.root}>
       <div style={{ maxWidth: "100%", paddingTop: "5px" }}>
         <MaterialTable
           columns={columns}
-          data={singlebatch_training}
+          data={trainings}
           title="Training"
           editable={{
             onRowAdd: (newData) =>
               new Promise((resolve, reject) => {
                 setTimeout(() => {
-                  // setTrainingdata([...trainingdata, newData]);
                   add_Training(newData);
                   resolve();
                 }, 1000);
@@ -167,22 +117,14 @@ export default function Emp_Training({
             onRowUpdate: (newData, oldData) =>
               new Promise((resolve, reject) => {
                 setTimeout(() => {
-                  // const dataUpdate = [...trainingdata];
-                  // const index = oldData.tableData.id;
-                  // dataUpdate[index] = newData;
-                  // setTrainingdata([...dataUpdate]);
-                  update_Training(newData)
+                  update_Training(newData);
                   resolve();
                 }, 1000);
               }),
             onRowDelete: (oldData) =>
               new Promise((resolve, reject) => {
                 setTimeout(() => {
-                  // const dataDelete = [...trainingdata];
-                  // const index = oldData.tableData.id;
-                  // dataDelete.splice(index, 1);
-                  // setTrainingdata([...dataDelete]);
-                  delete_Training(oldData)
+                  delete_Training(oldData);
                   resolve();
                 }, 1000);
               }),
@@ -199,17 +141,6 @@ export default function Emp_Training({
             Toolbar: (props) => (
               <div>
                 <MTableToolbar {...props} />
-                <div style={{ padding: "5px 10px" }}>
-                  <Button
-                    type="submit"
-                    variant="contained"
-                    color="secondary"
-                    className={classes.button}
-                    onClick={Refresh_Data}
-                  >
-                    Update <Icon className={classes.rightIcon}>send</Icon>
-                  </Button>
-                </div>
               </div>
             ),
           }}

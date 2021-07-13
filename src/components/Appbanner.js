@@ -13,17 +13,20 @@ import MenuIcon from "@material-ui/icons/Menu";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import { useRecoilState } from "recoil";
 import { loginLevelState } from "./data/atomdata";
+import { useUser} from "./user/useUser"
 
 const drawerWidth = 255;
 
 const Appbanner = ({ handleDrawerOpen, handleDrawerClose, open, title }) => {
   let history = useHistory();
   const classes = useStyles();
+  const { user, clearUser} = useUser()
   const [loginLevel, setLoginLevel] = useRecoilState(loginLevelState);
 
   const handleExit = (e) => {
     e.preventDefault();
     setLoginLevel({ ...loginLevel, login: false });
+    clearUser()
     history.push("/");
   };
 
